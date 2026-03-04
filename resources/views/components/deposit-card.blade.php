@@ -6,44 +6,44 @@
     $termMonths = $item->term_months !== null && $item->term_months !== '' ? $item->term_months . ' мес.' : '-';
     $minAmount = $item->min_amount !== null && $item->min_amount !== '' ? 'от ' . number_format((float) $item->min_amount, 0, '', ' ') . ' ₽' : '-';
     $replenishment = $item->replenishment ? 'Да' : 'Нет';
-    $logo = ($item->bank && $item->bank->logo) ? asset('storage/' . $item->bank->logo) : null;
+    $logo = ($item->bank && ($item->bank->logo_square ?? $item->bank->logo)) ? asset('storage/' . ($item->bank->logo_square ?? $item->bank->logo)) : null;
+    $detailUrl = $item->slug ? url('/vklady/' . $item->slug) : '#';
 @endphp
 
-<div class="karty-card">
-    <div class="karty-card__col karty-card__name">
-        <div class="karty-card__name-inner">
+<div class="deposit-card">
+    <div class="deposit-card__col deposit-card__name">
+        <div class="deposit-card__name-inner">
             @if($logo)
-                <img class="karty-card__image" src="{{ $logo }}" alt="{{ $bankName }}" width="101" height="66">
+                <img class="deposit-card__logo" src="{{ $logo }}" alt="{{ $bankName }}" width="64" height="64">
             @else
-                <div class="karty-card__image karty-card__image-placeholder">—</div>
+                <div class="deposit-card__logo deposit-card__logo-placeholder">—</div>
             @endif
-            <div class="karty-card__name-block">
-                <div class="karty-card__name-text">{{ $bankName }}</div>
-                <span class="karty-card__label">{{ $depositName }}</span>
+            <div class="deposit-card__name-block">
+                <div class="deposit-card__name-text">{{ $bankName }}</div>
+                <span class="deposit-card__label">{{ $depositName }}</span>
             </div>
         </div>
     </div>
-    <div class="karty-card__col">
-        <span class="karty-card__label">Ставка</span>
-        <span class="karty-card__value">{{ $rate }}</span>
+    <div class="deposit-card__col">
+        <span class="deposit-card__label">Ставка</span>
+        <span class="deposit-card__value">{{ $rate }}</span>
     </div>
-    <div class="karty-card__col">
-        <span class="karty-card__label">Срок</span>
-        <span class="karty-card__value">{{ $termMonths }}</span>
+    <div class="deposit-card__col">
+        <span class="deposit-card__label">Срок</span>
+        <span class="deposit-card__value">{{ $termMonths }}</span>
     </div>
-    <div class="karty-card__col">
-        <span class="karty-card__label">Мин. сумма</span>
-        <span class="karty-card__value">{{ $minAmount }}</span>
+    <div class="deposit-card__col">
+        <span class="deposit-card__label">Мин. сумма</span>
+        <span class="deposit-card__value">{{ $minAmount }}</span>
     </div>
-    <div class="karty-card__col">
-        <span class="karty-card__label">Пополнение</span>
-        <span class="karty-card__value">{{ $replenishment }}</span>
+    <div class="deposit-card__col">
+        <span class="deposit-card__label">Пополнение</span>
+        <span class="deposit-card__value">{{ $replenishment }}</span>
     </div>
-    <div class="karty-card__col karty-card__action">
-        <a href="#" class="tf-btn btn-primary2 btn-px-28 height-2 rounded-12">
+    <div class="deposit-card__col deposit-card__action">
+        <a href="{{ $detailUrl }}" class="tf-btn btn-primary2 btn-px-28 height-2 rounded-12">
             <span>Подробнее</span>
             <span class="bg-effect"></span>
         </a>
     </div>
 </div>
-

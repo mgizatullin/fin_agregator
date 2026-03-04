@@ -5,6 +5,7 @@ namespace App\Filament\Resources\Banks\Schemas;
 use App\Filament\Resources\Banks\RelationManagers\BranchesRelationManager;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Textarea;
@@ -62,10 +63,15 @@ class BankForm
                                 DatePicker::make('license_date')
                                     ->label('Дата лицензии'),
 
-                                Textarea::make('description')
+                                RichEditor::make('description')
                                     ->label('Описание')
-                                    ->columnSpanFull(),
-
+                                    ->columnSpanFull()
+                                    ->extraInputAttributes(['style' => 'min-height: 300px'])
+                                    ->toolbarButtons([
+                                        ['bold', 'italic', 'link'],
+                                        ['h2', 'h3'],
+                                        ['bulletList', 'orderedList'],
+                                    ]),
                                 FileUpload::make('logo')
                                     ->label('Логотип')
                                     ->image()

@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Filament\Resources\Articles;
+namespace App\Filament\Resources\Blog;
 
-use App\Filament\Resources\Articles\Pages\CreateArticle;
-use App\Filament\Resources\Articles\Pages\EditArticle;
-use App\Filament\Resources\Articles\Pages\ListArticles;
+use App\Filament\Resources\Blog\Pages\CreateArticle;
+use App\Filament\Resources\Blog\Pages\EditArticle;
+use App\Filament\Resources\Blog\Pages\ListBlog;
 use App\Filament\Resources\Articles\Schemas\ArticleForm;
 use App\Filament\Resources\Articles\Tables\ArticlesTable;
 use App\Models\Article;
@@ -14,19 +14,19 @@ use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
 
-class ArticleResource extends Resource
+class BlogResource extends Resource
 {
     protected static ?string $model = Article::class;
 
-    protected static bool $shouldRegisterNavigation = false;
-
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedDocumentText;
 
-    protected static ?string $navigationLabel = 'Статьи';
+    protected static ?string $navigationLabel = 'Блог';
 
-    protected static string|\UnitEnum|null $navigationGroup = 'Блог';
+    protected static string|\UnitEnum|null $navigationGroup = null;
 
-    protected static ?int $navigationSort = 8;
+    protected static ?int $navigationSort = 7;
+
+    protected static ?string $slug = 'blog';
 
     public static function getModelLabel(): string
     {
@@ -56,7 +56,7 @@ class ArticleResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => ListArticles::route('/'),
+            'index' => ListBlog::route('/'),
             'create' => CreateArticle::route('/create'),
             'edit' => EditArticle::route('/{record}/edit'),
         ];

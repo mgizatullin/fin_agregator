@@ -65,7 +65,8 @@ class ArticleForm
                                 DateTimePicker::make('published_at')
                                     ->label('Дата публикации')
                                     ->nullable(),
-                            ]),
+                            ])
+                            ->columns(1),
 
                         Tab::make('Контент')
                             ->schema([
@@ -76,8 +77,10 @@ class ArticleForm
 
                                 RichEditor::make('content')
                                     ->label('Текст статьи')
-                                    ->columnSpanFull(),
-                            ]),
+                                    ->columnSpanFull()
+                                    ->extraInputAttributes(['style' => 'min-height: 300px']),
+                            ])
+                            ->columns(1),
 
                         Tab::make('SEO настройки')
                             ->schema([
@@ -95,8 +98,10 @@ class ArticleForm
                                     ->label('SEO ключевые слова')
                                     ->maxLength(255)
                                     ->columnSpanFull(),
-                            ]),
-                    ]),
+                            ])
+                            ->columns(1),
+                    ])
+                    ->columnSpanFull(),
             ]);
     }
 }

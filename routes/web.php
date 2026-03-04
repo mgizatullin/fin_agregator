@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\BankCategoryController;
 use App\Http\Controllers\BankController;
+use App\Http\Controllers\BlogController;
 use App\Http\Controllers\CardCategoryController;
 use App\Http\Controllers\CardController;
 use App\Http\Controllers\CreditCategoryController;
@@ -37,10 +38,32 @@ Route::get('/kredity/{slug}', function (string $slug) {
 })->name('credits.category.show');
 
 Route::get('/vklady', [DepositController::class, 'index'])->name('deposits.index');
-Route::get('/vklady/{slug}', [DepositCategoryController::class, 'show'])->name('deposits.category.show');
+Route::get('/vklady/{slug}', function (string $slug) {
+    $deposit = \App\Models\Deposit::where('slug', $slug)->where('is_active', true)->first();
+    if ($deposit) {
+        return app(DepositController::class)->show(request(), $slug);
+    }
+    return app(DepositCategoryController::class)->show(request(), $slug);
+})->name('deposits.category.show');
 
 Route::get('/zaimy', [LoanController::class, 'index'])->name('loans.index');
-Route::get('/zaimy/{slug}', [LoanCategoryController::class, 'show'])->name('loans.category.show');
+Route::get('/zaimy/{slug}', function (string $slug) {
+    $loan = \App\Models\Loan::where('slug', $slug)->where('is_active', true)->first();
+    if ($loan) {
+        return app(LoanController::class)->show(request(), $slug);
+    }
+    return app(LoanCategoryController::class)->show(request(), $slug);
+})->name('loans.category.show');
 
 Route::get('/banki', [BankController::class, 'index'])->name('banks.index');
-Route::get('/banki/{slug}', [BankCategoryController::class, 'show'])->name('banks.category.show');
+Route::get('/banki/{slug}', function (string $slug) {
+    $bank = \App\Models\Bank::where('slug', $slug)->where('is_active', true)->first();
+    if ($bank) {
+        return app(BankController::class)->show(request(), $slug);
+    }
+    return app(BankCategoryController::class)->show(request(), $slug);
+})->name('banks.category.show');
+
+Route::get('/blog', [BlogController::class, 'index'])->name('blog.index');
+Route::get('/blog/category/{slug}', [BlogController::class, 'category'])->name('blog.category');
+Route::get('/blog/{slug}', [BlogController::class, 'show'])->name('blog.show');

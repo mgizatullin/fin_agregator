@@ -3,9 +3,9 @@
 namespace App\Filament\Resources\Loans\Schemas;
 
 use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
-use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Schema;
 use Filament\Schemas\Components\Utilities\Set;
@@ -44,10 +44,15 @@ class LoanForm
                     ->imagePreviewHeight(120)
                     ->maxSize(2048),
 
-                Textarea::make('description')
+                RichEditor::make('description')
                     ->label('Описание')
-                    ->columnSpanFull(),
-
+                    ->columnSpanFull()
+                    ->extraInputAttributes(['style' => 'min-height: 300px'])
+                    ->toolbarButtons([
+                        ['bold', 'italic', 'link'],
+                        ['h2', 'h3'],
+                        ['bulletList', 'orderedList'],
+                    ]),
                 Select::make('categories')
                     ->label('Категории')
                     ->relationship('categories', 'title')

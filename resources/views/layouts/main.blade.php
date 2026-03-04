@@ -8,12 +8,21 @@
     <!-- Basic Page Needs -->
     <meta charset="utf-8">
     <!--[if IE ]><meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/><![endif]-->
-    <title>Advitex - Финансовый и бизнес-консалтинг</title>
+    <title>
+@if(!empty($seo_title))
+    {{ $seo_title }}
+@elseif(!empty($title))
+    {{ $title }} - {{ config('app.name') }}
+@elseif(isset($section) && !empty($section->title))
+    {{ $section->title }} - {{ config('app.name') }}
+@else
+    {{ config('app.name') }}
+@endif
+    </title>
 
-    <meta name="description" content="Advitex — современный HTML-шаблон для финансового и бизнес-консалтинга с удобным интерфейсом и гибкой настройкой.">
-    <meta name="keywords" content="финансы, бизнес, консалтинг, шаблон, услуги, Advitex">
-
-    <meta name="author" content="themesflat.com">
+@if(!empty($seo_description))
+    <meta name="description" content="{{ $seo_description }}">
+@endif
 
     <!-- Mobile Specific Metas -->
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
@@ -63,7 +72,7 @@
                             <div class="header-inner-wrap">
                                 <div class="header-left d-flex align-items-center">
                                     <div class="header-logo">
-                                        <a href="index.html" class="site-logo">
+                                        <a href="/" class="site-logo">
                                             <svg width="149" height="46" viewbox="0 0 149 46" fill="none" xmlns="http://www.w3.org/2000/svg">
                                                 <rect x="0.625" y="0.625" width="147.75" height="44.75" rx="22.375" fill="white"></rect>
                                                 <rect x="0.625" y="0.625" width="147.75" height="44.75" rx="22.375" stroke="white" stroke-width="1.25"></rect>
@@ -73,112 +82,7 @@
 
                                         </a>
                                     </div>
-                                    <nav class="main-menu style-default">
-                                        <ul class="navigation ">
-                                            <li class="has-child "><a href="javascript:void(0)">Главная</a>
-                                                <div class="submenu mega-menu">
-                                                    <div class="wrap-demo-item tf-grid-layout-lg lg-col-3 ">
-                                                        <div class="demo-item">
-                                                            <a href="index.html">
-                                                                <div class="demo-image">
-                                                                    <img class="lazyload" data-src="{{ asset('assets/images/demo/demo-1.jpg') }}" src="{{ asset('assets/images/demo/demo-1.jpg') }}" alt="demo-1.jpg">
-                                                                </div>
-                                                                <h6 class="demo-name fw-4">Бизнес-консалтинг
-                                                                </h6>
-                                                            </a>
-                                                        </div>
-                                                        <div class="demo-item">
-                                                            <a href="finance-consulting.html">
-                                                                <div class="demo-image">
-                                                                    <img class="lazyload" data-src="{{ asset('assets/images/demo/demo-2.jpg') }}" src="{{ asset('assets/images/demo/demo-2.jpg') }}" alt="demo-2.jpg">
-                                                                </div>
-                                                                <h6 class="demo-name fw-4">Финансовый консалтинг
-                                                                </h6>
-                                                            </a>
-                                                        </div>
-                                                        <div class="demo-item">
-                                                            <a href="finance-advisor.html">
-                                                                <div class="demo-image">
-                                                                    <img class="lazyload" data-src="{{ asset('assets/images/demo/demo-3.jpg') }}" src="{{ asset('assets/images/demo/demo-3.jpg') }}" alt="home-3">
-                                                                </div>
-                                                                <h6 class="demo-name fw-4">Финансовый советник</h6>
-                                                            </a>
-                                                        </div>
-                                                        <div class="demo-item ">
-                                                            <a href="insurance-consulting.html">
-                                                                <div class="demo-image">
-                                                                    <img class="lazyload" data-src="{{ asset('assets/images/demo/demo-4.jpg') }}" src="{{ asset('assets/images/demo/demo-4.jpg') }}" alt="home-4">
-                                                                </div>
-                                                                <h6 class="demo-name fw-4">Страховой консалтинг
-                                                                </h6>
-                                                            </a>
-                                                        </div>
-                                                        <div class="demo-item">
-                                                            <a href="marketing-consulting.html">
-                                                                <div class="demo-image">
-                                                                    <img class="lazyload" data-src="{{ asset('assets/images/demo/demo-5.jpg') }}" src="{{ asset('assets/images/demo/demo-5.jpg') }}" alt="home-5">
-                                                                </div>
-                                                                <h6 class="demo-name fw-4">Маркетинговый консалтинг
-                                                                </h6>
-                                                            </a>
-                                                        </div>
-                                                        <div class="comming-soon">
-                                                            <a href="coming-soon.html" class="wrap">
-                                                                <h5 class="demo-name ">Скоро запуск</h5>
-                                                            </a>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </li>
-                                            <li class="has-child current-menu position-relative"><a href="javascript:void(0)">Страницы</a>
-                                                <ul class="submenu">
-                                                    <li class="menu-item"><a href="about.html">О компании</a></li>
-                                                    <li class="menu-item"><a href="portfolio.html">Кейсы</a>
-                                                    </li>
-                                                    <li class="menu-item"><a href="single-project.html">Проект</a></li>
-                                                    <li class="menu-item"><a href="pricing.html">Тарифы</a></li>
-                                                    <li class="menu-item"><a href="faqs.html">Вопросы и ответы</a></li>
-                                                    <li class="menu-item"><a href="team.html">Команда</a></li>
-                                                    <li class="menu-item current-menu-item "><a href="career.html">Карьера</a></li>
-                                                    <li class="menu-item"><a href="404.html">Ошибка</a></li>
-                                                    <li class="menu-item"><a href="coming-soon.html">Скоро запуск</a>
-                                                    </li>
-                                                </ul>
-                                            </li>
-                                            <li class="has-child position-relative"><a href="javascript:void(0)">Услуги</a>
-                                                <ul class="submenu">
-                                                    <li class="menu-item"><a href="services.html">Услуги</a>
-                                                    </li>
-                                                    <li class="menu-item"><a href="service-details.html">Детали услуги</a>
-                                                    </li>
-                                                </ul>
-                                            </li>
-                                            <li class="has-child position-relative"><a href="javascript:void(0)">Блог</a>
-                                                <ul class="submenu">
-                                                    <li class="menu-item"><a href="blog.html">Блог
-                                                        </a>
-                                                    </li>
-                                                    <li class="menu-item"><a href="single-post.html">Статья</a>
-                                                    </li>
-
-                                                </ul>
-                                            </li>
-                                            <li><a href="contact-us.html">Контакты</a></li>
-                                            <li class="has-child position-relative"><a href="javascript:void(0)">Магазин</a>
-                                                <ul class="submenu">
-                                                    <li class="menu-item"><a href="shop.html">Магазин</a>
-                                                    </li>
-                                                    <li class="menu-item"><a href="product-Детали.html">Детали товара</a>
-                                                    </li>
-                                                    <li class="menu-item"><a href="cart.html">Корзина</a>
-                                                    </li>
-                                                    <li class="menu-item"><a href="cart.html">Оформление</a>
-                                                    </li>
-                                                </ul>
-                                            </li>
-
-                                        </ul>
-                                    </nav>
+                                    @include('layouts.partials.main-menu')
                                 </div>
                                 <div class="header-right d-flex align-items-center ">
                                     <div class="popup-show-form">
@@ -248,7 +152,7 @@
                                 <div class="header-inner-wrap">
                                     <div class="header-left d-flex align-items-center">
                                         <div class="header-logo">
-                                            <a href="index.html" class="site-logo">
+                                            <a href="/" class="site-logo">
                                                 <svg width="149" height="46" viewbox="0 0 149 46" fill="none" xmlns="http://www.w3.org/2000/svg">
                                                     <rect x="0.625" y="0.625" width="147.75" height="44.75" rx="22.375" fill="white"></rect>
                                                     <rect x="0.625" y="0.625" width="147.75" height="44.75" rx="22.375" stroke="white" stroke-width="1.25"></rect>
@@ -258,107 +162,7 @@
 
                                             </a>
                                         </div>
-                                        <nav class="main-menu style-default">
-                                            <ul class="navigation ">
-                                                <li class="has-child "><a href="javascript:void(0)">Главная</a>
-                                                    <div class="submenu mega-menu">
-                                                        <div class="wrap-demo-item tf-grid-layout-lg lg-col-3 ">
-                                                            <div class="demo-item">
-                                                                <a href="index.html">
-                                                                    <div class="demo-image">
-                                                                        <img class="lazyload" data-src="{{ asset('assets/images/demo/demo-1.jpg') }}" src="{{ asset('assets/images/demo/demo-1.jpg') }}" alt="demo-1.jpg">
-                                                                    </div>
-                                                                    <h6 class="demo-name fw-4">Бизнес-консалтинг
-                                                                    </h6>
-                                                                </a>
-                                                            </div>
-                                                            <div class="demo-item">
-                                                                <a href="finance-consulting.html">
-                                                                    <div class="demo-image">
-                                                                        <img class="lazyload" data-src="{{ asset('assets/images/demo/demo-2.jpg') }}" src="{{ asset('assets/images/demo/demo-2.jpg') }}" alt="demo-2.jpg">
-                                                                    </div>
-                                                                    <h6 class="demo-name fw-4">Финансовый консалтинг
-                                                                    </h6>
-                                                                </a>
-                                                            </div>
-                                                            <div class="demo-item">
-                                                                <a href="finance-advisor.html">
-                                                                    <div class="demo-image">
-                                                                        <img class="lazyload" data-src="{{ asset('assets/images/demo/demo-3.jpg') }}" src="{{ asset('assets/images/demo/demo-3.jpg') }}" alt="home-3">
-                                                                    </div>
-                                                                    <h6 class="demo-name fw-4">Финансовый советник</h6>
-                                                                </a>
-                                                            </div>
-                                                            <div class="demo-item ">
-                                                                <a href="insurance-consulting.html">
-                                                                    <div class="demo-image">
-                                                                        <img class="lazyload" data-src="{{ asset('assets/images/demo/demo-4.jpg') }}" src="{{ asset('assets/images/demo/demo-4.jpg') }}" alt="home-4">
-                                                                    </div>
-                                                                    <h6 class="demo-name fw-4">Страховой консалтинг
-                                                                    </h6>
-                                                                </a>
-                                                            </div>
-                                                            <div class="demo-item">
-                                                                <a href="marketing-consulting.html">
-                                                                    <div class="demo-image">
-                                                                        <img class="lazyload" data-src="{{ asset('assets/images/demo/demo-5.jpg') }}" src="{{ asset('assets/images/demo/demo-5.jpg') }}" alt="home-5">
-                                                                    </div>
-                                                                    <h6 class="demo-name fw-4">Маркетинговый консалтинг
-                                                                    </h6>
-                                                                </a>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </li>
-                                                <li class="has-child current-menu position-relative"><a href="javascript:void(0)">Страницы</a>
-                                                    <ul class="submenu">
-                                                        <li class="menu-item"><a href="about.html">О компании</a></li>
-                                                        <li class="menu-item"><a href="portfolio.html">Кейсы</a>
-                                                        </li>
-                                                        <li class="menu-item"><a href="single-project.html">Проект</a></li>
-                                                        <li class="menu-item"><a href="pricing.html">Тарифы</a></li>
-                                                        <li class="menu-item"><a href="faqs.html">Вопросы и ответы</a></li>
-                                                        <li class="menu-item"><a href="team.html">Команда</a></li>
-                                                        <li class="menu-item current-menu-item "><a href="career.html">Карьера</a></li>
-                                                        <li class="menu-item"><a href="404.html">Ошибка</a></li>
-                                                        <li class="menu-item"><a href="coming-soon.html">Скоро запуск</a>
-                                                        </li>
-                                                    </ul>
-                                                </li>
-                                                <li class="has-child position-relative"><a href="javascript:void(0)">Услуги</a>
-                                                    <ul class="submenu">
-                                                        <li class="menu-item"><a href="services.html">Услуги</a>
-                                                        </li>
-                                                        <li class="menu-item"><a href="service-details.html">Детали услуги</a>
-                                                        </li>
-                                                    </ul>
-                                                </li>
-                                                <li class="has-child position-relative"><a href="javascript:void(0)">Блог</a>
-                                                    <ul class="submenu">
-                                                        <li class="menu-item"><a href="blog.html">Блог
-                                                            </a>
-                                                        </li>
-                                                        <li class="menu-item"><a href="single-post.html">Статья</a>
-                                                        </li>
-
-                                                    </ul>
-                                                </li>
-                                                <li><a href="contact-us.html">Контакты</a></li>
-                                                <li class="has-child position-relative"><a href="javascript:void(0)">Магазин</a>
-                                                    <ul class="submenu">
-                                                        <li class="menu-item"><a href="shop.html">Магазин</a>
-                                                        </li>
-                                                        <li class="menu-item"><a href="product-Детали.html">Детали товара</a>
-                                                        </li>
-                                                        <li class="menu-item"><a href="cart.html">Корзина</a>
-                                                        </li>
-                                                        <li class="menu-item"><a href="checkout.html">Оформление</a>
-                                                        </li>
-                                                    </ul>
-                                                </li>
-
-                                            </ul>
-                                        </nav>
+                                        @include('layouts.partials.main-menu')
                                     </div>
                                     <div class="header-right d-flex align-items-center ">
                                         <div class="popup-show-form">

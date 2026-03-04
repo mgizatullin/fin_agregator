@@ -9205,6 +9205,166 @@ form.style-line-bot.style-2 button {
   color: var(--Text-color-2, #6b7280);
   font-weight: 400;
 }
+.credit-card__rating {
+  font-size: 13px;
+  line-height: 1.4;
+  color: var(--Text-color-2, #6b7280);
+  font-weight: 400;
+}
+
+/* Karty card (credit cards list) - same visual rules as credit-card */
+.karty-card {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+  padding: 24px 20px;
+  background-color: var(--Sub-color-1);
+  border-radius: 24px;
+  align-items: center;
+}
+.karty-card__col {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.karty-card__name-text {
+  font-weight: 600;
+  font-size: 16px;
+  line-height: 1.4;
+  color: var(--Text-color);
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.karty-card__label {
+  font-size: 12px;
+  line-height: 1.4;
+  color: var(--Text-color-2, #6b7280);
+}
+.karty-card__value {
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.4;
+  color: var(--Text-color);
+}
+.karty-card__action .tf-btn {
+  white-space: nowrap;
+}
+
+.karty-card__name-inner {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.karty-card__image {
+  width: 101px;
+  height: 66px;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+.karty-card__image-placeholder {
+  width: 101px;
+  height: 66px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--Mono-gray-2, #e0e3e6);
+  border-radius: 12px;
+  font-size: 1.25rem;
+  color: var(--Mono-gray-5, #7e8995);
+}
+.karty-card__name-block {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+.karty-card__name .karty-card__name-text {
+  font-weight: 700;
+}
+.karty-card__name .karty-card__label {
+  font-size: 12px;
+  line-height: 1.4;
+  color: var(--Text-color-2, #6b7280);
+  font-weight: 400;
+}
+
+/* Deposit card - 6 columns: name, rate, term, min amount, replenishment, button */
+.deposit-card {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+  padding: 24px 20px;
+  background-color: var(--Sub-color-1);
+  border-radius: 24px;
+  align-items: center;
+}
+.deposit-card__col {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.deposit-card__name-text {
+  font-weight: 600;
+  font-size: 16px;
+  line-height: 1.4;
+  color: var(--Text-color);
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.deposit-card__label {
+  font-size: 12px;
+  line-height: 1.4;
+  color: var(--Text-color-2, #6b7280);
+}
+.deposit-card__value {
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.4;
+  color: var(--Text-color);
+}
+.deposit-card__action .tf-btn {
+  white-space: nowrap;
+}
+
+.deposit-card__name-inner {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.deposit-card__logo {
+  width: 64px;
+  height: 64px;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+.deposit-card__logo-placeholder {
+  width: 64px;
+  height: 64px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--Mono-gray-2, #e0e3e6);
+  border-radius: 12px;
+  font-size: 1.25rem;
+  color: var(--Mono-gray-5, #7e8995);
+}
+.deposit-card__name-block {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+.deposit-card__name .deposit-card__name-text {
+  font-weight: 700;
+}
+.deposit-card__name .deposit-card__label {
+  font-size: 12px;
+  line-height: 1.4;
+  color: var(--Text-color-2, #6b7280);
+  font-weight: 400;
+}
 
 .checkout-product .notification {
   padding: 20px 20px 6px;
@@ -10638,6 +10798,41 @@ form.style-line-bot.style-2 button {
     justify-self: end;
   }
   .credit-card__action .tf-btn {
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+  .credit-card--bank {
+    grid-template-columns: 1.5fr 1fr 1fr 1fr auto;
+  }
+  .karty-card {
+    grid-template-columns: 1.5fr 1fr 1fr 1.2fr 1fr auto;
+    gap: 24px;
+    padding: 24px 40px;
+    align-items: center;
+  }
+  .karty-card__col {
+    min-width: 0;
+  }
+  .karty-card__action {
+    justify-self: end;
+  }
+  .karty-card__action .tf-btn {
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+  .deposit-card {
+    grid-template-columns: 1.5fr 1fr 1fr 1.2fr 1fr auto;
+    gap: 24px;
+    padding: 24px 40px;
+    align-items: center;
+  }
+  .deposit-card__col {
+    min-width: 0;
+  }
+  .deposit-card__action {
+    justify-self: end;
+  }
+  .deposit-card__action .tf-btn {
     padding-left: 20px;
     padding-right: 20px;
   }

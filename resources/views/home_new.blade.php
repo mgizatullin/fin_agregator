@@ -720,56 +720,7 @@
                         </div>
                         @empty
                         @endforelse
-                        <div class="tf-box-icon style-5 effect-icon" style="display:none">
-                            <div class="icon mb_24">
-                                <img src="{{ asset('assets/images/box-icon/package-open.svg') }}" alt="icon">
-                            </div>
-                            <div class="content">
-                                <div class="text-body-2 text_mono-dark-9 mb_9 fw-5">Бесплатный подбор
-                                </div>
-                                <p class="text-body-3 text_mono-gray-7">Сервис полностью бесплатный для пользователей — вы ничего не платите за сравнение и подбор.</p>
-                            </div>
-                        </div>
-                        <div class="tf-box-icon style-5 effect-icon">
-                            <div class="icon mb_24">
-                                <img src="{{ asset('assets/images/box-icon/laptop-issue.svg') }}" alt="icon">
-                            </div>
-                            <div class="content">
-                                <div class="text-body-2 text_mono-dark-9 mb_9 fw-5">Экономия времени
-                                </div>
-                                <p class="text-body-3 text_mono-gray-7">Сравните десятки предложений за несколько минут без посещения банков и заполнения множества заявок.</p>
-                            </div>
-                        </div>
-                        <div class="tf-box-icon style-5 effect-icon">
-                            <div class="icon mb_24">
-                                <img src="{{ asset('assets/images/box-icon/auto-conversations.svg') }}" alt="icon">
-                            </div>
-                            <div class="content">
-                                <div class="text-body-2 text_mono-dark-9 mb_9 fw-5">Высокая вероятность одобрения
-                                </div>
-                                <p class="text-body-3 text_mono-gray-7">Алгоритмы учитывают ваш профиль и помогают подобрать предложения с максимальным шансом получения.</p>
-                            </div>
-                        </div>
-                        <div class="tf-box-icon style-5 effect-icon">
-                            <div class="icon mb_24">
-                                <img src="{{ asset('assets/images/box-icon/database.svg') }}" alt="icon">
-                            </div>
-                            <div class="content">
-                                <div class="text-body-2 text_mono-dark-9 mb_9 fw-5">Актуальная информация
-                                </div>
-                                <p class="text-body-3 text_mono-gray-7">Мы регулярно обновляем условия банков и финансовых компаний, чтобы вы видели только актуальные данные.</p>
-                            </div>
-                        </div>
-                        <div class="tf-box-icon style-5 effect-icon">
-                            <div class="icon mb_24">
-                                <img src="{{ asset('assets/images/box-icon/discover-circle.svg') }}" alt="icon">
-                            </div>
-                            <div class="content">
-                                <div class="text-body-2 text_mono-dark-9 mb_9 fw-5">Безопасность данных
-                                </div>
-                                <p class="text-body-3 text_mono-gray-7">Ваши персональные данные защищены и передаются только в выбранные вами финансовые организации.</p>
-                            </div>
-                        </div>
+                        
                     </div>
                 </div>
             </div><!-- /.section-values -->
@@ -1238,199 +1189,221 @@
             </div><!-- .section-faqs -->
 
 
-            <div class="wrap-section">
-
-                <!-- .section-blog -->
-                <div class="section-blog style-1 sw-layout-1 tf-spacing-44">
-                    <div class="tf-container-2">
-                        <div
-                            class="heading-section d-flex gap_12 justify-content-between align-items-end flex-wrap-md mb_59">
-                            <div class="left">
-                                <div class="heading-tag v2 d-flex gap_12  mb_20 text_mono-gray-5 fw-5">
-                                    <div class="icon">
-                                        <i class="icon-blogger text_mono-gray-5"></i>
-                                    </div>
-                                    <p class="text-body-3  fw-5">Блогs</p>
-                                </div>
-                                <h2 class="title text_white fw-5 split-text effect-right">
-                                    Our precious <span class="text-gradient">blogs</span>
-                                </h2>
+ 
+            <!-- .section-blog -->
+            <div class="section">
+                <div class="tf-container">
+                    <div class="heading-section d-flex gap_12 justify-content-between align-items-end flex-wrap-md mb_56">
+                        <div class="left">
+                            <div class="point text-body-1 mb_7">
+                                <span class="item"></span>
+                                Latest Articles
                             </div>
-                            <div class="right">
-                                <div class="wrap-sw-button d-flex gap_16">
-                                    <div class="sw-button style-default has-bg nav-prev-layout-1 ">
-                                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
-                                            xmlns="http://www.w3.org/2000/svg">
-                                            <path d="M4 12L20 12" stroke="white" stroke-width="1.5"
-                                                stroke-linecap="round" stroke-linejoin="round" />
-                                            <path
-                                                d="M8.99996 17C8.99996 17 4.00001 13.3176 4 12C3.99999 10.6824 9 7 9 7"
-                                                stroke="white" stroke-width="1.5" stroke-linecap="round"
-                                                stroke-linejoin="round" />
-                                        </svg>
-
-                                    </div>
-                                    <div class="sw-button style-default has-bg nav-next-layout-1 ">
-                                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
-                                            xmlns="http://www.w3.org/2000/svg">
-                                            <path d="M20 12L4 12" stroke="white" stroke-width="1.5"
-                                                stroke-linecap="round" stroke-linejoin="round" />
-                                            <path d="M15 17C15 17 20 13.3176 20 12C20 10.6824 15 7 15 7" stroke="white"
-                                                stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
-                                        </svg>
-
-                                    </div>
-                                </div>
-                            </div>
+                            <h2 class="heading-title text_primary split-text effect-right">Get The Latest Updates</h2>
+                            <p class="text_mono-gray-7 text-body-1 mt_20 wow animate__fadeInUp animate__animated" data-wow-delay="0s">We provide timely updates on industry trends,
+                                regulatory changes, and <br> best practices to help you make informed decisions.</p>
                         </div>
-                    </div>
-                    <div class="tf-container-2 slider-layout-right ">
-                        <div class="swiper " data-preview="3.6" data-destop="3.5" data-tablet="2.5" data-mobile="1.2"
-                            data-mobile-sm="1.6" data-space-lg="72" data-space-md="30" data-space="15">
-                            <div class="swiper-wrapper">
-                                <div class="swiper-slide">
-                                    <div class="blog-article-item style-3 hover-image-3 ">
-                                        <a href="single-post.html" class="article-thumb mb_30 ">
-                                            <img class="lazyload " data-src="{{ asset('assets/images/blog/blog-12.jpg') }}"
-                                                src="{{ asset('assets/images/blog/blog-12.jpg') }}" alt="blog">
-                                            <img class="lazyload " data-src="{{ asset('assets/images/blog/blog-12.jpg') }}"
-                                                src="{{ asset('assets/images/blog/blog-12.jpg') }}" alt="blog">
-                                        </a>
-                                        <div class="article-content">
-                                            <p class="text-body-1 text_mono-gray-5 mb_8">июнь 2024</p>
-                                            <h6 class="title fw-5 letter-spacing-2   text_white"> <a
-                                                    href="single-post.html" class="link ">Финансовое планирование: шаги к долгосрочному благополучию</a>
-                                            </h6>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="swiper-slide">
-                                    <div class="blog-article-item style-3 hover-image-3 ">
-                                        <a href="single-post.html" class="article-thumb mb_30 ">
-                                            <img class="lazyload " data-src="{{ asset('assets/images/blog/blog-13.jpg') }}"
-                                                src="{{ asset('assets/images/blog/blog-13.jpg') }}" alt="blog">
-                                            <img class="lazyload " data-src="{{ asset('assets/images/blog/blog-13.jpg') }}"
-                                                src="{{ asset('assets/images/blog/blog-13.jpg') }}" alt="blog">
-
-                                        </a>
-                                        <div class="article-content">
-                                            <p class="text-body-1 text_mono-gray-5 mb_8">июнь 2024</p>
-                                            <h6 class="title fw-5 letter-spacing-2   text_white"> <a
-                                                    href="single-post.html" class="link ">Boosting
-                                                    Profitability:
-                                                    Financial Strategies to Drive
-                                                    Бизнес Success</a>
-                                            </h6>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="swiper-slide">
-                                    <div class="blog-article-item style-3 hover-image-3 ">
-                                        <a href="single-post.html" class="article-thumb mb_30 ">
-                                            <img class="lazyload " data-src="{{ asset('assets/images/blog/blog-14.jpg') }}"
-                                                src="{{ asset('assets/images/blog/blog-14.jpg') }}" alt="blog">
-                                            <img class="lazyload " data-src="{{ asset('assets/images/blog/blog-14.jpg') }}"
-                                                src="{{ asset('assets/images/blog/blog-14.jpg') }}" alt="blog">
-                                        </a>
-                                        <div class="article-content">
-                                            <p class="text-body-1 text_mono-gray-5 mb_8">июнь 2024</p>
-                                            <h6 class="title fw-5 letter-spacing-2   text_white"> <a
-                                                    href="single-post.html" class="link ">How financial advisors
-                                                    help
-                                                    you navigate Market Volatility
-                                                </a>
-                                            </h6>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="swiper-slide">
-                                    <div class="blog-article-item style-3 hover-image-3 ">
-                                        <a href="single-post.html" class="article-thumb mb_30 ">
-                                            <img class="lazyload " data-src="{{ asset('assets/images/blog/blog-15.jpg') }}"
-                                                src="{{ asset('assets/images/blog/blog-15.jpg') }}" alt="blog">
-                                            <img class="lazyload " data-src="{{ asset('assets/images/blog/blog-15.jpg') }}"
-                                                src="{{ asset('assets/images/blog/blog-15.jpg') }}" alt="blog">
-                                        </a>
-                                        <div class="article-content">
-                                            <p class="text-body-1 text_mono-gray-5 mb_8">июнь 2024</p>
-                                            <h6 class="title fw-5 letter-spacing-2   text_white"> <a
-                                                    href="single-post.html" class="link ">Planning для
-                                                    Retirement:
-                                                    Essential Steps You Need to
-                                                    Ta</a>
-                                            </h6>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="swiper-slide">
-                                    <div class="blog-article-item style-3 hover-image-3 ">
-                                        <a href="single-post.html" class="article-thumb mb_30 ">
-                                            <img class="lazyload " data-src="{{ asset('assets/images/blog/blog-16.jpg') }}"
-                                                src="{{ asset('assets/images/blog/blog-16.jpg') }}" alt="blog">
-                                            <img class="lazyload " data-src="{{ asset('assets/images/blog/blog-16.jpg') }}"
-                                                src="{{ asset('assets/images/blog/blog-16.jpg') }}" alt="blog">
-                                        </a>
-                                        <div class="article-content">
-                                            <p class="text-body-1 text_mono-gray-5 mb_8">июнь 2024</p>
-                                            <h6 class="title fw-5 letter-spacing-2   text_white"> <a
-                                                    href="single-post.html" class="link ">Финансовое планирование: шаги к долгосрочному благополучию</a>
-                                            </h6>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div><!-- .section-blog -->
-
-                <div class="tf-container-2 tf-spacing-45 pt-0">
-                    <div class="banner-CTA">
-                        <h1 class="text_white split-text effect-right">Ready to start a new project?</h1>
-                        <div class="bot flex-wrap-md d-flex align-items-end justify-content-between gap_12">
-                            <p class="text-body-1 text_white split-text split-lines-transform">Our expert Маркетинговый консалтинг УСЛУГИ are
-                                designed to
-                                help your Бизнес unlock its full potential. From identifying Рост
-                                opportunities</p>
-                            <a href="pricing.html" class="tf-btn btn-white2  wow animate__fadeInRight animate__animated"
-                                data-wow-delay="0s">
-                                <span class="text-body-3">Начать</span>
+                        <div class="right">
+                            <a href="blog.html" class="tf-btn height-3 rounded-12 btn-px-28">
+                                <span>View Details</span>
                                 <span class="bg-effect"></span>
                             </a>
                         </div>
                     </div>
+                    <div class="swiper style-pagination sw-layout" data-preview="4" data-tablet="3" data-mobile-sm="2" data-mobile="1" data-space-lg="12" data-space-md="12" data-space="12">
+                        <div class="swiper-wrapper ">
+                            <div class="swiper-slide">
+                                <div class="blog-article-item style-4 ">
+                                    <a href="single-post.html" class="article-thumb mb_11 ">
+                                        <img class="lazyload " data-src="images/blog/blog-16.jpg" src="images/blog/blog-16.jpg" alt="blog">
+                                        <img class="lazyload " data-src="images/blog/blog-16.jpg" src="images/blog/blog-16.jpg" alt="blog">
+                                    </a>
+                                    <div class="article-content">
+                                        <ul class="blog-article-meta mb_8 d-flex align-items-center style-2">
+                                            <li class="meta-item text-body-2">
+                                                October 8, 2024
+                                            </li>
+                                            <li class="meta-item date text-body-2">
+                                                2 Comments
+                                            </li>
+                                        </ul>
+                                        <h6 class="title fw-5 letter-spacing-2 text_mono-dark-9 line-clamp-2"> <a href="single-post.html" class="link ">Mastering
+                                                Financial
+                                                Planning: Steps to Secure Your Long-Term Wealth</a>
+                                        </h6>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="swiper-slide">
+                                <div class="blog-article-item style-4 ">
+                                    <a href="single-post.html" class="article-thumb mb_11 ">
+                                        <img class="lazyload " data-src="images/blog/blog-17.jpg" src="images/blog/blog-17.jpg" alt="blog">
+                                        <img class="lazyload " data-src="images/blog/blog-17.jpg" src="images/blog/blog-17.jpg" alt="blog">
+                                    </a>
+                                    <div class="article-content">
+                                        <ul class="blog-article-meta mb_8 d-flex align-items-center style-2">
+                                            <li class="meta-item text-body-2">
+                                                October 8, 2024
+                                            </li>
+                                            <li class="meta-item date text-body-2">
+                                                2 Comments
+                                            </li>
+                                        </ul>
+                                        <h6 class="title fw-5 letter-spacing-2 text_mono-dark-9 line-clamp-2"> <a href="single-post.html" class="link ">Mastering
+                                                Financial
+                                                Planning: Steps to Secure Your Long-Term Wealth</a>
+                                        </h6>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="swiper-slide">
+                                <div class="blog-article-item style-4 ">
+                                    <a href="single-post.html" class="article-thumb mb_11 ">
+                                        <img class="lazyload " data-src="images/blog/blog-18.jpg" src="images/blog/blog-18.jpg" alt="blog">
+                                        <img class="lazyload " data-src="images/blog/blog-18.jpg" src="images/blog/blog-18.jpg" alt="blog">
+                                    </a>
+                                    <div class="article-content">
+                                        <ul class="blog-article-meta mb_8 d-flex align-items-center style-2">
+                                            <li class="meta-item text-body-2">
+                                                October 8, 2024
+                                            </li>
+                                            <li class="meta-item date text-body-2">
+                                                2 Comments
+                                            </li>
+                                        </ul>
+                                        <h6 class="title fw-5 letter-spacing-2 text_mono-dark-9 line-clamp-2"> <a href="single-post.html" class="link ">Mastering
+                                                Financial
+                                                Planning: Steps to Secure Your Long-Term Wealth</a>
+                                        </h6>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="swiper-slide">
+                                <div class="blog-article-item style-4 ">
+                                    <a href="single-post.html" class="article-thumb mb_11 ">
+                                        <img class="lazyload " data-src="images/blog/blog-19.jpg" src="images/blog/blog-19.jpg" alt="blog">
+                                        <img class="lazyload " data-src="images/blog/blog-19.jpg" src="images/blog/blog-19.jpg" alt="blog">
+                                    </a>
+                                    <div class="article-content">
+                                        <ul class="blog-article-meta mb_8 d-flex align-items-center style-2">
+                                            <li class="meta-item text-body-2">
+                                                October 8, 2024
+                                            </li>
+                                            <li class="meta-item date text-body-2">
+                                                2 Comments
+                                            </li>
+                                        </ul>
+                                        <h6 class="title fw-5 letter-spacing-2 text_mono-dark-9 line-clamp-2"> <a href="single-post.html" class="link ">Mastering
+                                                Financial
+                                                Planning: Steps to Secure Your Long-Term Wealth</a>
+                                        </h6>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="sw-pagination sw-pagination-layout text-center  mt_20">
+                        </div>
+                    </div>
                 </div>
+            </div><!-- /.section-blog -->
+            
 
-            </div>
-
-        </div>
-
-        <!-- .footer -->
-        <footer id="footer" class="footer style-4">
+            <footer id="footer" class="footer style-default">
             <div class="footer-wrap">
                 <div class="tf-container">
-                    <div class="row justify-content-center">
-                        <div class="col-xl-10">
-                            <div class="footer-top">
-                                <div class="footer-newsletter">
-                                    <h6 class="footer-heading text_white fw-5 ">
-                                        Our Newsletter
+                    <div class="footer-body">
+                        <div class="row">
+                            <div class="col-lg-4 ">
+                                <div class="footer-about">
+                                    <a href="index.html" class="footer-logo ">
+                                        <img src="http://127.0.0.1:8003/assets/images/logo/favicon.svg" alt="logo">
+                                    </a>
+                                    <div class="footer-info mb_51">
+                                        <a href="mailto:themesflat@gmail.com" class="link text-body-2 text_black">themesflat@gmail.com</a>
+                                        <div class="text-body-2">152 Thatcher Road St, Manhattan, NY 10463, <br>
+                                            США</div>
+                                        <div class="text-body-2">(+068) 568 9696</div>
+                                    </div>
+                                    <div class="tf-social">
+                                        <a href="#" class="icon-twitter-x"></a>
+                                        <a href="#" class="icon-facebook-f"></a>
+                                        <a href="#" class="icon-github"></a>
+                                        <a href="#" class="icon-instagram"></a>
+                                        <a href="#" class="icon-youtube"></a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-2 col-md-6">
+                                <div class="footer-col-block">
+                                    <h6 class="footer-heading  footer-heading-mobile">
+                                        Компания
+                                    </h6>
+                                    <div class="tf-collapse-content">
+                                        <ul class="footer-menu-list">
+                                            <li class="text-body-2 text_mono-gray-6">
+                                                <a href="about.html" class=" link footer-menu_item">О компании
+                                                    Advitex</a>
+                                            </li>
+                                            <li class="text-body-2 text_mono-gray-6">
+                                                <a href="contact-us.html" class=" link footer-menu_item">Свяжитесь с нами</a>
+                                            </li>
+                                            <li class="text-body-2 text_mono-gray-6">
+                                                <a href="portfolio.html" class=" link footer-menu_item">Портфолио</a>
+                                            </li>
+                                            <li class="text-body-2 text_mono-gray-6">
+                                                <a href="faqs.html" class=" link footer-menu_item">Как мы работаем</a>
+                                            </li>
+                                            <li class="text-body-2 text_mono-gray-6">
+                                                <a href="career.html" class=" link footer-menu_item">Карьера</a>
+                                            </li>
+                                            <li class="text-body-2 text_mono-gray-6">
+                                                <a href="team.html" class=" link footer-menu_item">Наша команда</a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-2 col-md-6">
+                                <div>
+                                    <div class="footer-col-block">
+                                        <h6 class="footer-heading  footer-heading-mobile">
+                                            Ссылки
+                                        </h6>
+                                        <div class="tf-collapse-content">
+                                            <ul class="footer-menu-list">
+                                                <li class="text-body-2 text_mono-gray-6">
+                                                    <a href="contact-us.html" class=" link footer-menu_item">Центр поддержки</a>
+                                                </li>
+                                                <li class="text-body-2 text_mono-gray-6">
+                                                    <a href="pricing.html" class=" link footer-menu_item">Политика конфиденциальности</a>
+                                                </li>
+                                                <li class="text-body-2 text_mono-gray-6">
+                                                    <a href="#" class=" link footer-menu_item">Условия использования</a>
+                                                </li>
+                                                <li class="text-body-2 text_mono-gray-6">
+                                                    <a href="faqs.html" class=" link footer-menu_item">Вопросы и ответы</a>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-4">
+                                <div class=" footer-newsletter">
+                                    <h6 class="footer-heading   ">
+                                        Подпишитесь на нашу рассылку
                                     </h6>
                                     <div class="tf-collapse-content">
                                         <div class="wrap-newsletter">
-                                            <form id="subscribe-form" action="#"
-                                                class="form-newsletter style-1 subscribe-form" method="post"
-                                                accept-charset="utf-8" data-mailchimp="true">
+                                            <p class="text-body-2 text_mono-gray-6 mb_29">Подпишитесь, чтобы получать новости, акции и полезные материалы!
+                                            </p><form id="subscribe-form" action="#" class="form-newsletter style-1 subscribe-form mb_10" method="post" accept-charset="utf-8" data-mailchimp="true">
                                                 <div id="subscribe-content" class="subscribe-content">
-                                                    <fieldset class="Эл. почта">
-                                                        <input id="subscribe-email" type="email" name="email-form"
-                                                            class="subscribe-email style-2"
-                                                            placeholder="Enter your e-mail" tabindex="0"
-                                                            aria-required="true">
+                                                    <fieldset class="email">
+                                                        <input id="subscribe-email" type="email" name="email-form" class="subscribe-email style-2" placeholder="Введите ваш email" tabindex="0" aria-required="true">
                                                     </fieldset>
                                                     <div class="button-submit">
-                                                        <button id="subscribe-button" class="subscribe-button tf-btn  "
-                                                            type="button">
-                                                            <span>Подписаться Now</span>
+                                                        <button id="subscribe-button" class="subscribe-button tf-btn rounded-12 btn-primary2 " type="button" style="--button-width: 142.433px;">
+                                                            <span>Подписаться</span>
                                                             <span class="bg-effect"></span>
                                                         </button>
                                                     </div>
@@ -1440,133 +1413,40 @@
                                                 </div>
                                                 <div id="subscribe-msg" class="subscribe-msg"></div>
                                             </form>
+                                            <p class="description text-body-2">Подписываясь, вы принимаете нашу
+                                                <a href="#" class="link-black text_primary ">Политика конфиденциальности</a>
+                                            </p>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="wrap-social">
-                                    <h6 class=" footer-heading text_white text_white fw-5">Our Social</h6>
-                                    <div class="tf-social">
-                                        <a href="#" class="icon-twitter-x"></a>
-                                        <a href="#" class="icon-instagram"></a>
-                                        <a href="#" class="icon-youtube"></a>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="footer-body">
-                                <div class="left flex-md-row">
-                                    <div class="footer-col-block">
-                                        <div
-                                            class=" text-body-1 footer-heading  footer-heading-mobile text_white fw-5 ">
-                                            Услуги
-                                        </div>
-                                        <div class="tf-collapse-content">
-                                            <ul class="footer-menu-list">
-                                                <li class="text-body-3 text_mono-gray-8">
-                                                    <a href="service-details.html"
-                                                        class=" link footer-menu_item">Personal
-                                                        Planning</a>
-                                                </li>
-                                                <li class="text-body-3 text_mono-gray-8">
-                                                    <a href="service-details.html"
-                                                        class=" link footer-menu_item">Корпоративный
-                                                        Strategy</a>
-                                                </li>
-                                                <li class="text-body-3 text_mono-gray-8">
-                                                    <a href="service-details.html"
-                                                        class=" link footer-menu_item">Investment
-                                                        Advisory</a>
-                                                </li>
-                                                <li class="text-body-3 text_mono-gray-8">
-                                                    <a href="service-details.html" class=" link footer-menu_item">Risk
-                                                        Compliance</a>
-                                                </li>
-                                            </ul>
-                                        </div>
-                                    </div>
-                                    <div class="footer-col-block">
-                                        <div
-                                            class=" text-body-1 footer-heading  footer-heading-mobile text_white fw-5 ">
-                                            Главная
-                                        </div>
-                                        <div class="tf-collapse-content">
-                                            <ul class="footer-menu-list">
-                                                <li class="text-body-3 text_mono-gray-8">
-                                                    <a href="about.html" class=" link footer-menu_item">Page</a>
-                                                </li>
-                                                <li class="text-body-3 text_mono-gray-8">
-                                                    <a href="contact-us.html" class=" link footer-menu_item">Блог</a>
-                                                </li>
-                                                <li class="text-body-3 text_mono-gray-8">
-                                                    <a href="portfolio.html" class=" link footer-menu_item">Project</a>
-                                                </li>
-                                                <li class="text-body-3 text_mono-gray-8">
-                                                    <a href="faqs.html" class=" link footer-menu_item">Контакты</a>
-                                                </li>
-                                            </ul>
-                                        </div>
-                                    </div>
-                                    <div class="footer-col-block">
-                                        <div
-                                            class=" text-body-1 footer-heading  footer-heading-mobile text_white fw-5 ">
-                                            Resources
-                                        </div>
-                                        <div class="tf-collapse-content">
-                                            <ul class="footer-menu-list">
-                                                <li class="text-body-3 text_mono-gray-8">
-                                                    <a href="about.html" class=" link footer-menu_item">О компании
-                                                        Advitex</a>
-                                                </li>
-                                                <li class="text-body-3 text_mono-gray-8">
-                                                    <a href="blog.html" class=" link footer-menu_item">Блог</a>
-                                                </li>
-                                                <li class="text-body-3 text_mono-gray-8">
-                                                    <a href="faqs.html" class=" link footer-menu_item">Вопросы и ответы</a>
-                                                </li>
-                                            </ul>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="right">
-                                    <div class="footer-about">
-                                        <div class="footer-info mb_51">
-                                            <a href="#" class="link text-body-2 text_white">themesflat@@gmail.com</a>
-                                            <div class="text-body-2 text_white">152 Thatcher Road St, Mahattan,
-                                                NY
-                                                10463, <br>
-                                                США</div>
-                                            <div class="text-body-2 text_white">(+068) 568 9696</div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="footer-bottom">
-                                <div class="wrapper d-flex align-items-end flex-wrap gap_12  ">
-                                    <ul class="left d-flex align-items-center ">
-                                        <li><a href="pricing.html" class="link text_mono-gray-5 text-body-3">Политика конфиденциальности</a></li>
-                                        <li><a href="#" class="link text_mono-gray-5 text-body-3">Terms of
-                                                Услуги</a>
-                                        </li>
-                                        <li><a href="#" class="link text_mono-gray-5 text-body-3">Virtual
-                                                Reality</a>
-                                        </li>
-                                    </ul>
-                                    <div class="footer-logo mb-0">
-                                        <img src="{{ asset('assets/images/logo/footer-logo-4.png') }}" alt="logo">
-                                    </div>
-                                </div>
-                                <p class="text-body-3 text-center text_mono-gray-5">© 2025. Все права принадлежат <a href="#"
-                                        class="link text_mono-gray-5 text-body-3">Themesflat</a>.
-                                    Все права защищены.</p>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-
-        </footer><!-- /.footer -->
-
-
-
+            <div class="footer-bottom">
+                <div class="tf-container">
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="wrapper d-flex align-items-center flex-wrap gap_12 ">
+                                <p class="text-body-2">© 2025. Все права принадлежат <a href="#" class="link-black text_primary text-body-3">Themesflat</a>.
+                                    Все права защищены.</p>
+                                <ul class="right d-flex align-items-center">
+                                    <li><a href="index.html" class="link text_mono-gray-5 text-body-1">Главная</a></li>
+                                    <li><a href="about.html" class="link text_mono-gray-5 text-body-1">О компании</a>
+                                    </li>
+                                    <li><a href="services.html" class="link text_mono-gray-5 text-body-1">Услуги</a>
+                                    </li>
+                                    <li><a href="blog.html" class="link text_mono-gray-5 text-body-1">Блог</a></li>
+                                    <li><a href="contact-us.html" class="link text_mono-gray-5 text-body-1">Контакты</a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </footer>
 
     </div> <!-- /wrapper -->
 

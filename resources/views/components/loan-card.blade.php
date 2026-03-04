@@ -7,7 +7,7 @@
     $maxAmount = $item->max_amount !== null && $item->max_amount !== '' ? number_format((float) $item->max_amount, 0, '', ' ') . ' ₽' : '—';
     $termDays = $item->term_days !== null && $item->term_days !== '' ? $item->term_days . ' дн.' : '—';
     $logo = $item->logo ? asset('storage/' . $item->logo) : null;
-    $url = filled($item->website) ? $item->website : '#';
+    $url = $item->slug ? route('loans.category.show', $item->slug) : (filled($item->website) ? $item->website : '#');
 @endphp
 
 <div class="tf-box-icon style-7 v2 effect-icon loan-card">
@@ -40,7 +40,7 @@
             <span class="text-body-1 fw-5 text_mono-dark-9">{{ $psk }}</span>
         </div>
     </div>
-    <a href="{{ $url }}" class="tf-btn btn-primary2 btn-px-28 height-2 rounded-12" @if($url !== '#') target="_blank" rel="noopener noreferrer" @endif>
+    <a href="{{ $url }}" class="tf-btn btn-primary2 btn-px-28 height-2 rounded-12" @if($url !== '#' && !$item->slug) target="_blank" rel="noopener noreferrer" @endif>
         <span>Получить деньги</span>
         <span class="bg-effect"></span>
     </a>
