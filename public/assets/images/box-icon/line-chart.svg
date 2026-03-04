@@ -1,0 +1,19 @@
+<svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+<circle cx="24.15" cy="23.8492" r="6.15" stroke="#3F3D2E" stroke-width="3"/>
+<circle cx="24.1512" cy="6.75078" r="3.45" stroke="#3F3D2E" stroke-width="3"/>
+<circle cx="4.95" cy="4.95" r="3.45" transform="matrix(1 0 0 -1 19.2012 46.1992)" stroke="#3F3D2E" stroke-width="3"/>
+<circle cx="41.2512" cy="23.8484" r="3.45" transform="rotate(90 41.2512 23.8484)" stroke="#3F3D2E" stroke-width="3"/>
+<circle cx="6.75078" cy="23.8508" r="3.45" transform="rotate(-90 6.75078 23.8508)" stroke="#3F3D2E" stroke-width="3"/>
+<path d="M24.1484 9.75V18" stroke="#3F3D2E" stroke-width="3"/>
+<path d="M24.1484 38.25V30" stroke="#3F3D2E" stroke-width="3"/>
+<path d="M38.1035 23.8516L29.8535 23.8516" stroke="#3F3D2E" stroke-width="3"/>
+<path d="M9.89844 23.8516L18.1484 23.8516" stroke="#3F3D2E" stroke-width="3"/>
+<circle cx="11.9066" cy="11.6953" r="3.45" transform="rotate(-45 11.9066 11.6953)" stroke="#3F3D2E" stroke-width="3"/>
+<circle cx="4.95" cy="4.95" r="3.45" transform="matrix(0.707107 -0.707107 -0.707107 -0.707107 36.3047 43.0938)" stroke="#3F3D2E" stroke-width="3"/>
+<circle cx="36.0898" cy="11.6957" r="3.45" transform="rotate(45 36.0898 11.6957)" stroke="#3F3D2E" stroke-width="3"/>
+<circle cx="11.6953" cy="36.0934" r="3.45" transform="rotate(-135 11.6953 36.0934)" stroke="#3F3D2E" stroke-width="3"/>
+<path d="M14.0332 13.8164L19.8668 19.65" stroke="#3F3D2E" stroke-width="3"/>
+<path d="M34.1836 33.9688L28.35 28.1351" stroke="#3F3D2E" stroke-width="3"/>
+<path d="M33.8633 13.9219L28.0296 19.7555" stroke="#3F3D2E" stroke-width="3"/>
+<path d="M13.9219 33.8633L19.7555 28.0296" stroke="#3F3D2E" stroke-width="3"/>
+</svg>

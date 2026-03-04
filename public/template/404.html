@@ -1,0 +1,743 @@
+<!DOCTYPE html>
+<!--[if IE 8]><html class="ie" xmlns="http://www.w3.org/1999/xhtml" xml:lang="ru-RU" lang="ru-RU"> <![endif]-->
+<!--[if (gte IE 9)|!(IE)]><!-->
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ru-RU" lang="ru-RU">
+<!--<![endif]-->
+
+<head>
+    <!-- Basic Page Needs -->
+    <meta charset="utf-8">
+    <!--[if IE ]><meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/><![endif]-->
+    <title>Advitex - Финансовый и бизнес-консалтинг</title>
+
+    <meta name="description" content="Advitex — современный HTML-шаблон для финансового и бизнес-консалтинга с удобным интерфейсом и гибкой настройкой.">
+    <meta name="keywords" content="финансы, бизнес, консалтинг, шаблон, услуги, Advitex">
+
+    <meta name="author" content="themesflat.com">
+
+    <!-- Mobile Specific Metas -->
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+    <!-- Theme Style -->
+    <link rel="stylesheet" type="text/css" href="css/bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="css/animate.min.css">
+    <link rel="stylesheet" type="text/css" href="css/styles.css">
+
+    <!-- Font -->
+    <link rel="stylesheet" href="font/fonts.css">
+
+    <!-- Icon -->
+    <link rel="stylesheet" type="text/css" href="font/icons/icomoon/style.css">
+
+    <!-- Favicon and Touch Icons  -->
+    <link rel="shortcut icon" href="images/logo/favicon.svg">
+    <link rel="apple-touch-icon-precomposed" href="images/logo/favicon.svg">
+</head>
+
+<body>
+    <!-- wrapper -->
+    <div id="wrapper">
+
+        <!-- .preload -->
+        <div id="loading">
+            <div id="loading-center">
+                <div class="loader-container">
+                    <div class="wrap-loader">
+                        <div class="loader">
+                        </div>
+                        <div class="icon">
+                            <img src="images/logo/loading.png" alt="logo">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div><!-- /.preload -->
+
+        <!-- header -->
+        <header class="header style-default header-sticky ">
+            <div class="header-inner">
+                <div class="tf-container">
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="header-inner-wrap">
+                                <div class="header-left d-flex align-items-center">
+                                    <div class="header-logo">
+                                        <a href="index.html" class="site-logo">
+                                            <svg width="149" height="46" viewbox="0 0 149 46" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                <rect x="0.625" y="0.625" width="147.75" height="44.75" rx="22.375" fill="white"></rect>
+                                                <rect x="0.625" y="0.625" width="147.75" height="44.75" rx="22.375" stroke="white" stroke-width="1.25"></rect>
+                                                <path d="M32.3775 20.311L39.7515 32.7325C39.8499 32.8983 40.0285 33 40.2214 33L47.6138 33C47.8054 33 47.983 32.8997 48.0819 32.7356L52 26.2351L44.3144 26.2245C44.123 26.2242 43.9458 26.1239 43.847 25.9599L36.2013 13.2645C36.1024 13.1004 35.9248 13 35.7332 13L28.3861 13C28.1948 13 28.0174 13.1 27.9184 13.2638L23.9821 19.776L20.1708 26.052C20.0657 26.2251 20.0649 26.4421 20.1688 26.6159L23.823 32.7338C23.9217 32.8989 24.0998 33 24.2922 33L30.9792 33C31.4043 33 31.6666 32.5358 31.4473 32.1716L23.9821 19.776L31.4378 19.776C31.8235 19.776 32.1806 19.9793 32.3775 20.311Z" fill="#0075FF"></path>
+                                                <path d="M60.56 30L65.7 16H67.88L73 30H70.88L66.78 18.4L62.64 30H60.56ZM62.88 26.54L63.44 24.94H70.02L70.56 26.54H62.88ZM78.4873 30.24C77.5273 30.24 76.674 30.0133 75.9273 29.56C75.194 29.1067 74.6207 28.4867 74.2073 27.7C73.8073 26.9 73.6073 26 73.6073 25C73.6073 23.9867 73.8073 23.0867 74.2073 22.3C74.6207 21.5133 75.2007 20.9 75.9473 20.46C76.694 20.0067 77.5473 19.78 78.5073 19.78C79.294 19.78 79.9873 19.94 80.5873 20.26C81.2007 20.5667 81.674 21 82.0073 21.56V15.6H84.0073V30H82.2073L82.0073 28.44C81.794 28.7467 81.5273 29.04 81.2073 29.32C80.8873 29.5867 80.5007 29.8067 80.0473 29.98C79.594 30.1533 79.074 30.24 78.4873 30.24ZM78.8073 28.5C79.434 28.5 79.9873 28.3533 80.4673 28.06C80.9473 27.7667 81.3207 27.36 81.5873 26.84C81.854 26.3067 81.9873 25.6933 81.9873 25C81.9873 24.3067 81.854 23.7 81.5873 23.18C81.3207 22.66 80.9473 22.2533 80.4673 21.96C79.9873 21.6667 79.434 21.52 78.8073 21.52C78.194 21.52 77.6473 21.6667 77.1673 21.96C76.6873 22.2533 76.314 22.66 76.0473 23.18C75.7807 23.7 75.6473 24.3067 75.6473 25C75.6473 25.6933 75.7807 26.3067 76.0473 26.84C76.314 27.36 76.6873 27.7667 77.1673 28.06C77.6473 28.3533 78.194 28.5 78.8073 28.5ZM89.1417 30L85.3817 20.02H87.4817L90.3217 28.08L93.1817 20.02H95.2417L91.5017 30H89.1417ZM96.7648 30V20.02H98.7648V30H96.7648ZM97.7648 18.08C97.3915 18.08 97.0782 17.96 96.8248 17.72C96.5715 17.48 96.4448 17.1733 96.4448 16.8C96.4448 16.44 96.5715 16.1467 96.8248 15.92C97.0782 15.68 97.3915 15.56 97.7648 15.56C98.1382 15.56 98.4515 15.68 98.7048 15.92C98.9582 16.1467 99.0848 16.44 99.0848 16.8C99.0848 17.1733 98.9582 17.48 98.7048 17.72C98.4515 17.96 98.1382 18.08 97.7648 18.08ZM105.345 30C104.705 30 104.152 29.9 103.685 29.7C103.218 29.5 102.858 29.1667 102.605 28.7C102.352 28.2333 102.225 27.6 102.225 26.8V21.7H100.505V20.02H102.225L102.485 17.52H104.225V20.02H107.065V21.7H104.225V26.82C104.225 27.3933 104.345 27.7867 104.585 28C104.825 28.2 105.238 28.3 105.825 28.3H106.965V30H105.345ZM113.159 30.24C112.185 30.24 111.325 30.0267 110.579 29.6C109.832 29.16 109.245 28.5533 108.819 27.78C108.405 26.9933 108.199 26.08 108.199 25.04C108.199 23.9867 108.405 23.0667 108.819 22.28C109.232 21.4933 109.812 20.88 110.559 20.44C111.319 20 112.192 19.78 113.179 19.78C114.165 19.78 115.012 20 115.719 20.44C116.439 20.8667 116.985 21.44 117.359 22.16C117.745 22.88 117.939 23.6733 117.939 24.54C117.939 24.6733 117.939 24.82 117.939 24.98C117.939 25.1267 117.932 25.2933 117.919 25.48H109.659V24.06H115.959C115.919 23.2467 115.639 22.6067 115.119 22.14C114.599 21.6733 113.945 21.44 113.159 21.44C112.625 21.44 112.125 21.56 111.659 21.8C111.205 22.04 110.839 22.3933 110.559 22.86C110.292 23.3267 110.159 23.9133 110.159 24.62V25.2C110.159 25.9333 110.292 26.5533 110.559 27.06C110.839 27.5533 111.205 27.9333 111.659 28.2C112.112 28.4533 112.605 28.58 113.139 28.58C113.779 28.58 114.305 28.44 114.719 28.16C115.145 27.8667 115.459 27.48 115.659 27H117.659C117.485 27.6133 117.192 28.1667 116.779 28.66C116.365 29.14 115.852 29.5267 115.239 29.82C114.639 30.1 113.945 30.24 113.159 30.24ZM118.234 30L121.734 25L118.234 20.02H120.394L123.054 23.92L125.734 20.02H127.894L124.394 25L127.894 30H125.734L123.054 26.1L120.394 30H118.234Z" fill="black"></path>
+                                            </svg>
+
+                                        </a>
+                                    </div>
+                                    <nav class="main-menu style-default">
+                                        <ul class="navigation ">
+                                            <li class="has-child "><a href="javascript:void(0)">Главная</a>
+                                                <div class="submenu mega-menu">
+                                                    <div class="wrap-demo-item tf-grid-layout-lg lg-col-3 ">
+                                                        <div class="demo-item">
+                                                            <a href="index.html">
+                                                                <div class="demo-image">
+                                                                    <img class="lazyload" data-src="images/demo/demo-1.jpg" src="images/demo/demo-1.jpg" alt="demo-1.jpg">
+                                                                </div>
+                                                                <h6 class="demo-name fw-4">Бизнес-консалтинг
+                                                                </h6>
+                                                            </a>
+                                                        </div>
+                                                        <div class="demo-item">
+                                                            <a href="finance-consulting.html">
+                                                                <div class="demo-image">
+                                                                    <img class="lazyload" data-src="images/demo/demo-2.jpg" src="images/demo/demo-2.jpg" alt="demo-2.jpg">
+                                                                </div>
+                                                                <h6 class="demo-name fw-4">Финансовый консалтинг
+                                                                </h6>
+                                                            </a>
+                                                        </div>
+                                                        <div class="demo-item">
+                                                            <a href="finance-advisor.html">
+                                                                <div class="demo-image">
+                                                                    <img class="lazyload" data-src="images/demo/demo-3.jpg" src="images/demo/demo-3.jpg" alt="home-3">
+                                                                </div>
+                                                                <h6 class="demo-name fw-4">Финансовый советник</h6>
+                                                            </a>
+                                                        </div>
+                                                        <div class="demo-item ">
+                                                            <a href="insurance-consulting.html">
+                                                                <div class="demo-image">
+                                                                    <img class="lazyload" data-src="images/demo/demo-4.jpg" src="images/demo/demo-4.jpg" alt="home-4">
+                                                                </div>
+                                                                <h6 class="demo-name fw-4">Страховой консалтинг
+                                                                </h6>
+                                                            </a>
+                                                        </div>
+                                                        <div class="demo-item">
+                                                            <a href="marketing-consulting.html">
+                                                                <div class="demo-image">
+                                                                    <img class="lazyload" data-src="images/demo/demo-5.jpg" src="images/demo/demo-5.jpg" alt="home-5">
+                                                                </div>
+                                                                <h6 class="demo-name fw-4">Маркетинговый консалтинг
+                                                                </h6>
+                                                            </a>
+                                                        </div>
+                                                        <div class="comming-soon">
+                                                            <a href="coming-soon.html" class="wrap">
+                                                                <h5 class="demo-name ">Скоро запуск</h5>
+                                                            </a>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </li>
+                                            <li class="has-child position-relative"><a href="javascript:void(0)">Страницы</a>
+                                                <ul class="submenu">
+                                                    <li class="menu-item"><a href="about.html">О компании</a></li>
+                                                    <li class="menu-item"><a href="portfolio.html">Кейсы</a>
+                                                    </li>
+                                                    <li class="menu-item"><a href="single-project.html">Проект</a></li>
+                                                    <li class="menu-item"><a href="pricing.html">Тарифы</a></li>
+                                                    <li class="menu-item"><a href="faqs.html">Вопросы и ответы</a></li>
+                                                    <li class="menu-item"><a href="team.html">Команда</a></li>
+                                                    <li class="menu-item"><a href="career.html">Карьера</a></li>
+                                                    <li class="menu-item"><a href="404.html">Ошибка</a></li>
+                                                    <li class="menu-item"><a href="coming-soon.html">Скоро запуск</a>
+                                                    </li>
+                                                </ul>
+                                            </li>
+                                            <li class="has-child position-relative"><a href="javascript:void(0)">Услуги</a>
+                                                <ul class="submenu">
+                                                    <li class="menu-item"><a href="services.html">Услуги</a>
+                                                    </li>
+                                                    <li class="menu-item"><a href="service-details.html">Детали услуги</a>
+                                                    </li>
+                                                </ul>
+                                            </li>
+                                            <li class="has-child position-relative"><a href="javascript:void(0)">Блог</a>
+                                                <ul class="submenu">
+                                                    <li class="menu-item"><a href="blog.html">Блог
+                                                        </a>
+                                                    </li>
+                                                    <li class="menu-item"><a href="single-post.html">Статья</a>
+                                                    </li>
+
+                                                </ul>
+                                            </li>
+                                            <li><a href="contact-us.html">Контакты</a></li>
+                                            <li class="has-child position-relative"><a href="javascript:void(0)">Магазин</a>
+                                                <ul class="submenu">
+                                                    <li class="menu-item"><a href="shop.html">Магазин</a>
+                                                    </li>
+                                                    <li class="menu-item"><a href="product-Детали.html">Детали товара</a>
+                                                    </li>
+                                                    <li class="menu-item"><a href="cart.html">Корзина</a>
+                                                    </li>
+                                                    <li class="menu-item"><a href="cart.html">Оформление</a>
+                                                    </li>
+                                                </ul>
+                                            </li>
+
+                                        </ul>
+                                    </nav>
+                                </div>
+                                <div class="header-right d-flex align-items-center ">
+                                    <div class="popup-show-form">
+                                        <a href="javascript:void(0)" class="tf-btn btn-white btn-find btn-show ">
+                                            <i class="icon-search-solid"></i>
+                                            <span class="bg-effect"></span>
+                                        </a>
+                                        <div class="popup-show popup-form-search ">
+                                            <div class="close-form">
+                                                <i class="icon-times-solid"></i>
+                                            </div>
+                                            <form class="form-search style-line-bot style-1" action="#">
+                                                <fieldset class="text">
+                                                    <input type="text" placeholder="Поиск..." class="" name="text" tabindex="0" value="" aria-required="true" required="">
+                                                </fieldset>
+                                                <button class="" type="submit">
+                                                    <i class="icon icon-search-solid"></i>
+                                                </button>
+                                            </form>
+                                            <ul class="wrap-tag d-flex align-items-center flex-wrap gap_16">
+                                                <li class="tag-item d-flex align-items-center gap_12">
+                                                    <span class="sub-heading text_black">Блог</span>
+                                                    <span class="remove-item">
+                                                        <i class="icon-times-solid"></i>
+                                                    </span>
+                                                </li>
+                                                <li class="tag-item d-flex align-items-center gap_12">
+                                                    <span class="sub-heading text_black">Статья</span>
+                                                    <span class="remove-item">
+                                                        <i class="icon-times-solid"></i>
+                                                    </span>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                    <a href="about.html" class="tf-btn btn-white hide-sm">
+                                        <span>Начать</span>
+                                        <span class="bg-effect"></span>
+                                    </a>
+                                    <a href="contact-us.html" class="tf-btn hide-sm  ">
+                                        <span>Связаться с нами</span>
+                                        <span class="bg-effect"></span>
+                                    </a>
+                                    <div class="mobile-button" data-bs-toggle="offcanvas" data-bs-target="#menu-mobile" aria-controls="menu-mobile">
+                                        <div class="burger">
+                                            <span></span>
+                                            <span></span>
+                                            <span></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header> <!-- /header -->
+
+        <div class="wrap-page-header  overflow-hidden">
+
+            <!-- header -->
+            <header id="header-main" class="header style-default  ">
+                <div class="header-inner">
+                    <div class="tf-container">
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="header-inner-wrap">
+                                    <div class="header-left d-flex align-items-center">
+                                        <div class="header-logo">
+                                            <a href="index.html" class="site-logo">
+                                                <svg width="149" height="46" viewbox="0 0 149 46" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                    <rect x="0.625" y="0.625" width="147.75" height="44.75" rx="22.375" fill="white"></rect>
+                                                    <rect x="0.625" y="0.625" width="147.75" height="44.75" rx="22.375" stroke="white" stroke-width="1.25"></rect>
+                                                    <path d="M32.3775 20.311L39.7515 32.7325C39.8499 32.8983 40.0285 33 40.2214 33L47.6138 33C47.8054 33 47.983 32.8997 48.0819 32.7356L52 26.2351L44.3144 26.2245C44.123 26.2242 43.9458 26.1239 43.847 25.9599L36.2013 13.2645C36.1024 13.1004 35.9248 13 35.7332 13L28.3861 13C28.1948 13 28.0174 13.1 27.9184 13.2638L23.9821 19.776L20.1708 26.052C20.0657 26.2251 20.0649 26.4421 20.1688 26.6159L23.823 32.7338C23.9217 32.8989 24.0998 33 24.2922 33L30.9792 33C31.4043 33 31.6666 32.5358 31.4473 32.1716L23.9821 19.776L31.4378 19.776C31.8235 19.776 32.1806 19.9793 32.3775 20.311Z" fill="#0075FF"></path>
+                                                    <path d="M60.56 30L65.7 16H67.88L73 30H70.88L66.78 18.4L62.64 30H60.56ZM62.88 26.54L63.44 24.94H70.02L70.56 26.54H62.88ZM78.4873 30.24C77.5273 30.24 76.674 30.0133 75.9273 29.56C75.194 29.1067 74.6207 28.4867 74.2073 27.7C73.8073 26.9 73.6073 26 73.6073 25C73.6073 23.9867 73.8073 23.0867 74.2073 22.3C74.6207 21.5133 75.2007 20.9 75.9473 20.46C76.694 20.0067 77.5473 19.78 78.5073 19.78C79.294 19.78 79.9873 19.94 80.5873 20.26C81.2007 20.5667 81.674 21 82.0073 21.56V15.6H84.0073V30H82.2073L82.0073 28.44C81.794 28.7467 81.5273 29.04 81.2073 29.32C80.8873 29.5867 80.5007 29.8067 80.0473 29.98C79.594 30.1533 79.074 30.24 78.4873 30.24ZM78.8073 28.5C79.434 28.5 79.9873 28.3533 80.4673 28.06C80.9473 27.7667 81.3207 27.36 81.5873 26.84C81.854 26.3067 81.9873 25.6933 81.9873 25C81.9873 24.3067 81.854 23.7 81.5873 23.18C81.3207 22.66 80.9473 22.2533 80.4673 21.96C79.9873 21.6667 79.434 21.52 78.8073 21.52C78.194 21.52 77.6473 21.6667 77.1673 21.96C76.6873 22.2533 76.314 22.66 76.0473 23.18C75.7807 23.7 75.6473 24.3067 75.6473 25C75.6473 25.6933 75.7807 26.3067 76.0473 26.84C76.314 27.36 76.6873 27.7667 77.1673 28.06C77.6473 28.3533 78.194 28.5 78.8073 28.5ZM89.1417 30L85.3817 20.02H87.4817L90.3217 28.08L93.1817 20.02H95.2417L91.5017 30H89.1417ZM96.7648 30V20.02H98.7648V30H96.7648ZM97.7648 18.08C97.3915 18.08 97.0782 17.96 96.8248 17.72C96.5715 17.48 96.4448 17.1733 96.4448 16.8C96.4448 16.44 96.5715 16.1467 96.8248 15.92C97.0782 15.68 97.3915 15.56 97.7648 15.56C98.1382 15.56 98.4515 15.68 98.7048 15.92C98.9582 16.1467 99.0848 16.44 99.0848 16.8C99.0848 17.1733 98.9582 17.48 98.7048 17.72C98.4515 17.96 98.1382 18.08 97.7648 18.08ZM105.345 30C104.705 30 104.152 29.9 103.685 29.7C103.218 29.5 102.858 29.1667 102.605 28.7C102.352 28.2333 102.225 27.6 102.225 26.8V21.7H100.505V20.02H102.225L102.485 17.52H104.225V20.02H107.065V21.7H104.225V26.82C104.225 27.3933 104.345 27.7867 104.585 28C104.825 28.2 105.238 28.3 105.825 28.3H106.965V30H105.345ZM113.159 30.24C112.185 30.24 111.325 30.0267 110.579 29.6C109.832 29.16 109.245 28.5533 108.819 27.78C108.405 26.9933 108.199 26.08 108.199 25.04C108.199 23.9867 108.405 23.0667 108.819 22.28C109.232 21.4933 109.812 20.88 110.559 20.44C111.319 20 112.192 19.78 113.179 19.78C114.165 19.78 115.012 20 115.719 20.44C116.439 20.8667 116.985 21.44 117.359 22.16C117.745 22.88 117.939 23.6733 117.939 24.54C117.939 24.6733 117.939 24.82 117.939 24.98C117.939 25.1267 117.932 25.2933 117.919 25.48H109.659V24.06H115.959C115.919 23.2467 115.639 22.6067 115.119 22.14C114.599 21.6733 113.945 21.44 113.159 21.44C112.625 21.44 112.125 21.56 111.659 21.8C111.205 22.04 110.839 22.3933 110.559 22.86C110.292 23.3267 110.159 23.9133 110.159 24.62V25.2C110.159 25.9333 110.292 26.5533 110.559 27.06C110.839 27.5533 111.205 27.9333 111.659 28.2C112.112 28.4533 112.605 28.58 113.139 28.58C113.779 28.58 114.305 28.44 114.719 28.16C115.145 27.8667 115.459 27.48 115.659 27H117.659C117.485 27.6133 117.192 28.1667 116.779 28.66C116.365 29.14 115.852 29.5267 115.239 29.82C114.639 30.1 113.945 30.24 113.159 30.24ZM118.234 30L121.734 25L118.234 20.02H120.394L123.054 23.92L125.734 20.02H127.894L124.394 25L127.894 30H125.734L123.054 26.1L120.394 30H118.234Z" fill="black"></path>
+                                                </svg>
+
+                                            </a>
+                                        </div>
+                                        <nav class="main-menu style-default">
+                                            <ul class="navigation ">
+                                                <li class="has-child "><a href="javascript:void(0)">Главная</a>
+                                                    <div class="submenu mega-menu">
+                                                        <div class="wrap-demo-item tf-grid-layout-lg lg-col-3 ">
+                                                            <div class="demo-item">
+                                                                <a href="index.html">
+                                                                    <div class="demo-image">
+                                                                        <img class="lazyload" data-src="images/demo/demo-1.jpg" src="images/demo/demo-1.jpg" alt="demo-1.jpg">
+                                                                    </div>
+                                                                    <h6 class="demo-name fw-4">Бизнес-консалтинг
+                                                                    </h6>
+                                                                </a>
+                                                            </div>
+                                                            <div class="demo-item">
+                                                                <a href="finance-consulting.html">
+                                                                    <div class="demo-image">
+                                                                        <img class="lazyload" data-src="images/demo/demo-2.jpg" src="images/demo/demo-2.jpg" alt="demo-2.jpg">
+                                                                    </div>
+                                                                    <h6 class="demo-name fw-4">Финансовый консалтинг
+                                                                    </h6>
+                                                                </a>
+                                                            </div>
+                                                            <div class="demo-item">
+                                                                <a href="finance-advisor.html">
+                                                                    <div class="demo-image">
+                                                                        <img class="lazyload" data-src="images/demo/demo-3.jpg" src="images/demo/demo-3.jpg" alt="home-3">
+                                                                    </div>
+                                                                    <h6 class="demo-name fw-4">Финансовый советник</h6>
+                                                                </a>
+                                                            </div>
+                                                            <div class="demo-item ">
+                                                                <a href="insurance-consulting.html">
+                                                                    <div class="demo-image">
+                                                                        <img class="lazyload" data-src="images/demo/demo-4.jpg" src="images/demo/demo-4.jpg" alt="home-4">
+                                                                    </div>
+                                                                    <h6 class="demo-name fw-4">Страховой консалтинг
+                                                                    </h6>
+                                                                </a>
+                                                            </div>
+                                                            <div class="demo-item">
+                                                                <a href="marketing-consulting.html">
+                                                                    <div class="demo-image">
+                                                                        <img class="lazyload" data-src="images/demo/demo-5.jpg" src="images/demo/demo-5.jpg" alt="home-5">
+                                                                    </div>
+                                                                    <h6 class="demo-name fw-4">Маркетинговый консалтинг
+                                                                    </h6>
+                                                                </a>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </li>
+                                                <li class="has-child position-relative"><a href="javascript:void(0)">Страницы</a>
+                                                    <ul class="submenu">
+                                                        <li class="menu-item"><a href="about.html">О компании</a></li>
+                                                        <li class="menu-item"><a href="portfolio.html">Кейсы</a>
+                                                        </li>
+                                                        <li class="menu-item"><a href="single-project.html">Проект</a></li>
+                                                        <li class="menu-item"><a href="pricing.html">Тарифы</a></li>
+                                                        <li class="menu-item"><a href="faqs.html">Вопросы и ответы</a></li>
+                                                        <li class="menu-item"><a href="team.html">Команда</a></li>
+                                                        <li class="menu-item"><a href="career.html">Карьера</a></li>
+                                                        <li class="menu-item"><a href="404.html">Ошибка</a></li>
+                                                        <li class="menu-item"><a href="coming-soon.html">Скоро запуск</a>
+                                                        </li>
+                                                    </ul>
+                                                </li>
+                                                <li class="has-child position-relative"><a href="javascript:void(0)">Услуги</a>
+                                                    <ul class="submenu">
+                                                        <li class="menu-item"><a href="services.html">Услуги</a>
+                                                        </li>
+                                                        <li class="menu-item"><a href="service-details.html">Детали услуги</a>
+                                                        </li>
+                                                    </ul>
+                                                </li>
+                                                <li class="has-child position-relative"><a href="javascript:void(0)">Блог</a>
+                                                    <ul class="submenu">
+                                                        <li class="menu-item"><a href="blog.html">Блог
+                                                            </a>
+                                                        </li>
+                                                        <li class="menu-item"><a href="single-post.html">Статья</a>
+                                                        </li>
+
+                                                    </ul>
+                                                </li>
+                                                <li><a href="contact-us.html">Контакты</a></li>
+                                                <li class="has-child position-relative"><a href="javascript:void(0)">Магазин</a>
+                                                    <ul class="submenu">
+                                                        <li class="menu-item"><a href="shop.html">Магазин</a>
+                                                        </li>
+                                                        <li class="menu-item"><a href="product-Детали.html">Детали товара</a>
+                                                        </li>
+                                                        <li class="menu-item"><a href="cart.html">Корзина</a>
+                                                        </li>
+                                                        <li class="menu-item"><a href="checkout.html">Оформление</a>
+                                                        </li>
+                                                    </ul>
+                                                </li>
+
+                                            </ul>
+                                        </nav>
+                                    </div>
+                                    <div class="header-right d-flex align-items-center ">
+                                        <div class="popup-show-form">
+                                            <a href="javascript:void(0)" class="tf-btn btn-white btn-find btn-show ">
+                                                <i class="icon-search-solid"></i>
+                                                <span class="bg-effect"></span>
+                                            </a>
+                                            <div class="popup-show popup-form-search">
+                                                <div class="close-form">
+                                                    <i class="icon-times-solid"></i>
+                                                </div>
+                                                <form class="form-search style-line-bot style-1" action="#">
+                                                    <fieldset class="text">
+                                                        <input type="text" placeholder="Поиск..." class="" name="text" tabindex="0" value="" aria-required="true" required="">
+                                                    </fieldset>
+                                                    <button class="" type="submit">
+                                                        <i class="icon icon-search-solid"></i>
+                                                    </button>
+                                                </form>
+                                                <ul class="wrap-tag d-flex align-items-center flex-wrap gap_16">
+                                                    <li class="tag-item d-flex align-items-center gap_12">
+                                                        <span class="sub-heading text_black">Блог</span>
+                                                        <span class="remove-item">
+                                                            <i class="icon-times-solid"></i>
+                                                        </span>
+                                                    </li>
+                                                    <li class="tag-item d-flex align-items-center gap_12">
+                                                        <span class="sub-heading text_black">Статья</span>
+                                                        <span class="remove-item">
+                                                            <i class="icon-times-solid"></i>
+                                                        </span>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                        <a href="about.html" class="tf-btn btn-white hide-sm">
+                                            <span>Начать</span>
+                                            <span class="bg-effect"></span>
+                                        </a>
+                                        <a href="contact-us.html" class="tf-btn hide-sm  ">
+                                            <span>Связаться с нами</span>
+                                            <span class="bg-effect"></span>
+                                        </a>
+                                        <div class="mobile-button" data-bs-toggle="offcanvas" data-bs-target="#menu-mobile" aria-controls="menu-mobile">
+                                            <div class="burger">
+                                                <span></span>
+                                                <span></span>
+                                                <span></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </header> <!-- /header -->
+
+            <!-- .page-title -->
+            <div class="page-title style-default">
+                <div class="error-404">
+                    <div class="contnet">
+                        <div class="img">
+                            <img src="images/item/404.png" alt="404">
+                        </div>
+                        <p class="sub-heading text_mono-gray-7">We apologize, but the page you're looking для couldn't
+                            be found!</p>
+                        <a href="index.html" class="tf-btn mx-auto">
+                            <span>Вернуться на главную</span>
+                            <span class="bg-effect"></span>
+                        </a>
+                    </div>
+                    <div class="item position-absolute">
+                        <img src="images/item/shape-5.png" alt="shape">
+                    </div>
+                </div>
+            </div><!-- /.page-title -->
+
+        </div>
+
+
+        <!-- .footer -->
+        <footer id="footer" class="footer style-default">
+            <div class="footer-wrap">
+                <div class="tf-container">
+                    <div class="footer-body">
+                        <div class="row">
+                            <div class="col-lg-4 ">
+                                <div class="footer-about">
+                                    <a href="index.html" class="footer-logo ">
+                                        <img src="images/logo/footer-logo.png" alt="logo">
+                                    </a>
+                                    <div class="footer-info mb_51">
+                                        <a href="mailto:themesflat@gmail.com" class="link text-body-2 text_black">themesflat@gmail.com</a>
+                                        <div class="text-body-2">152 Thatcher Road St, Manhattan, NY 10463, <br>
+                                            США</div>
+                                        <div class="text-body-2">(+068) 568 9696</div>
+                                    </div>
+                                    <div class="tf-social">
+                                        <a href="#" class="icon-twitter-x"></a>
+                                        <a href="#" class="icon-facebook-f"></a>
+                                        <a href="#" class="icon-github"></a>
+                                        <a href="#" class="icon-instagram"></a>
+                                        <a href="#" class="icon-youtube"></a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-2 col-md-6">
+                                <div class="footer-col-block">
+                                    <h6 class="footer-heading  footer-heading-mobile">
+                                        Компания
+                                    </h6>
+                                    <div class="tf-collapse-content">
+                                        <ul class="footer-menu-list">
+                                            <li class="text-body-2 text_mono-gray-6">
+                                                <a href="about.html" class=" link footer-menu_item">О компании
+                                                    Advitex</a>
+                                            </li>
+                                            <li class="text-body-2 text_mono-gray-6">
+                                                <a href="contact-us.html" class=" link footer-menu_item">Свяжитесь с нами</a>
+                                            </li>
+                                            <li class="text-body-2 text_mono-gray-6">
+                                                <a href="portfolio.html" class=" link footer-menu_item">Портфолио</a>
+                                            </li>
+                                            <li class="text-body-2 text_mono-gray-6">
+                                                <a href="faqs.html" class=" link footer-menu_item">Как мы работаем</a>
+                                            </li>
+                                            <li class="text-body-2 text_mono-gray-6">
+                                                <a href="career.html" class=" link footer-menu_item">Карьера</a>
+                                            </li>
+                                            <li class="text-body-2 text_mono-gray-6">
+                                                <a href="team.html" class=" link footer-menu_item">Наша команда</a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-2 col-md-6">
+                                <div>
+                                    <div class="footer-col-block">
+                                        <h6 class="footer-heading  footer-heading-mobile">
+                                            Ссылки
+                                        </h6>
+                                        <div class="tf-collapse-content">
+                                            <ul class="footer-menu-list">
+                                                <li class="text-body-2 text_mono-gray-6">
+                                                    <a href="contact-us.html" class=" link footer-menu_item">Центр поддержки</a>
+                                                </li>
+                                                <li class="text-body-2 text_mono-gray-6">
+                                                    <a href="pricing.html" class=" link footer-menu_item">Политика конфиденциальности</a>
+                                                </li>
+                                                <li class="text-body-2 text_mono-gray-6">
+                                                    <a href="#" class=" link footer-menu_item">Условия использования</a>
+                                                </li>
+                                                <li class="text-body-2 text_mono-gray-6">
+                                                    <a href="faqs.html" class=" link footer-menu_item">Вопросы и ответы</a>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-4">
+                                <div class=" footer-newsletter">
+                                    <h6 class="footer-heading   ">
+                                        Подпишитесь на нашу рассылку
+                                    </h6>
+                                    <div class="tf-collapse-content">
+                                        <div class="wrap-newsletter">
+                                            <p class="text-body-2 text_mono-gray-6 mb_29">Подпишитесь, чтобы получать новости, акции и полезные материалы!
+                                            <form id="subscribe-form" action="#" class="form-newsletter style-1 subscribe-form mb_10" method="post" accept-charset="utf-8" data-mailchimp="true">
+                                                <div id="subscribe-content" class="subscribe-content">
+                                                    <fieldset class="email">
+                                                        <input id="subscribe-email" type="email" name="email-form" class="subscribe-email style-2" placeholder="Введите ваш email" tabindex="0" aria-required="true">
+                                                    </fieldset>
+                                                    <div class="button-submit">
+                                                        <button id="subscribe-button" class="subscribe-button tf-btn rounded-12 btn-primary2 " type="button">
+                                                            <span>Подписаться</span>
+                                                            <span class="bg-effect"></span>
+                                                        </button>
+                                                    </div>
+                                                    <div class="icon">
+                                                        <i class="icon-envelope-solid"></i>
+                                                    </div>
+                                                </div>
+                                                <div id="subscribe-msg" class="subscribe-msg"></div>
+                                            </form>
+                                            <p class="description text-body-2">Подписываясь, вы принимаете нашу
+                                                <a href="#" class="link-black text_primary ">Политика конфиденциальности</a>
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <div class="tf-container">
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="wrapper d-flex align-items-center flex-wrap gap_12 ">
+                                <p class="text-body-2">© 2025. Все права принадлежат <a href="#" class="link-black text_primary text-body-3">Themesflat</a>.
+                                    Все права защищены.</p>
+                                <ul class="right d-flex align-items-center">
+                                    <li><a href="index.html" class="link text_mono-gray-5 text-body-1">Главная</a></li>
+                                    <li><a href="about.html" class="link text_mono-gray-5 text-body-1">О компании</a>
+                                    </li>
+                                    <li><a href="services.html" class="link text_mono-gray-5 text-body-1">Услуги</a>
+                                    </li>
+                                    <li><a href="blog.html" class="link text_mono-gray-5 text-body-1">Блог</a></li>
+                                    <li><a href="contact-us.html" class="link text_mono-gray-5 text-body-1">Контакты</a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </footer><!-- /.footer -->
+
+    </div>
+    <!-- /wrapper -->
+
+    <!-- Start Mobile Menu -->
+    <div class="offcanvas offcanvas-start canvas-mb" id="menu-mobile">
+        <div class="offcanvas-header top-nav-mobile justify-content-between">
+            <a href="index.html" class="logo">
+                <img src="images/logo/footer-logo.png" alt="logo">
+            </a>
+            <div class="close-menu" data-bs-dismiss="offcanvas">
+                <i class=" icon-times-solid"></i>
+            </div>
+        </div>
+        <div class="mb-canvas-content">
+            <div class="mb-body">
+                <div class="mb-content-top">
+                    <ul class="nav-ul-mb" id="wrapper-menu-navigation">
+                        <li class="nav-mb-item ">
+                            <a href="#dropdown-menu-home" class="collapsed mb-menu-link" data-bs-toggle="collapse" aria-expanded="true" aria-controls="dropdown-menu-home">
+                                <span>Главная</span>
+                                <span class="btn-open-sub"></span>
+                            </a>
+                            <div id="dropdown-menu-home" class="collapse" data-bs-parent="#menu-mobile">
+                                <ul class="sub-nav-menu">
+                                    <li><a href="index.html" class="sub-nav-link ">Бизнес-консалтинг</a></li>
+                                    <li><a href="finance-consulting.html" class="sub-nav-link">Финансовый консалтинг</a>
+                                    </li>
+                                    <li><a href="finance-advisor.html" class="sub-nav-link">Финансовый советник</a>
+                                    </li>
+                                    <li><a href="insurance-consulting.html" class="sub-nav-link">Страховой консалтинг</a>
+                                    </li>
+                                    <li><a href="marketing-consulting.html" class="sub-nav-link">Маркетинговый консалтинг</a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </li>
+                        <li class="nav-mb-item active">
+                            <a href="#dropdown-menu-pages" class="collapsed mb-menu-link" data-bs-toggle="collapse" aria-expanded="true" aria-controls="dropdown-menu-pages">
+                                <span>Страницы</span>
+                                <span class="btn-open-sub"></span>
+                            </a>
+                            <div id="dropdown-menu-pages" class="collapse" data-bs-parent="#menu-mobile">
+                                <ul class="sub-nav-menu">
+                                    <li><a href="about.html" class="sub-nav-link ">О нас</a></li>
+                                    <li><a href="portfolio.html" class="sub-nav-link">Кейсы</a>
+                                    </li>
+                                    <li><a href="single-project.html" class="sub-nav-link">Проект</a>
+                                    </li>
+                                    <li><a href="pricing.html" class="sub-nav-link">Тарифы</a>
+                                    </li>
+                                    <li><a href="faqs.html" class="sub-nav-link">Вопросы и ответы</a>
+                                    </li>
+                                    <li><a href="team.html" class="sub-nav-link active">Команда</a>
+                                    </li>
+                                    <li><a href="career.html" class="sub-nav-link active">Карьера</a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </li>
+                        <li class="nav-mb-item">
+                            <a href="#dropdown-menu-УСЛУГИ" class="collapsed mb-menu-link" data-bs-toggle="collapse" aria-expanded="true" aria-controls="dropdown-menu-УСЛУГИ">
+                                <span>Услуги</span>
+                                <span class="btn-open-sub"></span>
+                            </a>
+                            <div id="dropdown-menu-УСЛУГИ" class="collapse" data-bs-parent="#menu-mobile">
+                                <ul class="sub-nav-menu">
+                                    <li><a href="services.html" class="sub-nav-link ">Услуги</a></li>
+                                    <li><a href="service-details.html" class="sub-nav-link">Детали услуги</a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </li>
+                        <li class="nav-mb-item">
+                            <a href="#dropdown-menu-blog" class="collapsed mb-menu-link" data-bs-toggle="collapse" aria-expanded="true" aria-controls="dropdown-menu-blog">
+                                <span>Блог</span>
+                                <span class="btn-open-sub"></span>
+                            </a>
+                            <div id="dropdown-menu-blog" class="collapse" data-bs-parent="#menu-mobile">
+                                <ul class="sub-nav-menu">
+                                    <li><a href="blog.html" class="sub-nav-link ">Блог</a></li>
+                                    <li><a href="single-post.html" class="sub-nav-link">Статья</a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </li>
+                        <li class="nav-mb-item">
+                            <a href="#dropdown-menu-shop" class="collapsed mb-menu-link" data-bs-toggle="collapse" aria-expanded="true" aria-controls="dropdown-menu-shop">
+                                <span>Магазин</span>
+                                <span class="btn-open-sub"></span>
+                            </a>
+                            <div id="dropdown-menu-shop" class="collapse" data-bs-parent="#menu-mobile">
+                                <ul class="sub-nav-menu">
+                                    <li><a href="shop.html" class="sub-nav-link ">Магазин</a></li>
+                                    <li><a href="product-Детали.html" class="sub-nav-link">Детали товара</a>
+                                    </li>
+                                    <li><a href="cart.html" class="sub-nav-link">Корзина</a>
+                                    </li>
+                                    <li><a href="checkout.html" class="sub-nav-link">Оформление</a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </li>
+                        <li class="nav-mb-item">
+                            <a href="contact-us.html" class="mb-menu-link">Контакты</a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="mb-other-content ">
+                    <ul class="mb-info mb_20">
+                        <li>
+                            <p class="text_mono-gray">
+                                Адрес:
+                                <a target="_blank" href="https://www.google.com/maps?q=16/9,ScotlandUnitedKingdom">
+                                    <span class="fw-5 text_mono-gray-5">16/9, Шотландия, Великобритания</span>
+                                </a>
+                            </p>
+                        </li>
+                        <li>
+                            <p class="text_mono-gray">
+                                Эл. почта:
+                                <a href="mailto:themesflat@gmail.com">
+                                    <span class="fw-5 text_mono-gray-5">themesflat@gmail.com</span>
+                                </a>
+                            </p>
+                        </li>
+                        <li>
+                            <p class="text_mono-gray">
+                                Телефон:
+                                <a href="tel:+11635565389">
+                                    <span class="fw-5 text_mono-gray-5">+1 16355 65389</span>
+                                </a>
+                            </p>
+                        </li>
+                    </ul>
+                    <div class="mb-wrap-btn d-flex gap_12">
+                        <a href="pricing.html" class="tf-btn">
+                            <span>Начать</span>
+                            <span class="bg-effect"></span>
+                        </a>
+                        <a href="contact-us.html" class="tf-btn  ">
+                            <span>Связаться с нами</span>
+                            <span class="bg-effect"></span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- End Mobile Menu -->
+
+    <!-- Javascript -->
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/jquery.min.js"></script>
+    <script src="js/lazysize.min.js"></script>
+    <script src="js/ScrollSmooth.js"></script>
+    <script src="js/main.js"></script>
+    <!-- /Javascript -->
+
+</body>
+
+</html>
