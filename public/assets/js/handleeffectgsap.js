@@ -1,3 +1,4 @@
+if (typeof window.gsap !== "undefined" && typeof window.ScrollTrigger !== "undefined") {
 gsap.registerPlugin(ScrollTrigger);
 (function ($) {
     ("use strict");
@@ -8,6 +9,7 @@ gsap.registerPlugin(ScrollTrigger);
         if ($(".split-text").length > 0) {
             var st = $(".split-text");
             if (st.length === 0) return;
+            if (typeof window.SplitText === "undefined") return;
             gsap.registerPlugin(SplitText);
             st.each(function (index, el) {
                 const $el = $(el);
@@ -245,3 +247,4 @@ gsap.registerPlugin(ScrollTrigger);
         scrollBanners();
     });
 })(jQuery);
+}

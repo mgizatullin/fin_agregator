@@ -30,7 +30,7 @@
         <div class="tf-container">
             <div class="content">
                 @if(filled($loan->description))
-                    {!! $loan->description !!}
+                    {!! description_to_html($loan->description) !!}
                 @else
                     <p class="text-body-1 text_mono-gray-7">Описание займа пока не добавлено.</p>
                 @endif

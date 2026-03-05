@@ -12389,7 +12389,11 @@ form.style-line-bot.style-2 button {
   .text-body-2 {
     font-size: 12px;
     line-height: 20px;
+    margin-top:43px;
+color: var(--Mono-gray-7);
   }
+
+  
   .tf-grid-layout-sm {
     gap: 0;
   }

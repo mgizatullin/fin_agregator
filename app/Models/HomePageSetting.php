@@ -20,6 +20,8 @@ class HomePageSetting extends Model
         'services',
         'partners',
         'keywords',
+        'main_value_block',
+        'values_grid',
     ];
 
     protected function casts(): array
@@ -28,6 +30,8 @@ class HomePageSetting extends Model
             'services' => 'array',
             'partners' => 'array',
             'keywords' => 'array',
+            'main_value_block' => 'array',
+            'values_grid' => 'array',
         ];
     }
 
@@ -51,6 +55,8 @@ class HomePageSetting extends Model
             'services' => null,
             'partners' => null,
             'keywords' => null,
+            'main_value_block' => null,
+            'values_grid' => null,
         ]);
     }
 }

@@ -47,6 +47,7 @@ class LoanForm
                 RichEditor::make('description')
                     ->label('Описание')
                     ->columnSpanFull()
+                    ->json(false)
                     ->extraInputAttributes(['style' => 'min-height: 300px'])
                     ->toolbarButtons([
                         ['bold', 'italic', 'link'],

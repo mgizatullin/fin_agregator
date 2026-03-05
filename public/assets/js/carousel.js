@@ -1,4 +1,4 @@
-if ($(".sw-auto").length > 0) {
+if (typeof Swiper !== "undefined" && $(".sw-auto").length > 0) {
     var tfSwAuto = $(".sw-auto");
     var preview = tfSwAuto.data("preview");
     var spacing = tfSwAuto.data("space");
@@ -29,7 +29,7 @@ if ($(".sw-auto").length > 0) {
     );
 }
 
-if ($(".sw-single").length > 0) {
+if (typeof Swiper !== "undefined" && $(".sw-single").length > 0) {
     const tfSwCategories = $(".sw-single");
     var effect = tfSwCategories.data("effect");
     var loop = tfSwCategories.data("loop") || false;
@@ -73,7 +73,7 @@ if ($(".sw-single").length > 0) {
     var swiper = new Swiper(".sw-single", swiperSlider);
 }
 
-if ($(".sw-layout").length > 0) {
+if (typeof Swiper !== "undefined" && $(".sw-layout").length > 0) {
     $(".sw-layout").each(function () {
         var tfSwCategories = $(this);
         var preview = tfSwCategories.data("preview");
@@ -146,7 +146,7 @@ if ($(".sw-layout").length > 0) {
     });
 }
 
-if ($(".tf-sw-mobile").length > 0) {
+if (typeof Swiper !== "undefined" && $(".tf-sw-mobile").length > 0) {
     $(".tf-sw-mobile").each(function () {
         var swiperMb;
         var $this = $(this);
@@ -192,7 +192,7 @@ if ($(".tf-sw-mobile").length > 0) {
     });
 }
 
-if ($(".sw-layout-1").length > 0) {
+if (typeof Swiper !== "undefined" && $(".sw-layout-1").length > 0) {
     $(".sw-layout-1").each(function () {
         var tfSwCategories = $(this);
         var swiperContainer = tfSwCategories.find(".swiper");
@@ -263,7 +263,7 @@ if ($(".sw-layout-1").length > 0) {
 }
     
 
-if ($(".projectCarousel").length > 0) {
+if (typeof Swiper !== "undefined" && $(".projectCarousel").length > 0) {
     var carouselMain = $(".project-carousel-layout");
     var carouselExtra = $(".project-carousel-layout-extra");
     var navNext = $(".sw-project-next");

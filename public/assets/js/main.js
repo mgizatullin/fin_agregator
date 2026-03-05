@@ -109,7 +109,9 @@
                     );
                 }
             });
-            selectIMG.selectpicker();
+            if (typeof $.fn.selectpicker === "function") {
+                selectIMG.selectpicker();
+            }
         }
     };
 
@@ -161,7 +163,10 @@
     /* parallaxImage 
   -------------------------------------------------------------------------------------*/
     var parallaxImage = function () {
-        if ($(".parallax-img").length > 0) {
+        if (
+            $(".parallax-img").length > 0 &&
+            typeof window.SimpleParallax !== "undefined"
+        ) {
             let effectparallax = $(".parallax-img");
             let style = effectparallax.data("style") || "up";
             let scale = effectparallax.data("scale") || 1.3;
@@ -181,7 +186,10 @@
     /* infiniteslide 
   -------------------------------------------------------------------------------------*/
     var infiniteslide = function () {
-        if ($(".infiniteslide").length > 0) {
+        if (
+            $(".infiniteslide").length > 0 &&
+            typeof $.fn.infiniteslide === "function"
+        ) {
             $(".infiniteslide").each(function () {
                 var $this = $(this);
                 var style = $this.data("style") || "left";
@@ -195,9 +203,6 @@
             });
         }
     };
-
-    /* changeValue 
-  -------------------------------------------------------------------------------------*/
     var changeValue = function () {
         if ($(".tf-dropdown-sort").length > 0) {
             $(".select-item").click(function (event) {
@@ -361,7 +366,7 @@
     /* wowAnimation
   -------------------------------------------------------------------------------------*/
     var wowAnimation = () => {
-        if ($(".wow").length > 0) {
+        if ($(".wow").length > 0 && typeof WOW === "function") {
             var wow = new WOW({
                 boxClass: "wow",
                 animateClass: "animated",
@@ -376,6 +381,9 @@
     /* Range Two Price
   -------------------------------------------------------------------------------------*/
     var rangeTwoPrice = function () {
+        if (typeof window.noUiSlider === "undefined") {
+            return;
+        }
         if ($("#price-value-range").length > 0) {
             var skipSlider = document.getElementById("price-value-range");
             var skipValues = [
@@ -519,7 +527,11 @@
     -------------------------------------------------------------------------------------*/
     var parallaxie = function () {
         var $window = $(window);
-        if ($(".parallaxie").length && $window.width() > 991) {
+        if (
+            $(".parallaxie").length &&
+            $window.width() > 991 &&
+            typeof $.fn.parallaxie === "function"
+        ) {
             if ($window.width() > 768) {
                 $(".parallaxie").parallaxie({
                     speed: 0.55,
@@ -812,29 +824,32 @@
     };
     // Dom Ready
     $(function () {
-        handleFooter();
-        effect_button();
-        headerFixed();
-        selectImages();
-        parallaxImage();
-        infiniteslide();
-        accordionActive();
-        changeValue();
-        rangePrice();
-        tabs();
-        totalPriceVariant();
-        filterTab();
-        wowAnimation();
-        rangeTwoPrice();
-        loadItem();
-        handleSidebarFilter();
-        handlePopupSearch();
-        parallaxie();
-        animateCycle();
-        serviceAccordion();
-        delete_file();
-        selectCountry();
-        goTop();
-        preloader();
+        try {
+            handleFooter();
+            effect_button();
+            headerFixed();
+            selectImages();
+            parallaxImage();
+            infiniteslide();
+            accordionActive();
+            changeValue();
+            rangePrice();
+            tabs();
+            totalPriceVariant();
+            filterTab();
+            wowAnimation();
+            rangeTwoPrice();
+            loadItem();
+            handleSidebarFilter();
+            handlePopupSearch();
+            parallaxie();
+            animateCycle();
+            serviceAccordion();
+            delete_file();
+            selectCountry();
+            goTop();
+        } finally {
+            preloader();
+        }
     });
 })(jQuery);

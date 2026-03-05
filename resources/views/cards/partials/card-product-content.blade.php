@@ -122,7 +122,7 @@
 @if(filled($card->description))
     <div class="tf-container tf-spacing-9">
         <div class="content card-description">
-            {!! $card->description !!}
+            {!! description_to_html($card->description) !!}
         </div>
     </div>
 @endif

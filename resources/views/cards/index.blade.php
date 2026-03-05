@@ -29,7 +29,7 @@
             <div class="section-opportunities tf-spacing-27">
                 <div class="tf-container">
 @include('partials.category-nav', ['categories' => $categories ?? collect(), 'indexRoute' => 'cards.index', 'categoryRouteName' => 'cards.show'])
-                    <div class="d-grid gap_40">
+                    <div class="d-grid gap_10">
                         @forelse($cards as $card)
                             @php
                                 $bankName = $card->bank ? ($card->bank->name ?: '-') : '-';
@@ -164,8 +164,8 @@
 			
 			<!-- /.about -->
 			<div class="tf-container">
-			<div class="content mb-0">
-                {!! $section->description ?? '' !!}
+			<div class="content mb-0 text-body">
+                {!! description_to_html($section->description ?? '') !!}
             </div>
 				</div>
 			<!-- /.about -->

@@ -39,7 +39,7 @@
 
     <div class="tf-container">
         <div class="content mb-0">
-            {{ $section->description ?? '' }}
+            {!! description_to_html($section->description ?? '') !!}
         </div>
     </div>
         </div>

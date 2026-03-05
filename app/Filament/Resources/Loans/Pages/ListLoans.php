@@ -9,6 +9,7 @@ use App\Models\SectionSetting;
 use Filament\Actions\CreateAction;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Repeater;
+use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Notifications\Notification;
@@ -63,6 +64,10 @@ class ListLoans extends ListRecords
             ];
         })->values()->toArray();
 
+        if (isset($data['description']) && is_string($data['description'])) {
+            $data['description'] = description_to_html($data['description']);
+        }
+
         $this->sectionData = $data;
     }
 
@@ -80,6 +85,10 @@ class ListLoans extends ListRecords
                 'image' => $path,
             ];
         })->values()->toArray();
+
+        if (array_key_exists('description', $data)) {
+            $data['description'] = description_ensure_html($data['description'] ?? '');
+        }
 
         $this->getSetting()->update(Arr::except($data, ['id', 'created_at', 'updated_at', 'type']));
 
@@ -102,10 +111,44 @@ class ListLoans extends ListRecords
                     ->label('Подзаголовок')
                     ->maxLength(255)
                     ->columnSpanFull(),
-                Textarea::make('description')
+                RichEditor::make('description')
                     ->label('Описание')
-                    ->rows(4)
-                    ->columnSpanFull(),
+                    ->columnSpanFull()
+                    ->json(false)
+                    ->extraInputAttributes(['style' => 'min-height: 300px'])
+                    ->toolbarButtons([
+                        ['bold', 'italic', 'link'],
+                        ['h2', 'h3'],
+                        ['bulletList', 'orderedList'],
+                    ])
+                    ->afterStateHydrated(function (RichEditor $component, mixed $state): void {
+                        $json = null;
+
+                        if (is_string($state)) {
+                            $json = $state;
+                        } elseif (is_array($state)) {
+                            $text = $state['content'][0]['content'][0]['text'] ?? null;
+                            if (is_string($text) && str_starts_with(trim($text), '{"type":"doc"')) {
+                                $json = $text;
+                            }
+                        }
+
+                        if (! is_string($json)) {
+                            return;
+                        }
+
+                        $trimmed = trim($json);
+                        if (! (str_starts_with($trimmed, '{"type":"doc"') || str_starts_with($trimmed, '{"type": "doc"'))) {
+                            return;
+                        }
+
+                        $decoded = json_decode($trimmed, true);
+                        if (! is_array($decoded)) {
+                            return;
+                        }
+
+                        $component->state($decoded);
+                    }),
                 Repeater::make('advantages')
                     ->label('Преимущества')
                     ->schema([

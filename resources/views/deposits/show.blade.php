@@ -30,7 +30,7 @@
         <div class="tf-container">
             <div class="content">
                 @if(isset($deposit) && filled($deposit->description))
-                    {!! $deposit->description !!}
+                    {!! description_to_html($deposit->description) !!}
                 @else
                     <p class="text-body-1 text_mono-gray-7">Описание вклада пока не добавлено.</p>
                 @endif

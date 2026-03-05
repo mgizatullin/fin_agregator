@@ -14,6 +14,9 @@ class CreateLoan extends CreateRecord
 
     public function mutateFormDataBeforeCreate(array $data): array
     {
+        if (array_key_exists('description', $data)) {
+            $data['description'] = description_ensure_html($data['description'] ?? '');
+        }
         $raw = $data['categories'] ?? [];
         $this->categoryIdsToSync = collect($raw)->map(fn ($v) => is_object($v) ? (int) $v->getKey() : (int) $v)->filter()->values()->all();
         unset($data['categories']);

@@ -30,7 +30,7 @@
         <div class="tf-container">
             <div class="content">
                 @if(isset($bank) && filled($bank->description))
-                    {!! $bank->description !!}
+                    {!! description_to_html($bank->description) !!}
                 @else
                     <p class="text-body-1 text_mono-gray-7">Описание банка пока не добавлено.</p>
                 @endif

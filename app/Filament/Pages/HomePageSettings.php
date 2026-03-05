@@ -105,6 +105,18 @@ class HomePageSettings extends Page
 
         $data['keywords'] = $setting->keywords ?? [];
 
+        $mainBlock = $setting->main_value_block ?? [];
+        $data['main_value_block'] = is_array($mainBlock) ? $mainBlock : [];
+        if (! empty($data['main_value_block']['icon'])) {
+            $data['main_value_block']['icon'] = [$data['main_value_block']['icon']];
+        } else {
+            $data['main_value_block']['icon'] = [];
+        }
+
+        $data['values_grid'] = collect($setting->values_grid ?? [])->map(fn ($item) => array_merge($item, [
+            'icon' => ! empty($item['icon']) ? [$item['icon']] : [],
+        ]))->values()->toArray();
+
         $this->form->fill($data);
     }
 
@@ -145,6 +157,20 @@ class HomePageSettings extends Page
 
         $data['keywords'] = Arr::pull($data, 'keywords', []);
         $data['keywords'] = collect($data['keywords'])->map(fn ($k) => is_array($k) ? $k : ['phrase' => $k])->values()->toArray();
+
+        $mainBlock = Arr::pull($data, 'main_value_block', []);
+        if (is_array($mainBlock) && isset($mainBlock['icon'])) {
+            $icon = $mainBlock['icon'];
+            $mainBlock['icon'] = is_array($icon) ? (Arr::first($icon) ?: null) : $icon;
+        }
+        $data['main_value_block'] = Arr::only($mainBlock ?? [], ['title', 'description', 'url', 'icon']);
+
+        $valuesGrid = Arr::pull($data, 'values_grid', []);
+        $data['values_grid'] = collect($valuesGrid)->map(function ($item) {
+            $icon = $item['icon'] ?? [];
+            $item['icon'] = is_array($icon) ? (Arr::first($icon) ?: null) : $icon;
+            return Arr::only($item, ['title', 'description', 'url', 'icon']);
+        })->take(6)->values()->toArray();
 
         return $data;
     }
@@ -418,6 +444,77 @@ class HomePageSettings extends Page
                                             ->reorderableWithButtons()
                                             ->collapsible()
                                             ->itemLabel(fn (array $state): ?string => $state['phrase'] ?? null)
+                                            ->columnSpanFull(),
+                                    ])
+                                    ->columns(1),
+                            ]),
+
+                        Tab::make('Главные блоки')
+                            ->schema([
+                                Section::make('Главный элемент')
+                                    ->description('Большая карточка блока ценностей (левая колонка)')
+                                    ->schema([
+                                        TextInput::make('main_value_block.title')
+                                            ->label('Заголовок')
+                                            ->maxLength(255)
+                                            ->columnSpanFull(),
+
+                                        Textarea::make('main_value_block.description')
+                                            ->label('Описание')
+                                            ->rows(4)
+                                            ->columnSpanFull(),
+
+                                        TextInput::make('main_value_block.url')
+                                            ->label('Ссылка')
+                                            ->maxLength(500)
+                                            ->rules(['nullable', 'string', 'max:500', 'regex:/^(\/.*|https?:\/\/.+)$/'])
+                                            ->helperText('Относительный путь (например /kredity) или полный URL')
+                                            ->columnSpanFull(),
+
+                                        FileUpload::make('main_value_block.icon')
+                                            ->label('Иконка')
+                                            ->image()
+                                            ->directory('home-page/values')
+                                            ->disk('public')
+                                            ->maxSize(1024)
+                                            ->columnSpanFull(),
+                                    ])
+                                    ->columns(1),
+
+                                Section::make('Дополнительные элементы')
+                                    ->description('До 6 карточек в правой части блока ценностей')
+                                    ->schema([
+                                        Repeater::make('values_grid')
+                                            ->label('Элементы')
+                                            ->schema([
+                                                TextInput::make('title')
+                                                    ->label('Заголовок')
+                                                    ->maxLength(255),
+
+                                                Textarea::make('description')
+                                                    ->label('Описание')
+                                                    ->rows(2),
+
+                                                TextInput::make('url')
+                                                    ->label('Ссылка')
+                                                    ->maxLength(500)
+                                                    ->rules(['nullable', 'string', 'max:500', 'regex:/^(\/.*|https?:\/\/.+)$/']),
+
+                                                FileUpload::make('icon')
+                                                    ->label('Иконка')
+                                                    ->image()
+                                                    ->directory('home-page/values')
+                                                    ->disk('public')
+                                                    ->maxSize(1024)
+                                                    ->columnSpanFull(),
+                                            ])
+                                            ->defaultItems(0)
+                                            ->maxItems(6)
+                                            ->addActionLabel('Добавить элемент')
+                                            ->reorderable()
+                                            ->reorderableWithButtons()
+                                            ->collapsible()
+                                            ->itemLabel(fn (array $state): ?string => $state['title'] ?? null)
                                             ->columnSpanFull(),
                                     ])
                                     ->columns(1),

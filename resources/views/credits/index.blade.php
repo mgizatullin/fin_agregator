@@ -25,7 +25,7 @@
         <div class="main-content style-1 ">
     <div class="section-opportunities tf-spacing-27">
         <div class="tf-container">
-            <div class="d-grid gap_40">
+            <div class="d-grid gap_10">
                 @if(isset($items) && $items->isNotEmpty())
                     @foreach ($items as $item)
                         <x-credit-card :item="$item" />
@@ -38,8 +38,8 @@
     </div>
 
     <div class="tf-container">
-        <div class="content mb-0">
-            {{ $section->description ?? '' }}
+        <div class="content mb-0 text-body">
+            {!! description_to_html($section->description ?? '') !!}
         </div>
     </div>
         </div>
