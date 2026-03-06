@@ -4,6 +4,7 @@ namespace App\Filament\Components;
 
 use Filament\Actions\Concerns\InteractsWithActions;
 use Filament\Actions\Contracts\HasActions;
+use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Concerns\InteractsWithSchemas;
@@ -70,16 +71,23 @@ class SectionCategoriesManager extends Component implements HasActions, HasSchem
                     ->label('Добавить категорию')
                     ->form($this->getCategoryFormSchema())
                     ->using(function (array $data, HasActions $livewire): Model {
+                        $data['description'] = description_ensure_html($data['description'] ?? '');
                         $modelClass = $livewire->modelClass;
                         $data['sort_order'] = $modelClass::max('sort_order') + 1;
-                        $data['slug'] = $data['slug'] ?? \Illuminate\Support\Str::slug($data['title'] ?? '');
+                        $data['slug'] = $data['slug'] ?? Str::slug($data['title'] ?? '');
                         return $modelClass::create($data);
                     }),
             ])
             ->actions([
                 EditAction::make()
                     ->label('Редактировать')
-                    ->form($this->getCategoryFormSchema()),
+                    ->form($this->getCategoryFormSchema())
+                    ->mutateRecordDataUsing(function (array $data): array {
+                        if (isset($data['description']) && is_string($data['description'])) {
+                            $data['description'] = description_to_html($data['description']);
+                        }
+                        return $data;
+                    }),
                 DeleteAction::make()
                     ->label('Удалить'),
             ]);
@@ -107,10 +115,29 @@ class SectionCategoriesManager extends Component implements HasActions, HasSchem
                 ->label('Подзаголовок')
                 ->maxLength(255),
 
-            Textarea::make('description')
+            RichEditor::make('description')
                 ->label('Описание')
-                ->rows(4)
+                ->toolbarButtons([
+                    ['bold', 'italic', 'link'],
+                    ['h2', 'h3'],
+                    ['bulletList', 'orderedList'],
+                ])
+                ->extraInputAttributes(['style' => 'min-height: 300px'])
                 ->columnSpanFull(),
+
+            TextInput::make('h1_template')
+                ->label('Шаблон H1')
+                ->maxLength(255)
+                ->placeholder('Кредиты онлайн на карту[if city.p] в {city.p}[/if]')
+                ->helperText('Переменные: {service_name}, {category_name}, {city}, {city.g}, {city.p}. Условия: [if city]...[/if]'),
+
+            TextInput::make('seo_title_template')
+                ->label('Шаблон SEO Title')
+                ->maxLength(255),
+
+            Textarea::make('seo_description_template')
+                ->label('Шаблон SEO Description')
+                ->rows(3),
         ];
     }
 

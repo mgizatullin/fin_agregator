@@ -6,9 +6,9 @@ use App\Models\SectionSetting;
 use Filament\Actions\Action;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Repeater;
+use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
-use Filament\Notifications\Notification;
 use Filament\Pages\Concerns\CanUseDatabaseTransactions;
 use Filament\Pages\Page;
 use Filament\Schemas\Components\Actions;
@@ -94,7 +94,10 @@ abstract class BaseSectionSettingsPage extends Page
             'title' => $c->getAttribute('title'),
             'slug' => $c->getAttribute('slug'),
             'subtitle' => $c->getAttribute('subtitle'),
-            'description' => $c->getAttribute('description'),
+            'description' => description_to_html((string) ($c->getAttribute('description') ?? '')),
+            'h1_template' => $c->getAttribute('h1_template'),
+            'seo_title_template' => $c->getAttribute('seo_title_template'),
+            'seo_description_template' => $c->getAttribute('seo_description_template'),
             'sort_order' => $c->getAttribute('sort_order'),
         ])->toArray();
         $this->form->fill($data);
@@ -132,7 +135,10 @@ abstract class BaseSectionSettingsPage extends Page
                     'title' => $item['title'] ?? '',
                     'slug' => $item['slug'] ?? null,
                     'subtitle' => $item['subtitle'] ?? null,
-                    'description' => $item['description'] ?? null,
+                    'description' => description_ensure_html($item['description'] ?? ''),
+                    'h1_template' => $item['h1_template'] ?? null,
+                    'seo_title_template' => $item['seo_title_template'] ?? null,
+                    'seo_description_template' => $item['seo_description_template'] ?? null,
                     'sort_order' => $index,
                 ];
                 if (! empty($item['id'])) {
@@ -249,6 +255,7 @@ abstract class BaseSectionSettingsPage extends Page
                         Tab::make('Категории')
                             ->schema([
                                 Section::make('Категории раздела')
+                                    ->description('Переменные шаблонов: {service_name}, {category_name}, {city}, {city.g}, {city.p}. Условия: [if city]...[/if]')
                                     ->schema([
                                         Repeater::make('categories')
                                             ->label('Категории')
@@ -265,9 +272,24 @@ abstract class BaseSectionSettingsPage extends Page
                                                 TextInput::make('subtitle')
                                                     ->label('Подзаголовок')
                                                     ->maxLength(255),
-                                                Textarea::make('description')
+                                                RichEditor::make('description')
                                                     ->label('Описание')
-                                                    ->rows(2),
+                                                    ->toolbarButtons([
+                                                        ['bold', 'italic', 'link'],
+                                                        ['h2', 'h3'],
+                                                        ['bulletList', 'orderedList'],
+                                                    ])
+                                                    ->columnSpanFull(),
+                                                TextInput::make('h1_template')
+                                                    ->label('Шаблон H1')
+                                                    ->maxLength(255)
+                                                    ->placeholder('Кредиты онлайн на карту[if city.p] в {city.p}[/if]'),
+                                                TextInput::make('seo_title_template')
+                                                    ->label('Шаблон SEO Title')
+                                                    ->maxLength(255),
+                                                Textarea::make('seo_description_template')
+                                                    ->label('Шаблон SEO Description')
+                                                    ->rows(3),
                                             ])
                                             ->defaultItems(0)
                                             ->addActionLabel('Добавить категорию')
@@ -291,6 +313,31 @@ abstract class BaseSectionSettingsPage extends Page
                                         Textarea::make('seo_description')
                                             ->label('SEO Description')
                                             ->rows(3)
+                                            ->columnSpanFull(),
+                                    ])
+                                    ->columns(1),
+                            ]),
+
+                        Tab::make('Мультигородность')
+                            ->schema([
+                                Section::make('Шаблоны для страниц с городом в URL')
+                                    ->description('Переменные: {service_name}, {city}, {city.g} (родительный), {city.p} (предложный). Пример: {service_name} в {city.p}')
+                                    ->schema([
+                                        TextInput::make('seo_title_template')
+                                            ->label('Шаблон SEO Title')
+                                            ->maxLength(255)
+                                            ->columnSpanFull(),
+                                        Textarea::make('seo_description_template')
+                                            ->label('Шаблон SEO Description')
+                                            ->rows(3)
+                                            ->columnSpanFull(),
+                                        TextInput::make('h1_template')
+                                            ->label('Шаблон H1')
+                                            ->maxLength(255)
+                                            ->columnSpanFull(),
+                                        Textarea::make('content_template')
+                                            ->label('Шаблон текста')
+                                            ->rows(6)
                                             ->columnSpanFull(),
                                     ])
                                     ->columns(1),

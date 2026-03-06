@@ -18,6 +18,7 @@
     <link rel="stylesheet" type="text/css" href="{{ asset('assets/css/animate.min.css') }}">
     <link rel="stylesheet" type="text/css" href="{{ asset('assets/css/swiper-bundle.min.css') }}">
     <link rel="stylesheet" type="text/css" href="{{ asset('assets/css/styles.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ asset('assets/css/city-dialog.css') }}">
 
     <link rel="stylesheet" href="{{ asset('assets/fonts/fonts.css') }}">
     <link rel="stylesheet" type="text/css" href="{{ asset('assets/fonts/icons/icomoon/style.css') }}">
@@ -34,7 +35,12 @@
                     <div class="row">
                         <div class="col-12">
                             <div class="heading mb_51">
-                                <h1 class="text_black mb_18 letter-spacing-1 ">{{ $section->title ?? '' }}</h1>
+                                <h1 class="text_black letter-spacing-1 ">{{ $section->title ?? '' }}</h1>
+                                @if(!empty($showCitySelect) && !empty($citySelectBase))
+                                    <button type="button" class="city-select-btn" data-section-base="{{ $citySelectBase }}">
+                                        Выбрать город
+                                    </button>
+                                @endif
                                 <p class="sub-heading text_mono-gray-7">{{ $section->subtitle ?? '' }}</p>
                             </div>
                             <ul class="breadcrumb">
@@ -64,6 +70,7 @@
     <script src="{{ asset('assets/js/carousel.js') }}"></script>
     <script src="{{ asset('assets/js/ScrollSmooth.js') }}"></script>
     <script src="{{ asset('assets/js/main.js') }}"></script>
+    <script src="{{ asset('assets/js/city-dialog.js') }}"></script>
 </body>
 
 </html>

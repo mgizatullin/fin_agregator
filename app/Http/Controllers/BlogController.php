@@ -36,6 +36,7 @@ class BlogController extends Controller
             'section' => $section,
             'seo_title' => $section->seo_title,
             'seo_description' => $section->seo_description,
+            'title' => $section->title,
         ]);
     }
 
@@ -72,6 +73,7 @@ class BlogController extends Controller
             ],
             'seo_title' => null,
             'seo_description' => null,
+            'title' => $category->name,
         ]);
     }
 
@@ -82,10 +84,25 @@ class BlogController extends Controller
             ->where('is_published', true)
             ->firstOrFail();
 
+        $categories = Category::query()
+            ->where('is_active', true)
+            ->withCount('articles')
+            ->orderBy('name')
+            ->get();
+        $latestArticles = Article::query()
+            ->with('category')
+            ->where('is_published', true)
+            ->latest('published_at')
+            ->limit(3)
+            ->get();
+
         return view('blog.show', [
             'article' => $article,
+            'categories' => $categories,
+            'latestArticles' => $latestArticles,
             'seo_title' => $article->seo_title ?? $article->title,
             'seo_description' => $article->seo_description,
+            'title' => $article->title,
         ]);
     }
 }

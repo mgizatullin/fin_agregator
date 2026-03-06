@@ -15,6 +15,10 @@ class SectionSetting extends Model
         'advantages',
         'seo_title',
         'seo_description',
+        'seo_title_template',
+        'seo_description_template',
+        'h1_template',
+        'content_template',
     ];
 
     protected function casts(): array
@@ -45,6 +49,10 @@ class SectionSetting extends Model
                 'advantages' => [],
                 'seo_title' => null,
                 'seo_description' => null,
+                'seo_title_template' => null,
+                'seo_description_template' => null,
+                'h1_template' => null,
+                'content_template' => null,
             ]
         );
     }

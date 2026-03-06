@@ -13,6 +13,9 @@ class LoanCategory extends Model
         'slug',
         'subtitle',
         'description',
+        'h1_template',
+        'seo_title_template',
+        'seo_description_template',
         'sort_order',
     ];
 
@@ -31,6 +34,9 @@ class LoanCategory extends Model
             }
             if ($category->isDirty('title') || blank($category->slug)) {
                 $category->slug = static::generateUniqueSlug($category->title, $category->id);
+            }
+            if (array_key_exists('description', $category->getDirty())) {
+                $category->description = description_ensure_html($category->description ?? '');
             }
         });
     }

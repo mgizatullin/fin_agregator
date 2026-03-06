@@ -343,11 +343,6 @@ class HomePageSettings extends Page
                                             ->label('SEO Description')
                                             ->rows(4)
                                             ->columnSpanFull(),
-
-                                        Textarea::make('seo_keywords')
-                                            ->label('SEO Keywords')
-                                            ->rows(3)
-                                            ->columnSpanFull(),
                                     ])
                                     ->columns(1),
                             ]),

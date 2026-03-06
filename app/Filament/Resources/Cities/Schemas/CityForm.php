@@ -27,6 +27,16 @@ class CityForm
                     ->maxLength(255)
                     ->unique(ignoreRecord: true),
 
+                TextInput::make('name_genitive')
+                    ->label('Название (родительный падеж, например: Уфы)')
+                    ->maxLength(255)
+                    ->helperText('Используется в шаблонах мультигородности: {city.g}'),
+
+                TextInput::make('name_prepositional')
+                    ->label('Название (предложный падеж, например: Уфе)')
+                    ->maxLength(255)
+                    ->helperText('Используется в шаблонах мультигородности: {city.p}'),
+
                 TextInput::make('region')
                     ->label('Регион')
                     ->maxLength(255),

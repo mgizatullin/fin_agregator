@@ -20,7 +20,6 @@ class Article extends Model
         'is_published',
         'seo_title',
         'seo_description',
-        'seo_keywords',
     ];
 
     protected function casts(): array

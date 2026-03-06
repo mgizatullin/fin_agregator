@@ -1,8 +1,27 @@
 @extends('layouts.section-index')
 
 @section('content')
+    @php
+        $categories = \App\Models\CardCategory::orderBy('title')->get();
+        $sectionPath = 'karty';
+        $currentCity = $city ?? null;
+        $currentCategory = $category->slug ?? null;
+    @endphp
     <div class="section-opportunities tf-spacing-27">
         <div class="tf-container">
+            @if($categories->count())
+            <div class="category-nav overflow-x-auto mb_40">
+                <div class="category-item {{ !$currentCategory ? 'active' : '' }}">
+                    <a href="{{ $currentCity ? url($sectionPath . '/' . $currentCity->slug) : url($sectionPath) }}">Все</a>
+                </div>
+                @foreach($categories as $cat)
+                <div class="category-item {{ $currentCategory === $cat->slug ? 'active' : '' }}">
+                    <a href="{{ $currentCity ? url($sectionPath . '/category/' . $cat->slug . '/' . $currentCity->slug) : url($sectionPath . '/category/' . $cat->slug) }}">{{ $cat->title }}</a>
+                </div>
+                @endforeach
+            </div>
+            @endif
+
             <div class="d-grid gap_40">
                 @if(isset($items) && $items->isNotEmpty())
                     @foreach ($items as $card)

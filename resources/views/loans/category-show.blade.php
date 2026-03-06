@@ -1,33 +1,43 @@
 @extends('layouts.main')
 
+@section('page-header')
+@include('layouts.partials.page-header', [
+    'title' => $section->title ?? 'Займы',
+    'subtitle' => $section->subtitle ?? null,
+    'showCitySelect' => true,
+    'citySelectBase' => 'zaimy/' . $category->slug,
+    'breadcrumbs' => [
+        ['url' => url('/'), 'label' => 'Главная'],
+        ['url' => $sectionIndexUrl ?? route('loans.index'), 'label' => $sectionIndexTitle ?? 'Займы'],
+        ['label' => $section->title ?? ''],
+    ],
+])
+@endsection
+
 @section('content')
-
-            <!-- .page-title -->
-            <div class="page-title style-default">
-                <div class="tf-container">
-                    <div class="row">
-                        <div class="col-12">
-                            <div class="heading mb_51">
-                                <h1 class="text_black mb_18 letter-spacing-1 ">{{ $section->title ?? 'Займы' }}</h1>
-                                <p class="sub-heading text_mono-gray-7">{{ $section->subtitle ?? '' }}</p>
-                            </div>
-                            <ul class="breadcrumb">
-                                <li><a href="{{ url('/') }}" class="link">Главная</a></li>
-                                @if(isset($sectionIndexUrl) && isset($sectionIndexTitle))
-                                    <li><a href="{{ $sectionIndexUrl }}" class="link">{{ $sectionIndexTitle }}</a></li>
-                                @endif
-                                <li>{{ $section->title ?? '' }}</li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-            </div><!-- /.page-title -->
-
-        </div>
 
         <div class="main-content style-1 ">
     <div class="section-opportunities tf-spacing-27">
         <div class="tf-container">
+            @php
+                $categories = \App\Models\LoanCategory::orderBy('title')->get();
+                $sectionPath = 'zaimy';
+                $currentCity = $city ?? null;
+                $currentCategory = $category->slug ?? null;
+            @endphp
+            @if($categories->count())
+            <div class="category-nav overflow-x-auto mb_40">
+                <div class="category-item {{ !$currentCategory ? 'active' : '' }}">
+                    <a href="{{ $currentCity ? url($sectionPath . '/' . $currentCity->slug) : url($sectionPath) }}">Все</a>
+                </div>
+                @foreach($categories as $cat)
+                <div class="category-item {{ $currentCategory === $cat->slug ? 'active' : '' }}">
+                    <a href="{{ $currentCity ? url($sectionPath . '/' . $cat->slug . '/' . $currentCity->slug) : url($sectionPath . '/' . $cat->slug) }}">{{ $cat->title }}</a>
+                </div>
+                @endforeach
+            </div>
+            @endif
+
             <div class="loan-cards-grid">
                 @if(isset($items) && $items->isNotEmpty())
                     @foreach ($items as $item)

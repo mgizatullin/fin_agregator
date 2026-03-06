@@ -10,6 +10,8 @@ class City extends Model
 {
     protected $fillable = [
         'name',
+        'name_genitive',
+        'name_prepositional',
         'slug',
         'region',
         'population',

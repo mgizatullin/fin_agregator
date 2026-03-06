@@ -2,7 +2,7 @@
 
 namespace App\Filament\Resources\Articles\Schemas;
 
-use Filament\Forms\Components\DateTimePicker;
+use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Select;
@@ -30,28 +30,33 @@ class ArticleForm
                                     ->required()
                                     ->maxLength(255)
                                     ->live(onBlur: true)
-                                    ->afterStateUpdated(fn (Set $set, ?string $state) => $set('slug', Str::slug((string) $state))),
+                                    ->afterStateUpdated(fn (Set $set, ?string $state) => $set('slug', Str::slug((string) $state)))
+                                    ->columnSpan(12),
 
                                 TextInput::make('slug')
                                     ->label('URL')
                                     ->required()
                                     ->maxLength(255)
-                                    ->unique(ignoreRecord: true),
+                                    ->unique(ignoreRecord: true)
+                                    ->columnSpan(12),
 
                                 Select::make('category_id')
                                     ->label('Категория')
                                     ->relationship('category', 'name')
                                     ->searchable()
                                     ->preload()
-                                    ->nullable(),
+                                    ->nullable()
+                                    ->columnSpan(12),
 
                                 TextInput::make('author')
                                     ->label('Автор')
-                                    ->maxLength(255),
+                                    ->maxLength(255)
+                                    ->columnSpan(12),
 
                                 FileUpload::make('image')
                                     ->label('Изображение')
                                     ->image()
+                                    ->disk('public')
                                     ->directory('blog/articles')
                                     ->maxSize(2048)
                                     ->imagePreviewHeight(200)
@@ -60,13 +65,19 @@ class ArticleForm
                                 Toggle::make('is_published')
                                     ->label('Опубликовано')
                                     ->default(false)
-                                    ->required(),
+                                    ->required()
+                                    ->columnSpan(12),
 
-                                DateTimePicker::make('published_at')
+                                DatePicker::make('published_at')
                                     ->label('Дата публикации')
-                                    ->nullable(),
+                                    ->native(false)
+                                    ->displayFormat('d.m.Y')
+                                    ->format('Y-m-d')
+                                    ->nullable()
+                                    ->dehydrateStateUsing(fn ($state) => $state ? \Carbon\Carbon::parse($state)->format('Y-m-d') . ' 00:00:00' : null)
+                                    ->columnSpan(3),
                             ])
-                            ->columns(1),
+                            ->columns(12),
 
                         Tab::make('Контент')
                             ->schema([
@@ -92,11 +103,6 @@ class ArticleForm
                                 Textarea::make('seo_description')
                                     ->label('SEO Description')
                                     ->rows(3)
-                                    ->columnSpanFull(),
-
-                                TextInput::make('seo_keywords')
-                                    ->label('SEO ключевые слова')
-                                    ->maxLength(255)
                                     ->columnSpanFull(),
                             ])
                             ->columns(1),

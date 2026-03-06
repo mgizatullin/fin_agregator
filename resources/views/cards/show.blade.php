@@ -1,26 +1,18 @@
-@extends('layouts.main')
+@extends('layouts.app')
+
+@section('page-header')
+@include('layouts.partials.page-header', [
+    'title' => $card->name ?? 'Кредитная карта',
+    'subtitle' => null,
+    'breadcrumbs' => [
+        ['url' => url('/'), 'label' => 'Главная'],
+        ['url' => url('/karty'), 'label' => 'Кредитные карты'],
+        ['label' => $card->name ?? 'Кредитная карта'],
+    ],
+])
+@endsection
 
 @section('content')
-
-            <!-- .page-title -->
-            <div class="page-title style-default">
-                <div class="tf-container">
-                    <div class="row">
-                        <div class="col-12">
-                            <div class="heading mb_43">
-                                <h1 class="text_black letter-spacing-1 ">{{ $card->name }}</h1>
-                            </div>
-                            <ul class="breadcrumb">
-                                <li><a href="{{ url('/') }}" class="link">Главная</a></li>
-                                <li><a href="{{ route('cards.index') }}" class="link">Кредитные карты</a></li>
-                                <li>{{ $card->name }}</li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-            </div><!-- /.page-title -->
-
-        </div>
 
         <div class="main-content style-1 ">
             <div class="tf-container">

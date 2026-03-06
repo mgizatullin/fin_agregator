@@ -1,31 +1,20 @@
 @extends('layouts.main')
 
+@section('page-header')
+@include('layouts.partials.page-header', [
+    'title' => $page_h1 ?? $title ?? $section->title ?? 'Банки',
+    'subtitle' => $section->subtitle ?? null,
+    'showCitySelect' => true,
+    'citySelectBase' => isset($city) && $city ? implode('/', array_slice(request()->segments(), 0, -1)) : request()->path(),
+])
+@endsection
+
 @section('content')
-
-            <!-- .page-title -->
-            <div class="page-title style-default">
-                <div class="tf-container">
-                    <div class="row">
-                        <div class="col-12">
-                            <div class="heading mb_51">
-                                <h1 class="text_black mb_18 letter-spacing-1 ">{{ $section->title ?? 'Банки' }}</h1>
-                                <p class="sub-heading text_mono-gray-7">{{ $section->subtitle ?? '' }}</p>
-                            </div>
-                            <ul class="breadcrumb">
-                                <li><a href="{{ url('/') }}" class="link">Главная</a></li>
-                                <li>{{ $section->title ?? 'Банки' }}</li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-            </div><!-- /.page-title -->
-
-        </div>
 
         <div class="main-content style-1 ">
     <div class="section-opportunities tf-spacing-27">
         <div class="tf-container">
-            <div class="d-grid gap_40">
+            <div class="d-grid gap_10">
                 @if(isset($items) && $items->isNotEmpty())
                     @foreach ($items as $bank)
                         @php
@@ -79,10 +68,10 @@
         </div>
     </div>
 
-    @if(!empty($section->description))
+    @if(!empty($section->description) || filled($page_content ?? null))
     <div class="tf-container">
         <div class="content mb-0">
-            {!! $section->description !!}
+            {!! filled($page_content ?? null) ? $page_content : $section->description !!}
         </div>
     </div>
     @endif

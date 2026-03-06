@@ -1,5 +1,5 @@
 @if(isset($categories) && $categories->isNotEmpty())
-<div class="category-nav overflow-x-auto">
+<div class="category-nav overflow-x-auto mb_40">
     <div class="category-item {{ request()->routeIs($indexRoute) ? 'active' : '' }}">
         <a href="{{ route($indexRoute) }}">Все</a>
     </div>

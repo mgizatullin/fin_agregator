@@ -67,6 +67,9 @@ class ListCredits extends ListRecords
         if (isset($data['description']) && is_string($data['description'])) {
             $data['description'] = description_to_html($data['description']);
         }
+        if (isset($data['content_template']) && is_string($data['content_template'])) {
+            $data['content_template'] = description_to_html($data['content_template']);
+        }
 
         $this->sectionData = $data;
     }
@@ -88,6 +91,9 @@ class ListCredits extends ListRecords
 
         if (array_key_exists('description', $data)) {
             $data['description'] = description_ensure_html($data['description'] ?? '');
+        }
+        if (array_key_exists('content_template', $data)) {
+            $data['content_template'] = description_ensure_html($data['content_template'] ?? '');
         }
 
         $this->getSetting()->update(Arr::except($data, ['id', 'created_at', 'updated_at', 'type']));
@@ -194,6 +200,49 @@ class ListCredits extends ListRecords
             ]);
     }
 
+    public function sectionCityForm(Schema $schema): Schema
+    {
+        return $schema
+            ->statePath('sectionData')
+            ->components([
+                TextInput::make('seo_title_template')
+                    ->label('Шаблон SEO Title')
+                    ->maxLength(255)
+                    ->helperText('Переменные: {service_name}, {city}, {city.g}, {city.p}')
+                    ->columnSpanFull(),
+                Textarea::make('seo_description_template')
+                    ->label('Шаблон SEO Description')
+                    ->rows(3)
+                    ->columnSpanFull(),
+                TextInput::make('h1_template')
+                    ->label('Шаблон H1')
+                    ->maxLength(255)
+                    ->columnSpanFull(),
+                RichEditor::make('content_template')
+                    ->label('Шаблон текста')
+                    ->columnSpanFull()
+                    ->json(false)
+                    ->extraInputAttributes(['style' => 'min-height: 200px'])
+                    ->toolbarButtons([
+                        ['bold', 'italic', 'link'],
+                        ['h2', 'h3'],
+                        ['bulletList', 'orderedList'],
+                    ])
+                    ->afterStateHydrated(function (RichEditor $component, mixed $state): void {
+                        if (! is_string($state) || trim($state) === '') {
+                            return;
+                        }
+                        $trimmed = trim($state);
+                        if (str_starts_with($trimmed, '{"type":"doc"') || str_starts_with($trimmed, '{"type": "doc"')) {
+                            $decoded = json_decode($trimmed, true);
+                            if (is_array($decoded)) {
+                                $component->state($decoded);
+                            }
+                        }
+                    }),
+            ]);
+    }
+
     public function content(Schema $schema): Schema
     {
         return $schema
@@ -232,6 +281,19 @@ class ListCredits extends ListRecords
                                     ->footer([
                                         Actions::make([
                                             \Filament\Actions\Action::make('saveSectionSettingsSeo')
+                                                ->label('Сохранить')
+                                                ->submit('saveSectionSettings'),
+                                        ]),
+                                    ]),
+                            ]),
+                        Tab::make('Мультигородность')
+                            ->schema([
+                                Form::make([EmbeddedSchema::make('sectionCityForm')])
+                                    ->id('section-city-form')
+                                    ->livewireSubmitHandler('saveSectionSettings')
+                                    ->footer([
+                                        Actions::make([
+                                            \Filament\Actions\Action::make('saveSectionSettingsCity')
                                                 ->label('Сохранить')
                                                 ->submit('saveSectionSettings'),
                                         ]),

@@ -36,7 +36,6 @@
     <link rel="stylesheet" type="text/css" href="{{ asset('assets/css/animate.min.css') }}">
     <link rel="stylesheet" type="text/css" href="{{ asset('assets/css/swiper-bundle.min.css') }}">
     <link rel="stylesheet" type="text/css" href="{{ asset('assets/css/styles.css') }}">
-    <link rel="stylesheet" type="text/css" href="{{ asset('assets/css/city-dialog.css') }}">
 
     @stack('styles')
     <!-- Font -->
@@ -255,7 +254,6 @@
     <script src="{{ asset('assets/js/ScrollSmooth.js') }}"></script>
     <script src="{{ asset('assets/js/infinityslide.js') }}"></script>
     <script src="{{ asset('assets/js/main.js') }}"></script>
-    <script src="{{ asset('assets/js/city-dialog.js') }}"></script>
     @stack('scripts')
     <!-- /Javascript -->
 
