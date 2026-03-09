@@ -6,7 +6,8 @@
     $termMonths = $item->term_months !== null && $item->term_months !== '' ? $item->term_months . ' мес.' : '-';
     $minAmount = $item->min_amount !== null && $item->min_amount !== '' ? 'от ' . number_format((float) $item->min_amount, 0, '', ' ') . ' ₽' : '-';
     $replenishment = $item->replenishment ? 'Да' : 'Нет';
-    $logo = ($item->bank && ($item->bank->logo_square ?? $item->bank->logo)) ? asset('storage/' . ($item->bank->logo_square ?? $item->bank->logo)) : null;
+    $logoPath = $item->bank->logo_square ?? $item->bank->logo ?? null;
+    $logo = $logoPath ? (str_starts_with($logoPath, 'http') ? $logoPath : asset('storage/' . $logoPath)) : null;
     $detailUrl = $item->slug ? url('/vklady/' . $item->slug) : '#';
 @endphp
 

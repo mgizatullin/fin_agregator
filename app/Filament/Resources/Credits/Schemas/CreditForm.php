@@ -4,6 +4,7 @@ namespace App\Filament\Resources\Credits\Schemas;
 
 use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Schema;
@@ -67,6 +68,33 @@ class CreditForm
                 TextInput::make('age_max')
                     ->label('Возраст до')
                     ->numeric(),
+
+                TextInput::make('decision')
+                    ->label('Решение')
+                    ->maxLength(255),
+
+                TextInput::make('receive_method')
+                    ->label('Способ получения')
+                    ->maxLength(255),
+
+                TextInput::make('payment_type')
+                    ->label('Тип выплат')
+                    ->maxLength(255),
+
+                Textarea::make('penalty')
+                    ->label('Штраф')
+                    ->rows(4)
+                    ->columnSpanFull(),
+
+                Toggle::make('no_collateral')
+                    ->label('Без залога')
+                    ->default(false)
+                    ->required(),
+
+                Toggle::make('no_guarantors')
+                    ->label('Без поручителей')
+                    ->default(false)
+                    ->required(),
 
                 RichEditor::make('description')
                     ->label('Описание')

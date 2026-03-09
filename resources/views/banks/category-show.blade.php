@@ -22,11 +22,14 @@
             <div class="d-grid gap_40">
                 @if(isset($items) && $items->isNotEmpty())
                     @foreach ($items as $bank)
+                        @php
+                            $logoUrl = $bank->logo ? (str_starts_with($bank->logo, 'http') ? $bank->logo : asset('storage/' . $bank->logo)) : null;
+                        @endphp
                         <div class="karty-card">
                             <div class="karty-card__col karty-card__name">
                                 <div class="karty-card__name-inner">
-                                    @if($bank->logo)
-                                        <img class="karty-card__image" src="{{ asset('storage/' . $bank->logo) }}" alt="{{ $bank->name }}" width="101" height="66">
+                                    @if($logoUrl)
+                                        <img class="karty-card__image" src="{{ $logoUrl }}" alt="{{ $bank->name }}" width="101" height="66">
                                     @else
                                         <div class="karty-card__image karty-card__image-placeholder">—</div>
                                     @endif

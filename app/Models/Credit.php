@@ -20,6 +20,12 @@ class Credit extends Model
         'income_proof_required',
         'age_min',
         'age_max',
+        'decision',
+        'receive_method',
+        'payment_type',
+        'penalty',
+        'no_collateral',
+        'no_guarantors',
         'description',
         'is_active',
     ];
@@ -35,6 +41,8 @@ class Credit extends Model
             'income_proof_required' => 'boolean',
             'age_min' => 'integer',
             'age_max' => 'integer',
+            'no_collateral' => 'boolean',
+            'no_guarantors' => 'boolean',
             'is_active' => 'boolean',
         ];
     }

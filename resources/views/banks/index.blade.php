@@ -18,7 +18,8 @@
                 @if(isset($items) && $items->isNotEmpty())
                     @foreach ($items as $bank)
                         @php
-                            $logoUrl = ($bank->logo_square ?? $bank->logo) ? asset('storage/' . ($bank->logo_square ?? $bank->logo)) : null;
+                            $logoPath = $bank->logo_square ?? $bank->logo;
+                            $logoUrl = $logoPath ? (str_starts_with($logoPath, 'http') ? $logoPath : asset('storage/' . $logoPath)) : null;
                             $bankSlug = $bank->slug ? url('/banki/' . $bank->slug) : '#';
                             $branchesCount = $bank->branches_count ?? $bank->branches->count();
                             $rating = $bank->rating !== null && $bank->rating !== '' ? (float) $bank->rating : null;

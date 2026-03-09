@@ -2,9 +2,14 @@
     <div class="inner-wrapper-sticky">
         <div class="card-sidebar-offer sidebar__offer">
             <div class="card-sidebar-offer__flex">
+                @php
+                    $logoUrl = $card->bank && $card->bank->logo
+                        ? (str_starts_with($card->bank->logo, 'http') ? $card->bank->logo : asset('storage/' . $card->bank->logo))
+                        : null;
+                @endphp
                 @if($card->bank && $card->bank->logo)
                     <div class="card-sidebar-offer__bank-logo">
-                        <img src="{{ asset('storage/' . $card->bank->logo) }}" alt="{{ $card->bank->name }}" width="120" height="120">
+                        <img src="{{ $logoUrl }}" alt="{{ $card->bank->name }}" width="120" height="120">
                     </div>
                 @endif
                 <div class="card-sidebar-offer__items">

@@ -3,7 +3,8 @@
     $bank = $item->bank;
     $bankName = $bank ? ($bank->name ?: '') : '';
     $creditName = $item->name ?: '—';
-    $logoPath = $bank && filled($bank->logo_square ?? null) ? asset('storage/' . $bank->logo_square) : ($bank && filled($bank->logo ?? null) ? asset('storage/' . $bank->logo) : null);
+    $logoSource = $bank && filled($bank->logo_square ?? null) ? $bank->logo_square : ($bank && filled($bank->logo ?? null) ? $bank->logo : null);
+    $logoPath = $logoSource ? (str_starts_with($logoSource, 'http') ? $logoSource : asset('storage/' . $logoSource)) : null;
 
     $rate = $item->rate !== null && $item->rate !== '' ? $item->rate . '%' : '—';
     $psk = $item->psk !== null && $item->psk !== '' ? $item->psk . '%' : '—';

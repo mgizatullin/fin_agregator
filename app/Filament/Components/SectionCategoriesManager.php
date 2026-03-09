@@ -73,7 +73,8 @@ class SectionCategoriesManager extends Component implements HasActions, HasSchem
                     ->using(function (array $data, HasActions $livewire): Model {
                         $data['description'] = description_ensure_html($data['description'] ?? '');
                         $modelClass = $livewire->modelClass;
-                        $data['sort_order'] = $modelClass::max('sort_order') + 1;
+                        $maxSortOrder = $modelClass::query()->max('sort_order');
+                        $data['sort_order'] = ((int) $maxSortOrder) + 1;
                         $data['slug'] = $data['slug'] ?? Str::slug($data['title'] ?? '');
                         return $modelClass::create($data);
                     }),
@@ -146,4 +147,3 @@ class SectionCategoriesManager extends Component implements HasActions, HasSchem
         return view('filament.components.section-categories-manager');
     }
 }
-
