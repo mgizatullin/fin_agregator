@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Support\Str;
 
 class Loan extends Model
@@ -49,6 +50,11 @@ class Loan extends Model
                 $loan->slug = static::generateUniqueSlug($loan->name, $loan->id);
             }
         });
+    }
+
+    public function reviews(): MorphMany
+    {
+        return $this->morphMany(Review::class, 'reviewable')->latest();
     }
 
     public function categories(): BelongsToMany

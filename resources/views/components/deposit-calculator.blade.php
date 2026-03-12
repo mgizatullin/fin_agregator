@@ -69,19 +69,23 @@
         <label class="deposit-calculator__label">Валюта</label>
         <div class="deposit-calculator__currency-btns" role="group">
             @foreach($currencies as $currency)
-                <button type="button" class="deposit-calculator__currency-btn {{ $currency->currency_code === $firstCode ? 'is-active' : '' }}" data-currency="{{ $currency->currency_code }}">{{ $currencySymbols[$currency->currency_code] ?? $currency->currency_code }}</button>
+                <button type="button" class="deposit-calculator__currency-btn deposit-currency-switch {{ $currency->currency_code === $firstCode ? 'is-active' : '' }}" data-currency="{{ $currency->currency_code }}">{{ $currency->currency_code }} ({{ $currencySymbols[$currency->currency_code] ?? $currency->currency_code }})</button>
             @endforeach
         </div>
     </div>
 
     <div class="deposit-calculator__field">
         <label class="deposit-calculator__label" for="deposit-calc-amount">Сумма вклада</label>
-        <input type="number" id="deposit-calc-amount" class="deposit-calculator__input" min="{{ (int)($firstLimits['min_amount'] ?? 0) }}" @if(isset($firstLimits['max_amount']) && $firstLimits['max_amount'] !== null) max="{{ (int)$firstLimits['max_amount'] }}" @endif step="1000" value="{{ (int)$defaultAmount }}" autocomplete="off">
+        <input type="text" id="deposit-calc-amount" inputmode="numeric" class="deposit-calculator__input deposit-calculator__input--no-spinner" data-min="{{ (int)($firstLimits['min_amount'] ?? 0) }}" data-max="{{ isset($firstLimits['max_amount']) && $firstLimits['max_amount'] !== null ? (int)$firstLimits['max_amount'] : '' }}" value="{{ number_format((int)$defaultAmount, 0, '', ' ') }}" autocomplete="off">
     </div>
 
     <div class="deposit-calculator__field">
-        <label class="deposit-calculator__label" for="deposit-calc-term">Срок (дней)</label>
-        <input type="number" id="deposit-calc-term" class="deposit-calculator__input" min="{{ (int)($firstLimits['min_term'] ?? 1) }}" max="{{ (int)($firstLimits['max_term'] ?? 3650) }}" step="1" value="{{ (int)$defaultTerm }}" autocomplete="off">
+        <label class="deposit-calculator__label" for="deposit-calc-term">Срок</label>
+        <div class="deposit-calculator__pair">
+            <input type="text" id="deposit-calc-term" inputmode="numeric" class="deposit-calculator__input deposit-calculator__input--no-spinner" data-deposit-term data-min="{{ (int)($firstLimits['min_term'] ?? 1) }}" data-max="{{ (int)($firstLimits['max_term'] ?? 3650) }}" value="{{ (int)$defaultTerm }}" autocomplete="off" placeholder="0">
+            <span class="deposit-calculator__suffix">дн.</span>
+        </div>
+        <input type="range" class="deposit-calculator__range" data-deposit-term-range min="{{ (int)($firstLimits['min_term'] ?? 1) }}" max="{{ (int)($firstLimits['max_term'] ?? 3650) }}" step="1" value="{{ (int)$defaultTerm }}">
     </div>
 
     <div class="deposit-calculator__results">
@@ -116,12 +120,28 @@
     var currencyBtns = document.querySelectorAll('#deposit-calculator .deposit-calculator__currency-btn');
     var amountInput = document.getElementById('deposit-calc-amount');
     var termInput = document.getElementById('deposit-calc-term');
+    var termRange = document.querySelector('#deposit-calculator [data-deposit-term-range]');
     var incomeEl = document.getElementById('deposit-calc-income');
     var rateEl = document.getElementById('deposit-calc-rate');
     var amountDisplayEl = document.getElementById('deposit-calc-amount-display');
     var totalEl = document.getElementById('deposit-calc-total');
 
     var currentCurrency = currencyBtns.length ? currencyBtns[0].getAttribute('data-currency') : null;
+
+    function getTermLimits() {
+        var lim = limits[currentCurrency] || {};
+        return { min: lim.min_term != null ? lim.min_term : 1, max: lim.max_term != null ? lim.max_term : 3650 };
+    }
+
+    function syncTermPair(fromInput) {
+        var lim = getTermLimits();
+        var num = parseInt(termInput && termInput.value ? String(termInput.value).replace(/\s/g, '') : '', 10);
+        if (isNaN(num)) num = lim.min;
+        num = Math.min(Math.max(num, lim.min), lim.max);
+        if (termInput) termInput.value = num;
+        if (termRange) { termRange.min = lim.min; termRange.max = lim.max; termRange.value = num; }
+        return num;
+    }
 
     function findRate(currencyCode, amount, termDays) {
         var list = currencies[currencyCode];
@@ -156,29 +176,45 @@
         return Number(r).toFixed(2).replace(/\.?0+$/, '') + '%';
     }
 
+    function parseAmount(val) {
+        var str = String(val || '').replace(/\s/g, '');
+        return parseInt(str, 10) || 0;
+    }
+    function formatAmount(n) {
+        if (!Number(n) && n !== 0) return '';
+        return Number(n).toLocaleString('ru-RU', { maximumFractionDigits: 0 }).replace(/\u00A0/g, ' ');
+    }
     function updateLimits() {
         var lim = limits[currentCurrency] || {};
         var minA = lim.min_amount != null ? lim.min_amount : 0;
         var maxA = lim.max_amount;
         if (amountInput) {
-            amountInput.min = minA;
-            amountInput.max = maxA != null ? maxA : '';
-            if (Number(amountInput.value) < minA) amountInput.value = minA;
-            if (maxA != null && Number(amountInput.value) > maxA) amountInput.value = maxA;
+            amountInput.setAttribute('data-min', minA);
+            amountInput.setAttribute('data-max', maxA != null ? maxA : '');
+            var cur = parseAmount(amountInput.value);
+            if (cur < minA) cur = minA;
+            if (maxA != null && cur > maxA) cur = maxA;
+            amountInput.value = formatAmount(cur);
         }
-        var minT = lim.min_term != null ? lim.min_term : 1;
-        var maxT = lim.max_term != null ? lim.max_term : 3650;
+        var termLim = getTermLimits();
         if (termInput) {
-            termInput.min = minT;
-            termInput.max = maxT;
-            if (Number(termInput.value) < minT) termInput.value = minT;
-            if (Number(termInput.value) > maxT) termInput.value = maxT;
+            termInput.setAttribute('data-min', termLim.min);
+            termInput.setAttribute('data-max', termLim.max);
+        }
+        if (termRange) {
+            termRange.min = termLim.min;
+            termRange.max = termLim.max;
+            var curTerm = parseInt(termInput && termInput.value ? termInput.value : '', 10);
+            if (isNaN(curTerm)) curTerm = termLim.min;
+            curTerm = Math.min(Math.max(curTerm, termLim.min), termLim.max);
+            termRange.value = curTerm;
+            if (termInput) termInput.value = curTerm;
         }
     }
 
     function recalc() {
-        var amount = Number(amountInput && amountInput.value ? amountInput.value : 0);
-        var term = parseInt(termInput && termInput.value ? termInput.value : 0, 10) || 0;
+        var amount = parseAmount(amountInput && amountInput.value ? amountInput.value : 0);
+        var term = parseInt(termInput && termInput.value ? String(termInput.value).replace(/\s/g, '') : 0, 10) || 0;
         var sym = symbols[currentCurrency] || '';
 
         if (!amount || !term) {
@@ -229,13 +265,69 @@
         });
     }
 
-    if (amountInput) {
-        amountInput.addEventListener('input', scheduleRecalc);
-        amountInput.addEventListener('change', scheduleRecalc);
+    window.__depositSetCurrency = function(code) {
+        if (!code || !limits[code]) return;
+        currentCurrency = code;
+        currencyBtns.forEach(function(b) {
+            if (b.getAttribute('data-currency') === code) {
+                b.classList.add('is-active');
+            } else {
+                b.classList.remove('is-active');
+            }
+        });
+        updateLimits();
+        scheduleRecalc();
+    };
+
+    window.addEventListener('deposit-currency-change', function(e) {
+        if (e.detail && e.detail.currency) {
+            currentCurrency = e.detail.currency;
+            currencyBtns.forEach(function(b) {
+                b.classList.toggle('is-active', b.getAttribute('data-currency') === currentCurrency);
+            });
+            updateLimits();
+            scheduleRecalc();
+        }
+    });
+
+    if (termInput && termRange) {
+        termInput.addEventListener('input', function() { syncTermPair(true); scheduleRecalc(); });
+        termInput.addEventListener('change', function() { syncTermPair(true); scheduleRecalc(); });
+        termInput.addEventListener('blur', function() { syncTermPair(true); scheduleRecalc(); });
+        termRange.addEventListener('input', function() {
+            var v = parseInt(termRange.value, 10);
+            if (termInput) termInput.value = v;
+            scheduleRecalc();
+        });
+        termRange.addEventListener('change', function() {
+            var v = parseInt(termRange.value, 10);
+            if (termInput) termInput.value = v;
+            scheduleRecalc();
+        });
     }
-    if (termInput) {
-        termInput.addEventListener('input', scheduleRecalc);
-        termInput.addEventListener('change', scheduleRecalc);
+
+    if (amountInput) {
+        amountInput.addEventListener('input', function() {
+            var minA = parseInt(amountInput.getAttribute('data-min'), 10) || 0;
+            var maxA = amountInput.getAttribute('data-max');
+            maxA = maxA !== '' && maxA !== null ? parseInt(maxA, 10) : null;
+            var cur = parseAmount(amountInput.value);
+            if (maxA != null && cur > maxA) cur = maxA;
+            if (cur < minA && amountInput.value !== '') cur = minA;
+            amountInput.value = formatAmount(cur);
+            scheduleRecalc();
+        });
+        amountInput.addEventListener('blur', function() {
+            var minA = parseInt(amountInput.getAttribute('data-min'), 10) || 0;
+            var maxA = amountInput.getAttribute('data-max');
+            maxA = maxA !== '' && maxA !== null ? parseInt(maxA, 10) : null;
+            var cur = parseAmount(amountInput.value);
+            if (cur < minA) cur = minA;
+            if (maxA != null && cur > maxA) cur = maxA;
+            amountInput.value = formatAmount(cur);
+            scheduleRecalc();
+        });
+        amountInput.addEventListener('change', scheduleRecalc);
     }
 
     updateLimits();

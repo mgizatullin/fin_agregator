@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Concerns\HandlesLoadMorePagination;
 use App\Http\Helpers\SectionRouteResolver;
+use App\Models\Bank;
 use App\Models\Deposit;
 use App\Models\DepositCategory;
 use App\Models\SectionSetting;
@@ -81,7 +82,7 @@ class DepositController extends Controller
      */
     public function show(Request $request, string $slug): View
     {
-        $deposit = Deposit::with(['bank', 'currencies.conditions'])
+        $deposit = Deposit::with(['bank', 'currencies.conditions', 'reviews.bank'])
             ->where('slug', $slug)
             ->where('is_active', true)
             ->firstOrFail();
@@ -91,7 +92,9 @@ class DepositController extends Controller
             'subtitle' => $deposit->bank ? $deposit->bank->name : '',
         ];
 
-        return view('deposits.show', array_merge(compact('deposit', 'section'), [
+        $banks = Bank::where('is_active', true)->orderBy('name')->get();
+
+        return view('deposits.show', array_merge(compact('deposit', 'section', 'banks'), [
             'sectionIndexUrl' => route('deposits.index'),
             'sectionIndexTitle' => 'Вклады',
             'seo_title' => null,

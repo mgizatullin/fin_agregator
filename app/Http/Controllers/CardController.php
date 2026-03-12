@@ -78,7 +78,7 @@ class CardController extends Controller
      */
     public function show(Request $request, string $slug): View
     {
-        $card = Card::with('bank')->where('slug', $slug)->where('is_active', true)->firstOrFail();
+        $card = Card::with(['bank', 'reviews.bank'])->where('slug', $slug)->where('is_active', true)->firstOrFail();
         return view('cards.show', [
             'card' => $card,
             'seo_title' => null,

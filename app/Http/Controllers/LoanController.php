@@ -80,7 +80,8 @@ class LoanController extends Controller
      */
     public function show(Request $request, string $slug): View
     {
-        $loan = Loan::where('slug', $slug)
+        $loan = Loan::with('reviews.bank')
+            ->where('slug', $slug)
             ->where('is_active', true)
             ->firstOrFail();
 

@@ -162,3 +162,8 @@ body.city-modal-open {
     color: #000;
     border-bottom-color: #000;
 }
+
+/* На главной у кнопки выбора города без отступов */
+.page-home .city-select-btn {
+    margin: 0;
+}

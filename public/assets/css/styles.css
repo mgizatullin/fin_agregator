@@ -13299,3 +13299,108 @@ form.style-line-bot.style-2 button {
 .heading h1.text_black.letter-spacing-1 {
   margin-bottom: 0;
 }
+
+/* --------- Deposit page: rates, calculator, layout --------- */
+.deposit-rates-table { width: 100%; border-collapse: collapse; }
+.deposit-rates-table th, .deposit-rates-table td { padding: 8px 12px; text-align: left; border: 1px solid rgba(25,20,0,0.12); }
+.deposit-rates-table th { background: rgba(25,20,0,0.04); font-weight: 600; }
+.deposit-rates-currency__title { font-size: 1.125rem; font-weight: 600; margin-bottom: 12px; }
+.deposit-rates-range-heading { margin: 12px 0 8px 0; }
+.deposit-rates-section { margin-top: 1.5rem; }
+.deposit-rates-tabs__head { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+.deposit-rates-tabs__tab { padding: 16px; background: transparent; border: none; border-bottom: 2px solid transparent; cursor: pointer; font-weight: 500; color: inherit; }
+.deposit-rates-tabs__tab:hover { opacity: 0.85; }
+.deposit-rates-tabs__tab.is-active { border-bottom-color: currentColor; }
+.deposit-rates-tabs__pane { display: none; }
+.deposit-rates-tabs__pane.is-active { display: block; }
+.deposit-rates.deposit-rates--desc { width: 100%; overflow-x: auto; }
+.deposit-rates table { width: 100%; border-collapse: collapse; }
+.deposit-rates th, .deposit-rates td { padding: 18px 12px; text-align: left; border: 1px solid rgba(25,20,0,0.12); }
+.deposit-rates th { background: rgb(210, 223, 255); font-weight: 600; }
+.deposit-rates__sub-text { font-size: 0.875em; opacity: 0.8; }
+.deposit-currency-tabs { display: flex; gap: 0.5rem; margin-bottom: 1rem; flex-wrap: wrap; padding: 0 40px; }
+.deposit-currency-tabs__btn { padding: 1.4rem 1.8rem; border: 1px solid rgba(25,20,0,0.2); background: #fafaff; cursor: pointer; font-size: 18px; border-radius: 4px; }
+.deposit-currency-tabs__btn:hover { background: rgba(25,20,0,0.05); }
+.deposit-currency-tabs__btn.is-active { background: rgb(212, 225, 255); border-color: rgb(212, 225, 255); font-weight: 600; }
+.deposit-page-row { display: grid; grid-template-columns: 75% 25%; gap: 1.5rem; align-items: start; margin-top: 1.5rem; }
+@media (max-width: 900px) { .deposit-page-row { grid-template-columns: 1fr; } }
+.deposit-page-main { min-width: 0; }
+.deposit-page-sidebar { min-width: 0; position: sticky; top: 1.5rem; align-self: flex-start; }
+.deposit-calculator { background: rgba(25,20,0,0.03); border: 1px solid rgba(25,20,0,0.12); border-radius: 8px; padding: 1.25rem; }
+.deposit-calculator__title { font-size: 22px; font-weight: 600; margin: 0 0 1rem 0; }
+.deposit-calculator__currency { margin-bottom: 20px; }
+.deposit-calculator__label { display: block; font-size: 16px; font-weight: 500; margin-bottom: 0.35rem; color: rgba(25,20,0,0.7); }
+.deposit-calculator__currency-btns { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+.deposit-calculator__currency-btn { padding: 1.4rem 1.8rem; border: 1px solid rgba(25,20,0,0.25); background: #fafaff; cursor: pointer; font-size: 18px; border-radius: 4px; }
+.deposit-calculator__currency-btn:hover { background: rgba(25,20,0,0.04); }
+.deposit-calculator__currency-btn.is-active { background: rgb(212, 225, 255); border-color: rgb(212, 225, 255); font-weight: 600; }
+.deposit-calculator__field { margin-bottom: 1rem; }
+.deposit-calculator__input { width: 100%; padding: 15px; font-size: 16px; margin: 5px 0; border: 1px solid rgba(25,20,0,0.2); border-radius: 4px; box-sizing: border-box; }
+.deposit-calculator__input--no-spinner { -moz-appearance: textfield; }
+.deposit-calculator__input--no-spinner::-webkit-outer-spin-button,
+.deposit-calculator__input--no-spinner::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+.deposit-calculator__pair { position: relative; }
+.deposit-calculator__suffix { position: absolute; top: 50%; right: 14px; transform: translateY(-50%); font-size: 14px; color: #706f6c; pointer-events: none; }
+.deposit-calculator__range { width: 100%; margin: -8px 0 0 0; z-index: 2; height: 4px; accent-color: #f97316; display: block; position: relative; }
+.deposit-calculator__results { margin-top: 20px; padding-top: 20px; border-top: 1px solid rgba(25,20,0,0.1); }
+.deposit-calculator__result-row { display: flex; justify-content: space-between; align-items: baseline; gap: 0.5rem; margin-bottom: 15px; }
+.deposit-calculator__result-label { font-size: 16px; color: rgba(25,20,0,0.7); }
+.deposit-calculator__result-value { font-weight: 600; }
+
+/* --------- Reviews (Вклады, Кредиты, Карты, Займы, Банки) --------- */
+.section-reviews .section-heading { display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap; margin-bottom: 24px; }
+.section-reviews__title, .review-form__title { margin: 0 0 20px; font-size: 24px; line-height: 1.2; font-weight: 700; color: #101828; }
+.review-form__title { margin-bottom: 16px; }
+.section-heading__meta { display: flex; align-items: center; gap: 10px; font-size: 14px; color: #5f697c; }
+.section-heading__rating-text { font-weight: 600; color: #101828; }
+.section-heading__count { color: #5f697c; }
+.review-stars { display: inline-flex; gap: 2px; font-size: 18px; color: rgba(25,20,0,0.25); }
+.review-stars__star.is-filled { color: #f97316; }
+.review-stars--readonly .review-stars__star { cursor: default; }
+.review-stars:not(.review-stars--readonly):hover .review-stars__star,
+.review-form-stars:hover .review-form-stars__btn { color: #f97316; }
+.review-form-stars { display: inline-flex; gap: 4px; font-size: 24px; color: rgba(25,20,0,0.25); }
+.review-form-stars__btn { background: none; border: none; padding: 0; cursor: pointer; font-size: inherit; color: inherit; line-height: 1; }
+.review-form-stars__btn:hover, .review-form-stars__btn.is-filled { color: #f97316; }
+.review-form-stars__btn:focus { outline: none; }
+.reviews-list { display: flex; flex-direction: column; gap: 16px; margin-bottom: 24px; }
+.review-card { border-radius: 16px; border: 1px solid rgba(25,20,0,0.08); background: #fff; padding: 16px 18px; }
+.review-card__header { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 10px; margin-bottom: 8px; }
+.review-card__title { font-size: 16px; font-weight: 600; margin: 0; }
+.review-card__header-meta { font-size: 14px; color: #6b7280; margin-left: auto; }
+.review-card__body p { margin: 0; font-size: 14px; color: #4b5563; }
+.review-card__footer { display: flex; flex-direction: column; gap: 4px; margin-top: 10px; font-size: 13px; color: #6b7280; }
+.review-card__author { font-weight: 600; color: #111827; }
+.review-card__line { display: block; }
+.review-card__meta { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 4px; }
+.review-form__required { color: #dc2626; }
+.review-form__field--error .review-form__input, .review-form__field--error .review-form__textarea { border-color: #dc2626; }
+.review-form__error-text { display: block; font-size: 12px; color: #dc2626; margin-top: 4px; }
+.reviews-empty { font-size: 14px; color: #6b7280; margin-bottom: 24px; }
+.review-form-wrapper { border-radius: 16px; border: 1px solid rgba(25,20,0,0.08); background: #fff; padding: 20px 18px 18px; }
+.review-form__grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
+.review-form__field--full { grid-column: 1 / -1; }
+@media (max-width: 900px) { .review-form__grid { grid-template-columns: 1fr; } .review-card__header { align-items: flex-start; } }
+.review-form__label { display: block; font-size: 14px; font-weight: 500; margin-bottom: 4px; color: #374151; }
+.review-form__input, .review-form__textarea { width: 100%; border-radius: 10px; border: 1px solid rgba(25,20,0,0.14); padding: 10px 12px; font-size: 14px; box-sizing: border-box; }
+.review-form__textarea { resize: vertical; min-height: 96px; }
+.review-form__input--static {
+  display: flex; align-items: center; box-shadow: none; font-size: 18px; line-height: 28px;
+  padding: 12px 16px 15px 15px; width: 100%; height: 46px; color: var(--Black, #101828);
+  border-radius: 12px; box-sizing: border-box; border: 1px solid var(--Mono-gray-3, rgba(25,20,0,0.2));
+  background: #f8f8f7; cursor: default;
+}
+.review-form__consent { margin-top: 16px; margin-bottom: 12px; }
+.review-form__consent-label { display: inline-flex; align-items: flex-start; gap: 10px; font-size: 14px; color: #374151; cursor: pointer; }
+.review-form__consent-checkbox { margin-top: 2px; width: 18px; height: 18px; flex-shrink: 0; }
+.review-form__consent-link { color: #2563eb; text-decoration: underline; }
+.review-form__consent-link:hover { color: #1d4ed8; }
+.review-form__consent.review-form__field--error .review-form__consent-label { color: #dc2626; }
+.review-form__submit { margin-top: 0; }
+
+/* Header: курсы валют и кнопка города */
+.header-rates { font-size: 13px; color: var(--Mono-gray-7, #49525a); white-space: nowrap; }
+.header-rates__item { font-weight: 500; }
+.header-rates__item + .header-rates__item { margin-left: 0; }
+.header-rates--mobile { white-space: normal; flex-wrap: wrap; }
+@media (max-width: 991px) { .header-rates.header-rates--mobile .header-rates__item { font-size: 12px; } }

@@ -23,6 +23,16 @@
                 @else
                     <p class="text-body-1 text_mono-gray-7">Описание банка пока не добавлено.</p>
                 @endif
+                @include('partials.reviews-section', [
+                    'reviewable' => $bank,
+                    'sectionTitle' => 'Отзывы о банке',
+                    'serviceLabel' => 'Банк',
+                    'productName' => $bank->name,
+                    'formAction' => route('banks.reviews.store', $bank),
+                    'bankId' => $bank->id,
+                    'bankName' => $bank->name,
+                    'formId' => 'bank-' . $bank->id,
+                ])
             </div>
         </div>
     </div>

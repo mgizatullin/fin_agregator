@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Support\Str;
 
 class Deposit extends Model
@@ -69,6 +70,11 @@ class Deposit extends Model
     public function currencies(): HasMany
     {
         return $this->hasMany(DepositCurrency::class)->orderBy('sort_order');
+    }
+
+    public function reviews(): MorphMany
+    {
+        return $this->morphMany(Review::class, 'reviewable')->latest();
     }
 
     protected static function generateUniqueSlug(string $name, ?int $ignoreId = null): string

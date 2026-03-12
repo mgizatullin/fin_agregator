@@ -77,7 +77,8 @@ class BankController extends Controller
      */
     public function show(Request $request, string $slug): View
     {
-        $bank = Bank::where('slug', $slug)
+        $bank = Bank::with('reviews.bank')
+            ->where('slug', $slug)
             ->where('is_active', true)
             ->firstOrFail();
 

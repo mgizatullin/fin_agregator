@@ -1,4 +1,4 @@
-@props(['deposit'])
+@props(['deposit', 'banks' => collect()])
 
 @php
     /** @var \App\Models\Deposit $deposit */
@@ -12,9 +12,11 @@
         : null;
     $bankDetailUrl = filled($bank?->slug) ? url('/banki/' . $bank->slug) : null;
 
-    $rating = (float) ($bank?->rating ?? 0);
+    $deposit->loadMissing('reviews');
+    $reviewsForRating = $deposit->reviews;
+    $rating = $reviewsForRating->isNotEmpty() ? (float) round($reviewsForRating->avg('rating'), 1) : (float) ($bank?->rating ?? 0);
     $ratingValue = $rating > 0 ? number_format($rating, 1, '.', ' ') : null;
-    $reviewCount = (int) ($bank?->reviews_count ?? 0);
+    $reviewCount = $reviewsForRating->isNotEmpty() ? $reviewsForRating->count() : (int) ($bank?->reviews_count ?? 0);
     $updatedAt = $deposit->updated_at?->format('d.m.Y');
 
     use App\Services\DepositConditionsMapper\DepositCurrencySummary;
@@ -123,7 +125,7 @@
             @if(count($currenciesData) > 0)
             <div class="deposit-currency-tabs" role="tablist">
                 @foreach(array_keys($currenciesData) as $code)
-                    <button type="button" class="deposit-currency-tabs__btn {{ $code === $firstCurrencyCode ? 'is-active' : '' }}" data-currency="{{ $code }}" aria-selected="{{ $code === $firstCurrencyCode ? 'true' : 'false' }}">{{ $currencySymbols[$code] ?? $code }}</button>
+                    <button type="button" class="deposit-currency-tabs__btn deposit-currency-switch {{ $code === $firstCurrencyCode ? 'is-active' : '' }}" data-currency="{{ $code }}" aria-selected="{{ $code === $firstCurrencyCode ? 'true' : 'false' }}">{{ $code }} ({{ $currencySymbols[$code] ?? $code }})</button>
                 @endforeach
             </div>
             @endif
@@ -141,12 +143,8 @@
                     <span class="credit-offer-card__summary-value" id="deposit-summary-amount" data-deposit="amount">{{ $summaryAmountText }}</span>
                 </div>
                 <div class="credit-offer-card__summary-item">
-                    <span class="credit-offer-card__summary-label">Пополнение</span>
-                    <span class="credit-offer-card__summary-value">{{ $boolText((bool) $deposit->replenishment) }}</span>
-                </div>
-                <div class="credit-offer-card__summary-item">
-                    <span class="credit-offer-card__summary-label">Частичное снятие</span>
-                    <span class="credit-offer-card__summary-value">{{ $boolText((bool) $deposit->partial_withdrawal) }}</span>
+                    <span class="credit-offer-card__summary-label">Тип вклада</span>
+                    <span class="credit-offer-card__summary-value">{{ filled($deposit->deposit_type) ? $deposit->deposit_type : '—' }}</span>
                 </div>
 
                 <div class="credit-offer-card__toolbar">
@@ -160,10 +158,6 @@
 
 @php
     $parameterItems = [
-        'Ставка' => $summaryRateText,
-        'Срок вклада' => $summaryTermText,
-        'Сумма' => $summaryAmountText,
-        'Тип вклада' => filled($deposit->deposit_type) ? $deposit->deposit_type : '—',
         'Капитализация' => $boolText((bool) $deposit->capitalization),
         'Онлайн открытие' => $boolText((bool) $deposit->online_opening),
         'Выплата процентов ежемесячно' => $boolText((bool) $deposit->monthly_interest_payment),
@@ -211,38 +205,41 @@
             showCurrency(code);
         });
     });
+    window.addEventListener('deposit-currency-change', function(e) {
+        if (e.detail && e.detail.currency) showCurrency(e.detail.currency);
+    });
 })();
 </script>
 
-<div class="credit-offer-card__section" id="deposit-parameters">
-    <h3 class="credit-offer-card__section-title">Параметры вклада</h3>
-    <div class="credit-offer-card__table">
-        @foreach(array_chunk($parameterItems, (int) ceil(count($parameterItems) / 2), true) as $parameterColumn)
-            <div class="credit-offer-card__column">
-                @foreach($parameterColumn as $label => $value)
-                    <div class="credit-offer-card__row">
-                        <div class="credit-offer-card__cell credit-offer-card__cell--label">
-                            <span class="credit-offer-card__icon" aria-hidden="true">
-                                <svg viewBox="0 0 20 20" fill="none">
-                                    <path d="M10 2.5L17 6.1V13.9L10 17.5L3 13.9V6.1L10 2.5Z" stroke="currentColor" stroke-width="1.4"/>
-                                    <path d="M7.2 10L9 11.8L12.8 8" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
-                                </svg>
-                            </span>
-                            <span>{{ $label }}</span>
-                        </div>
-                        <div class="credit-offer-card__cell credit-offer-card__cell--value">{{ $value }}</div>
+@if($currenciesWithRates->isNotEmpty())
+<div class="deposit-page-row" id="deposit-rates">
+    <div class="deposit-page-main">
+        <div class="credit-offer-card__section" id="deposit-parameters">
+            <h3 class="credit-offer-card__section-title">Параметры вклада</h3>
+            <div class="credit-offer-card__table">
+                @foreach(array_chunk($parameterItems, (int) ceil(count($parameterItems) / 2), true) as $parameterColumn)
+                    <div class="credit-offer-card__column">
+                        @foreach($parameterColumn as $label => $value)
+                            <div class="credit-offer-card__row">
+                                <div class="credit-offer-card__cell credit-offer-card__cell--label">
+                                    <span class="credit-offer-card__icon" aria-hidden="true">
+                                        <svg viewBox="0 0 20 20" fill="none">
+                                            <path d="M10 2.5L17 6.1V13.9L10 17.5L3 13.9V6.1L10 2.5Z" stroke="currentColor" stroke-width="1.4"/>
+                                            <path d="M7.2 10L9 11.8L12.8 8" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+                                        </svg>
+                                    </span>
+                                    <span>{{ $label }}</span>
+                                </div>
+                                <div class="credit-offer-card__cell credit-offer-card__cell--value">{{ $value }}</div>
+                            </div>
+                        @endforeach
                     </div>
                 @endforeach
             </div>
-        @endforeach
-    </div>
-</div>
-
-@if($currenciesWithRates->isNotEmpty())
-<div class="credit-offer-card__section deposit-rates-calculator-row" id="deposit-rates">
-    <div class="deposit-rates-col">
-    <h3 class="credit-offer-card__section-title">Ставки по срокам и суммам</h3>
-    <div class="deposit-rates-tabs">
+        </div>
+        <div class="credit-offer-card__section deposit-rates-section">
+            <h3 class="credit-offer-card__section-title">Ставки по срокам и суммам</h3>
+            <div class="deposit-rates-tabs">
         <div class="deposit-rates-tabs__head" role="tablist">
             @foreach($currenciesWithRates as $index => $currency)
                 @php
@@ -251,12 +248,13 @@
                     $symbol = $currencySymbols[$currency->currency_code] ?? $currency->currency_code;
                 @endphp
                 <button type="button"
-                    class="deposit-rates-tabs__tab {{ $index === 0 ? 'is-active' : '' }}"
+                    class="deposit-rates-tabs__tab deposit-currency-switch {{ $index === 0 ? 'is-active' : '' }}"
                     role="tab"
                     aria-selected="{{ $index === 0 ? 'true' : 'false' }}"
                     aria-controls="{{ $paneId }}"
                     id="{{ $tabId }}"
-                    data-deposit-tab="{{ $currency->currency_code }}">{{ $currency->currency_code }} ({{ $symbol }})</button>
+                    data-deposit-tab="{{ $currency->currency_code }}"
+                    data-currency="{{ $currency->currency_code }}">{{ $currency->currency_code }} ({{ $symbol }})</button>
             @endforeach
         </div>
         <div class="deposit-rates-tabs__panes">
@@ -307,8 +305,20 @@
             @endforeach
         </div>
     </div>
+        </div>
+        <div class="credit-offer-card__section">
+            <h3 class="credit-offer-card__section-title">Описание вклада</h3>
+            <div class="credit-offer-card__description">
+                @if(filled($deposit->description))
+                    {!! description_to_html($deposit->description) !!}
+                @else
+                    <p>Описание вклада пока не добавлено.</p>
+                @endif
+            </div>
+        </div>
+        @include('deposits.partials.reviews', ['deposit' => $deposit, 'banks' => $banks])
     </div>
-    <div class="deposit-calculator-col">
+    <div class="deposit-page-sidebar">
         {{ $afterRates ?? '' }}
     </div>
 </div>
@@ -316,30 +326,44 @@
 (function() {
     var head = document.querySelector('.deposit-rates-tabs__head');
     var panes = document.querySelectorAll('.deposit-rates-tabs__pane');
-    if (!head) return;
-    head.addEventListener('click', function(e) {
-        var tab = e.target.closest('[data-deposit-tab]');
-        if (!tab) return;
-        var code = tab.getAttribute('data-deposit-tab');
-        head.querySelectorAll('.deposit-rates-tabs__tab').forEach(function(t) { t.classList.remove('is-active'); t.setAttribute('aria-selected', 'false'); });
-        tab.classList.add('is-active'); tab.setAttribute('aria-selected', 'true');
-        panes.forEach(function(p) {
-            var show = p.getAttribute('data-deposit-pane') === code;
-            p.classList.toggle('is-active', show);
-            p.hidden = !show;
+    function setActiveCurrency(code) {
+        document.querySelectorAll('.deposit-currency-switch').forEach(function(btn) {
+            var btnCode = btn.getAttribute('data-currency') || btn.getAttribute('data-deposit-tab');
+            if (btnCode === code) {
+                btn.classList.add('is-active');
+                btn.setAttribute('aria-selected', 'true');
+            } else {
+                btn.classList.remove('is-active');
+                btn.setAttribute('aria-selected', 'false');
+            }
+        });
+        if (head && panes && panes.length) {
+            head.querySelectorAll('.deposit-rates-tabs__tab').forEach(function(t) { t.classList.remove('is-active'); t.setAttribute('aria-selected', 'false'); });
+            var tab = head.querySelector('[data-currency="' + code + '"]');
+            if (tab) { tab.classList.add('is-active'); tab.setAttribute('aria-selected', 'true'); }
+            panes.forEach(function(p) {
+                p.classList.toggle('is-active', p.getAttribute('data-deposit-pane') === code);
+                p.hidden = p.getAttribute('data-deposit-pane') !== code;
+            });
+        }
+        if (window.__depositSetCurrency) window.__depositSetCurrency(code);
+        window.dispatchEvent(new CustomEvent('deposit-currency-change', { detail: { currency: code } }));
+    }
+    if (head) {
+        head.addEventListener('click', function(e) {
+            var tab = e.target.closest('[data-deposit-tab]');
+            if (!tab) return;
+            var code = tab.getAttribute('data-deposit-tab');
+            setActiveCurrency(code);
+        });
+    }
+    document.querySelectorAll('.deposit-currency-switch').forEach(function(btn) {
+        btn.addEventListener('click', function() {
+            var code = this.getAttribute('data-currency') || this.getAttribute('data-deposit-tab');
+            if (!code) return;
+            setActiveCurrency(code);
         });
     });
 })();
 </script>
 @endif
-
-<div class="credit-offer-card__section">
-    <h3 class="credit-offer-card__section-title">Описание вклада</h3>
-    <div class="credit-offer-card__description">
-        @if(filled($deposit->description))
-            {!! description_to_html($deposit->description) !!}
-        @else
-            <p>Описание вклада пока не добавлено.</p>
-        @endif
-    </div>
-</div>

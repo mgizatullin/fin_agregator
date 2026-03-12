@@ -1,16 +1,37 @@
 /**
- * City selection modal: load HTML via fetch, open on .city-select-btn click,
- * close on overlay / close button / ESC; redirect on city click.
+ * City selection modal: load HTML via fetch, open on .city-select-btn click.
+ * On city select: save to localStorage and update button label; no redirect.
  */
 (function () {
     'use strict';
 
     var MODAL_URL = '/city-dialog';
     var MODAL_ROOT_ID = 'city-modal-root';
+    var STORAGE_KEY_SLUG = 'selected_city_slug';
+    var STORAGE_KEY_NAME = 'selected_city_name';
 
-    function getBasePath() {
-        var btn = document.querySelector('.city-select-btn');
-        return (btn && btn.getAttribute('data-section-base')) ? btn.getAttribute('data-section-base').replace(/^\//, '') : '';
+    function getStoredCity() {
+        try {
+            return {
+                slug: localStorage.getItem(STORAGE_KEY_SLUG) || '',
+                name: localStorage.getItem(STORAGE_KEY_NAME) || ''
+            };
+        } catch (err) {
+            return { slug: '', name: '' };
+        }
+    }
+
+    function setStoredCity(slug, name) {
+        try {
+            localStorage.setItem(STORAGE_KEY_SLUG, slug || '');
+            localStorage.setItem(STORAGE_KEY_NAME, name || '');
+        } catch (err) {}
+    }
+
+    function updateCityLabels(name) {
+        document.querySelectorAll('.header-city-label').forEach(function (el) {
+            el.textContent = name || 'Выбрать город';
+        });
     }
 
     function openModal(html) {
@@ -97,18 +118,16 @@
             link.addEventListener('click', function (e) {
                 e.preventDefault();
                 var slug = this.getAttribute('data-city-slug');
+                var name = (this.getAttribute('data-city-name') || '').trim();
                 if (!slug) return;
-                var base = getBasePath();
-                var url = base ? '/' + base + '/' + slug : '/' + slug;
-                window.location.href = url;
+                setStoredCity(slug, name);
+                updateCityLabels(name || 'Выбрать город');
+                handleClose();
             });
         });
     }
 
     function loadAndOpen() {
-        var base = getBasePath();
-        if (!base) return;
-
         fetch(MODAL_URL, {
             method: 'GET',
             headers: { 'X-Requested-With': 'XMLHttpRequest', 'Accept': 'text/html' }
@@ -128,4 +147,11 @@
             loadAndOpen();
         }
     });
+
+    (function initStoredCity() {
+        var stored = getStoredCity();
+        if (stored.name) {
+            updateCityLabels(stored.name);
+        }
+    })();
 })();

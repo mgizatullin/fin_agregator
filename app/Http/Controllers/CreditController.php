@@ -80,7 +80,7 @@ class CreditController extends Controller
      */
     public function show(Request $request, string $slug): View
     {
-        $credit = Credit::with(['bank', 'receiveMethods'])
+        $credit = Credit::with(['bank', 'receiveMethods', 'reviews.bank'])
             ->where('slug', $slug)
             ->where('is_active', true)
             ->firstOrFail();

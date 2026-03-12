@@ -50,7 +50,7 @@
     <link rel="apple-touch-icon-precomposed" href="{{ asset('assets/images/logo/favicon.svg') }}">
 </head>
 
-<body>
+<body class="{{ request()->routeIs('home') ? 'page-home' : '' }}">
     <!-- wrapper -->
     <div id="wrapper">
 
@@ -229,13 +229,16 @@
                             </p>
                         </li>
                     </ul>
-                    <div class="mb-wrap-btn d-flex gap_12">
-                        <a href="pricing.html" class="tf-btn">
-                            <span>Начать</span>
-                            <span class="bg-effect"></span>
-                        </a>
-                        <a href="contact-us.html" class="tf-btn  ">
-                            <span>Связаться с нами</span>
+                    <div class="mb-wrap-btn d-flex gap_12 flex-wrap">
+                        @if(!empty($currencyRates))
+                            <div class="header-rates header-rates--mobile d-flex align-items-center gap_12 mb-2 w-100">
+                                @if(isset($currencyRates['USD']))<span class="header-rates__item">USD {{ number_format((float)$currencyRates['USD'], 4, '.', '') }}</span>@endif
+                                @if(isset($currencyRates['EUR']))<span class="header-rates__item">EUR {{ number_format((float)$currencyRates['EUR'], 4, '.', '') }}</span>@endif
+                                @if(isset($currencyRates['CNY']))<span class="header-rates__item">CNY {{ number_format((float)$currencyRates['CNY'], 4, '.', '') }}</span>@endif
+                            </div>
+                        @endif
+                        <a href="javascript:void(0)" class="tf-btn city-select-btn">
+                            <span class="header-city-label">Выбрать город</span>
                             <span class="bg-effect"></span>
                         </a>
                     </div>

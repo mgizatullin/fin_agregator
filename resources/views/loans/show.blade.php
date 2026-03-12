@@ -23,6 +23,16 @@
                 @else
                     <p class="text-body-1 text_mono-gray-7">Описание займа пока не добавлено.</p>
                 @endif
+                @include('partials.reviews-section', [
+                    'reviewable' => $loan,
+                    'sectionTitle' => 'Отзывы по займу',
+                    'serviceLabel' => 'Займ',
+                    'productName' => $loan->name,
+                    'formAction' => route('loans.reviews.store', $loan),
+                    'bankId' => null,
+                    'bankName' => $loan->company_name ?? '—',
+                    'formId' => 'loan-' . $loan->id,
+                ])
             </div>
         </div>
     </div>

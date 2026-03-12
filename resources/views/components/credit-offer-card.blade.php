@@ -150,3 +150,14 @@
         @endif
     </div>
 </div>
+
+@include('partials.reviews-section', [
+    'reviewable' => $credit,
+    'sectionTitle' => 'Отзывы по кредиту',
+    'serviceLabel' => 'Кредит',
+    'productName' => $credit->name,
+    'formAction' => route('credits.reviews.store', $credit),
+    'bankId' => $credit->bank_id,
+    'bankName' => $credit->bank?->name ?? '—',
+    'formId' => 'credit-' . $credit->id,
+])

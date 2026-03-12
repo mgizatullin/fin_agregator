@@ -5,6 +5,7 @@ namespace App\Providers;
 use App\Models\Article;
 use App\Models\SiteSettings;
 use App\Observers\ArticleObserver;
+use App\Services\CbrRatesService;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\View;
@@ -30,5 +31,6 @@ class AppServiceProvider extends ServiceProvider
         Carbon::setLocale('ru');
         Article::observe(ArticleObserver::class);
         View::share('siteSettings', SiteSettings::getInstance());
+        View::share('currencyRates', app(CbrRatesService::class)->getRates());
     }
 }

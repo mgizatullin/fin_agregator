@@ -53,12 +53,15 @@
                                                 </ul>
                                             </div>
                                         </div>
-                                        <a href="pricing.html" class="tf-btn btn-white hide-sm">
-                                            <span>Начать</span>
-                                            <span class="bg-effect"></span>
-                                        </a>
-                                        <a href="contact-us.html" class="tf-btn hide-sm  ">
-                                            <span>Связаться с нами</span>
+                                        @if(!empty($currencyRates))
+                                        <div class="header-rates d-flex align-items-center gap_16 hide-sm" aria-label="Курсы валют ЦБ РФ">
+                                            @if(isset($currencyRates['USD']))<span class="header-rates__item">USD {{ number_format((float)$currencyRates['USD'], 4, '.', '') }}</span>@endif
+                                            @if(isset($currencyRates['EUR']))<span class="header-rates__item">EUR {{ number_format((float)$currencyRates['EUR'], 4, '.', '') }}</span>@endif
+                                            @if(isset($currencyRates['CNY']))<span class="header-rates__item">CNY {{ number_format((float)$currencyRates['CNY'], 4, '.', '') }}</span>@endif
+                                        </div>
+                                        @endif
+                                        <a href="javascript:void(0)" class="hide-sm city-select-btn" id="header-city-btn">
+                                            <span class="header-city-label">Выбрать город</span>
                                             <span class="bg-effect"></span>
                                         </a>
                                         <div class="mobile-button" data-bs-toggle="offcanvas" data-bs-target="#menu-mobile" aria-controls="menu-mobile">

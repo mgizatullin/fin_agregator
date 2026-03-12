@@ -10,8 +10,10 @@ use App\Http\Controllers\CreditCategoryController;
 use App\Http\Controllers\CreditController;
 use App\Http\Controllers\DepositCategoryController;
 use App\Http\Controllers\DepositController;
+use App\Http\Controllers\DepositReviewController;
 use App\Http\Controllers\LoanCategoryController;
 use App\Http\Controllers\LoanController;
+use App\Http\Controllers\ReviewController;
 use App\Models\City;
 use App\Models\HomePageSetting;
 use App\Models\Article;
@@ -161,6 +163,12 @@ Route::get('/banki/{first}', function (string $first) {
     }
     abort(404);
 })->name('banks.category.show');
+
+Route::post('/vklady/{deposit}/reviews', [DepositReviewController::class, 'store'])->name('deposits.reviews.store');
+Route::post('/kredity/{credit:slug}/reviews', [ReviewController::class, 'storeCredit'])->name('credits.reviews.store');
+Route::post('/karty/{card:slug}/reviews', [ReviewController::class, 'storeCard'])->name('cards.reviews.store');
+Route::post('/zaimy/{loan:slug}/reviews', [ReviewController::class, 'storeLoan'])->name('loans.reviews.store');
+Route::post('/banki/{bank:slug}/reviews', [ReviewController::class, 'storeBank'])->name('banks.reviews.store');
 
 Route::get('/blog', [BlogController::class, 'index'])->name('blog.index');
 Route::get('/blog/category/{slug}', [BlogController::class, 'category'])->name('blog.category');
