@@ -31,6 +31,18 @@ class CreditForm
                     ->live(onBlur: true)
                     ->afterStateUpdated(fn (Set $set, ?string $state) => $set('slug', Str::slug((string) $state))),
 
+                TextInput::make('review_rating')
+                    ->label('Рейтинг')
+                    ->numeric()
+                    ->step('0.01')
+                    ->minValue(0)
+                    ->maxValue(5),
+
+                TextInput::make('review_count')
+                    ->label('Кол-во отзывов')
+                    ->numeric()
+                    ->minValue(0),
+
                 TextInput::make('slug')
                     ->label('URL-код')
                     ->required()
@@ -52,8 +64,21 @@ class CreditForm
                     ->numeric()
                     ->step('0.01'),
 
+                TextInput::make('min_amount')
+                    ->label('Мин. сумма')
+                    ->numeric()
+                    ->step('0.01'),
+
                 TextInput::make('term_months')
-                    ->label('Срок (мес.)')
+                    ->label('Срок для списка (мес.)')
+                    ->numeric(),
+
+                TextInput::make('min_term_months')
+                    ->label('Срок от (мес.)')
+                    ->numeric(),
+
+                TextInput::make('max_term_months')
+                    ->label('Срок до (мес.)')
                     ->numeric(),
 
                 Toggle::make('income_proof_required')

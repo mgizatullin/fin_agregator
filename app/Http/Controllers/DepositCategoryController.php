@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Controllers\Concerns\HandlesLoadMorePagination;
 use App\Http\Helpers\SectionRouteResolver;
 use App\Models\Deposit;
 use App\Models\DepositCategory;
@@ -12,6 +13,8 @@ use Symfony\Component\HttpFoundation\Response;
 
 class DepositCategoryController extends Controller
 {
+    use HandlesLoadMorePagination;
+
     public function show(Request $request, string $slug, ?string $citySlug = null): View|Response
     {
         $city = SectionRouteResolver::resolveCity($citySlug);
@@ -21,7 +24,14 @@ class DepositCategoryController extends Controller
             ->with('bank')
             ->where('deposits.is_active', true)
             ->orderBy('deposits.name')
-            ->get();
+            ->paginate(20)
+            ->withQueryString();
+
+        if ($response = $this->loadMoreResponse($request, $items, 'deposits.partials.list-items', [
+            'items' => $items,
+        ])) {
+            return $response;
+        }
 
         $sectionSetting = SectionSetting::getOrCreateForType('deposits');
         $serviceName = $sectionSetting->title ?? 'Вклады';

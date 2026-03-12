@@ -1,10 +1,13 @@
 @php
     /** @var \App\Models\Deposit $item */
+    use App\Services\DepositConditionsMapper\DepositCurrencySummary;
     $bankName = $item->bank ? ($item->bank->name ?: '-') : '-';
     $depositName = $item->name ?: '-';
-    $rate = $item->rate !== null && $item->rate !== '' ? $item->rate . '%' : '-';
-    $termMonths = $item->term_months !== null && $item->term_months !== '' ? $item->term_months . ' мес.' : '-';
-    $minAmount = $item->min_amount !== null && $item->min_amount !== '' ? 'от ' . number_format((float) $item->min_amount, 0, '', ' ') . ' ₽' : '-';
+    $best = DepositCurrencySummary::bestOfferForDeposit($item);
+    $rate = $best !== null ? ('До ' . rtrim(rtrim(number_format($best['rate'], 2, '.', ''), '0'), '.') . '% годовых') : '-';
+    $termMonths = $best !== null ? ($best['term_days'] . ' дней') : '-';
+    $sym = $best !== null ? (['RUB' => '₽', 'USD' => '$', 'EUR' => '€', 'CNY' => '¥'][$best['currency_code']] ?? '') : '';
+    $minAmount = $best !== null && $best['amount_min'] !== null ? ('от ' . number_format((float)$best['amount_min'], 0, '', ' ') . ' ' . $sym) : ($best !== null ? $best['amount_label'] : '-');
     $replenishment = $item->replenishment ? 'Да' : 'Нет';
     $logoPath = $item->bank->logo_square ?? $item->bank->logo ?? null;
     $logo = $logoPath ? (str_starts_with($logoPath, 'http') ? $logoPath : asset('storage/' . $logoPath)) : null;

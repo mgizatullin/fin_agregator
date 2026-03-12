@@ -4,6 +4,7 @@ namespace App\Filament\Pages;
 
 use App\Models\Bank;
 use App\Models\Credit;
+use App\Models\CreditReceiveMethod;
 use App\Services\Parsers\Myfin\MyfinCreditParser;
 use Filament\Actions\Action;
 use Filament\Forms\Components\Textarea;
@@ -169,7 +170,7 @@ class MyfinCreditsParsingPage extends Page implements HasForms
                 continue;
             }
 
-            Credit::create([
+            $credit = Credit::create([
                 'bank_id' => $bank->id,
                 'name' => $name,
                 'slug' => filled($creditData['slug'] ?? null) ? (string) $creditData['slug'] : Str::slug($name),
@@ -189,6 +190,8 @@ class MyfinCreditsParsingPage extends Page implements HasForms
                 'description' => null,
                 'is_active' => true,
             ]);
+
+            $this->syncReceiveMethods($credit, $creditData['receive_method'] ?? null);
 
             $existingCreditKeys[$duplicateKey] = true;
             $imported++;
@@ -219,5 +222,45 @@ class MyfinCreditsParsingPage extends Page implements HasForms
     private function makeCreditDuplicateKey(string $bankName, string $creditName): string
     {
         return $this->normalizeName($bankName) . '|' . $this->normalizeName($creditName);
+    }
+
+    private function syncReceiveMethods(Credit $credit, mixed $receiveMethodValue): void
+    {
+        if (! is_string($receiveMethodValue) || trim($receiveMethodValue) === '') {
+            return;
+        }
+
+        $parts = preg_split('/\s*,\s*/u', $receiveMethodValue, -1, PREG_SPLIT_NO_EMPTY) ?: [];
+        $methodIds = [];
+
+        foreach ($parts as $part) {
+            $name = $this->normalizeReceiveMethodName($part);
+            if ($name === '') {
+                continue;
+            }
+
+            $method = CreditReceiveMethod::firstOrCreate(
+                ['name' => $name],
+                ['slug' => Str::slug($name)]
+            );
+
+            $methodIds[] = $method->id;
+        }
+
+        if ($methodIds !== []) {
+            $credit->receiveMethods()->syncWithoutDetaching(array_values(array_unique($methodIds)));
+        }
+    }
+
+    private function normalizeReceiveMethodName(string $value): string
+    {
+        $value = trim(preg_replace('/\s+/u', ' ', $value) ?? $value);
+        if ($value === '') {
+            return '';
+        }
+
+        $value = mb_strtolower($value);
+
+        return mb_strtoupper(mb_substr($value, 0, 1)) . mb_substr($value, 1);
     }
 }

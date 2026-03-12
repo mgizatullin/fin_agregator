@@ -2,6 +2,8 @@
 
 namespace App\Filament\Resources\Deposits\Tables;
 
+use App\Models\Deposit;
+use App\Services\DepositConditionsMapper\DepositCurrencySummary;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
@@ -32,22 +34,49 @@ class DepositsTable
                     ->searchable()
                     ->copyable(),
 
-                TextColumn::make('rate')
+                TextColumn::make('rate_range')
                     ->label('Ставка')
-                    ->numeric()
-                    ->suffix('%')
-                    ->sortable()
+                    ->state(function (Deposit $record): string {
+                        $best = DepositCurrencySummary::bestOfferForDeposit($record);
+                        return $best !== null ? rtrim(rtrim(number_format($best['rate'], 2, '.', ''), '0'), '.') . '%' : '—';
+                    })
+                    ->suffix('')
                     ->toggleable(),
 
-                TextColumn::make('term_months')
-                    ->label('Срок (мес.)')
-                    ->sortable()
+                TextColumn::make('term_range')
+                    ->label('Срок (дн.)')
+                    ->state(function (Deposit $record): string {
+                        $best = DepositCurrencySummary::bestOfferForDeposit($record);
+                        return $best !== null ? (string) $best['term_days'] : '—';
+                    })
                     ->toggleable(),
 
                 TextColumn::make('min_amount')
                     ->label('Мин. сумма')
-                    ->numeric()
+                    ->state(function (Deposit $record): string {
+                        $best = DepositCurrencySummary::bestOfferForDeposit($record);
+                        return $best !== null && $best['amount_min'] !== null ? number_format((float) $best['amount_min'], 0, '.', ' ') : '—';
+                    })
+                    ->toggleable(),
+
+                TextColumn::make('deposit_type')
+                    ->label('Тип вклада')
                     ->sortable()
+                    ->toggleable(),
+
+                IconColumn::make('capitalization')
+                    ->label('Капитализация')
+                    ->boolean()
+                    ->toggleable(),
+
+                IconColumn::make('online_opening')
+                    ->label('Открытие онлайн')
+                    ->boolean()
+                    ->toggleable(),
+
+                IconColumn::make('monthly_interest_payment')
+                    ->label('Выплата % ежемесячно')
+                    ->boolean()
                     ->toggleable(),
 
                 IconColumn::make('replenishment')

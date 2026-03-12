@@ -12,11 +12,16 @@ class Credit extends Model
     protected $fillable = [
         'bank_id',
         'name',
+        'review_rating',
+        'review_count',
         'slug',
         'rate',
         'psk',
         'max_amount',
+        'min_amount',
         'term_months',
+        'min_term_months',
+        'max_term_months',
         'income_proof_required',
         'age_min',
         'age_max',
@@ -34,10 +39,15 @@ class Credit extends Model
     {
         return [
             'bank_id' => 'integer',
+            'review_rating' => 'decimal:2',
+            'review_count' => 'integer',
             'rate' => 'decimal:2',
             'psk' => 'decimal:2',
             'max_amount' => 'decimal:2',
+            'min_amount' => 'decimal:2',
             'term_months' => 'integer',
+            'min_term_months' => 'integer',
+            'max_term_months' => 'integer',
             'income_proof_required' => 'boolean',
             'age_min' => 'integer',
             'age_max' => 'integer',
@@ -68,6 +78,11 @@ class Credit extends Model
     public function categories(): BelongsToMany
     {
         return $this->belongsToMany(CreditCategory::class, 'credit_credit_category');
+    }
+
+    public function receiveMethods(): BelongsToMany
+    {
+        return $this->belongsToMany(CreditReceiveMethod::class, 'credit_credit_receive_method');
     }
 
     protected static function generateUniqueSlug(string $name, ?int $ignoreId = null): string

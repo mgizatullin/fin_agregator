@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Controllers\Concerns\HandlesLoadMorePagination;
 use App\Http\Helpers\SectionRouteResolver;
 use App\Models\Loan;
 use App\Models\LoanCategory;
@@ -12,6 +13,8 @@ use Symfony\Component\HttpFoundation\Response;
 
 class LoanController extends Controller
 {
+    use HandlesLoadMorePagination;
+
     public function index(Request $request, ?string $citySlug = null): View|Response
     {
         $city = SectionRouteResolver::resolveCity($citySlug);
@@ -19,7 +22,14 @@ class LoanController extends Controller
         $items = Loan::query()
             ->where('is_active', true)
             ->orderBy('name')
-            ->get();
+            ->paginate(20)
+            ->withQueryString();
+
+        if ($response = $this->loadMoreResponse($request, $items, 'loans.partials.list-items', [
+            'items' => $items,
+        ])) {
+            return $response;
+        }
 
         $setting = SectionSetting::forType('loans');
         $section = (object) [
@@ -88,4 +98,3 @@ class LoanController extends Controller
         ]));
     }
 }
-

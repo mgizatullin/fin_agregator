@@ -27,6 +27,17 @@ class CreditsTable
                     ->searchable()
                     ->sortable(),
 
+                TextColumn::make('review_rating')
+                    ->label('Рейтинг')
+                    ->numeric(decimalPlaces: 1)
+                    ->sortable()
+                    ->toggleable(),
+
+                TextColumn::make('review_count')
+                    ->label('Отзывы')
+                    ->sortable()
+                    ->toggleable(),
+
                 TextColumn::make('slug')
                     ->label('URL-код')
                     ->searchable()

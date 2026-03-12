@@ -24,6 +24,20 @@
                 $sectionPath = 'vklady';
                 $currentCity = $city ?? null;
                 $currentCategory = $category->slug ?? null;
+                $depositsCount = isset($items) ? (method_exists($items, 'total') ? $items->total() : $items->count()) : 0;
+                $depositsWord = match (true) {
+                    $depositsCount % 100 >= 11 && $depositsCount % 100 <= 14 => 'вкладов',
+                    $depositsCount % 10 === 1 => 'вклад',
+                    $depositsCount % 10 >= 2 && $depositsCount % 10 <= 4 => 'вклада',
+                    default => 'вкладов',
+                };
+                $foundWord = ($depositsCount % 100 < 11 || $depositsCount % 100 > 14) && $depositsCount % 10 === 1
+                    ? 'Найден'
+                    : 'Найдено';
+                $categoryTitle = trim((string) ($category->title ?? ''));
+                $categoryLabel = $categoryTitle !== ''
+                    ? mb_strtolower(mb_substr($categoryTitle, 0, 1)) . mb_substr($categoryTitle, 1)
+                    : '';
             @endphp
             @if($categories->count())
             <div class="category-nav overflow-x-auto mb_40">
@@ -38,15 +52,20 @@
             </div>
             @endif
 
-            <div class="d-grid gap_40">
-                @if(isset($items) && $items->isNotEmpty())
-                    @foreach ($items as $item)
-                        <x-deposit-card :item="$item" />
-                    @endforeach
+            <div class="mb_24 text-body-2">
+                {{ $foundWord }} {{ $depositsCount }} {{ $depositsWord }}{{ $categoryLabel !== '' ? ' ' . $categoryLabel : '' }}
+            </div>
+
+            <div class="d-grid gap_10" id="deposits-list">
+                @if(isset($items) && $items->count() > 0)
+                    @include('deposits.partials.list-items', ['items' => $items])
                 @else
                     <p class="text-body-1 text_mono-gray-7">В этой категории пока нет вкладов.</p>
                 @endif
             </div>
+            @if(isset($items) && $items->count() > 0)
+                @include('partials.load-more-button', ['paginator' => $items, 'targetId' => 'deposits-list'])
+            @endif
         </div>
     </div>
 

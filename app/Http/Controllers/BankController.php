@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Controllers\Concerns\HandlesLoadMorePagination;
 use App\Http\Helpers\SectionRouteResolver;
 use App\Models\Bank;
 use App\Models\BankCategory;
@@ -12,11 +13,24 @@ use Symfony\Component\HttpFoundation\Response;
 
 class BankController extends Controller
 {
+    use HandlesLoadMorePagination;
+
     public function index(Request $request, ?string $citySlug = null): View|Response
     {
         $city = SectionRouteResolver::resolveCity($citySlug);
 
-        $items = Bank::withCount('branches')->where('is_active', true)->orderBy('name')->get();
+        $items = Bank::withCount('branches')
+            ->where('is_active', true)
+            ->orderBy('name')
+            ->paginate(20)
+            ->withQueryString();
+
+        if ($response = $this->loadMoreResponse($request, $items, 'banks.partials.list-items', [
+            'items' => $items,
+            'variant' => 'index',
+        ])) {
+            return $response;
+        }
         $setting = SectionSetting::forType('banks');
         $section = (object) [
             'title' => $setting?->title ?: 'Банки',

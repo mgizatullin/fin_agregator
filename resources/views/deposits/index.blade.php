@@ -15,6 +15,19 @@
     <div class="section-opportunities tf-spacing-27">
         <div class="tf-container">
 
+            @php
+                $depositsCount = isset($items) ? (method_exists($items, 'total') ? $items->total() : $items->count()) : 0;
+                $depositsWord = match (true) {
+                    $depositsCount % 100 >= 11 && $depositsCount % 100 <= 14 => 'вкладов',
+                    $depositsCount % 10 === 1 => 'вклад',
+                    $depositsCount % 10 >= 2 && $depositsCount % 10 <= 4 => 'вклада',
+                    default => 'вкладов',
+                };
+                $foundWord = ($depositsCount % 100 < 11 || $depositsCount % 100 > 14) && $depositsCount % 10 === 1
+                    ? 'Найден'
+                    : 'Найдено';
+            @endphp
+
             @if(isset($categories) && $categories->count())
             <div class="category-nav overflow-x-auto mb_40">
                 @php
@@ -33,15 +46,20 @@
             </div>
             @endif
 
-            <div class="d-grid gap_10">
-                @if(isset($items) && $items->isNotEmpty())
-                    @foreach ($items as $item)
-                        <x-deposit-card :item="$item" />
-                    @endforeach
+            <div class="mb_24 text-body-2">
+                {{ $foundWord }} {{ $depositsCount }} {{ $depositsWord }}
+            </div>
+
+            <div class="d-grid gap_10" id="deposits-list">
+                @if(isset($items) && $items->count() > 0)
+                    @include('deposits.partials.list-items', ['items' => $items])
                 @else
                     <p class="text-body-1 text_mono-gray-7">Нет вкладов.</p>
                 @endif
             </div>
+            @if(isset($items) && $items->count() > 0)
+                @include('partials.load-more-button', ['paginator' => $items, 'targetId' => 'deposits-list'])
+            @endif
         </div>
     </div>
 

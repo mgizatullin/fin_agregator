@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Controllers\Concerns\HandlesLoadMorePagination;
 use App\Http\Helpers\SectionRouteResolver;
 use App\Models\Card;
 use App\Models\CardCategory;
@@ -12,6 +13,8 @@ use Symfony\Component\HttpFoundation\Response;
 
 class CardCategoryController extends Controller
 {
+    use HandlesLoadMorePagination;
+
     public function show(Request $request, string $slug, ?string $citySlug = null): View|Response
     {
         $city = SectionRouteResolver::resolveCity($citySlug);
@@ -21,7 +24,14 @@ class CardCategoryController extends Controller
             ->with('bank')
             ->where('cards.is_active', true)
             ->orderBy('cards.name')
-            ->get();
+            ->paginate(20)
+            ->withQueryString();
+
+        if ($response = $this->loadMoreResponse($request, $items, 'cards.partials.list-items', [
+            'items' => $items,
+        ])) {
+            return $response;
+        }
 
         $sectionSetting = SectionSetting::getOrCreateForType('cards');
         $serviceName = $sectionSetting->title ?? 'Кредитные карты';

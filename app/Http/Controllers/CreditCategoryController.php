@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Controllers\Concerns\HandlesLoadMorePagination;
 use App\Http\Helpers\SectionRouteResolver;
 use App\Models\Credit;
 use App\Models\CreditCategory;
@@ -12,16 +13,25 @@ use Symfony\Component\HttpFoundation\Response;
 
 class CreditCategoryController extends Controller
 {
+    use HandlesLoadMorePagination;
+
     public function show(Request $request, string $slug, ?string $citySlug = null): View|Response
     {
         $city = SectionRouteResolver::resolveCity($citySlug);
 
         $category = CreditCategory::where('slug', $slug)->firstOrFail();
         $items = $category->credits()
-            ->with('bank')
+            ->with(['bank', 'receiveMethods'])
             ->where('credits.is_active', true)
             ->orderBy('credits.name')
-            ->get();
+            ->paginate(20)
+            ->withQueryString();
+
+        if ($response = $this->loadMoreResponse($request, $items, 'credits.partials.list-items', [
+            'items' => $items,
+        ])) {
+            return $response;
+        }
 
         $sectionSetting = SectionSetting::getOrCreateForType('credits');
         $serviceName = $sectionSetting->title ?? 'Кредиты';

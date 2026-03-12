@@ -19,40 +19,35 @@
         <div class="main-content style-1 ">
     <div class="section-opportunities tf-spacing-27">
         <div class="tf-container">
-            <div class="d-grid gap_40">
-                @if(isset($items) && $items->isNotEmpty())
-                    @foreach ($items as $bank)
-                        @php
-                            $logoUrl = $bank->logo ? (str_starts_with($bank->logo, 'http') ? $bank->logo : asset('storage/' . $bank->logo)) : null;
-                        @endphp
-                        <div class="karty-card">
-                            <div class="karty-card__col karty-card__name">
-                                <div class="karty-card__name-inner">
-                                    @if($logoUrl)
-                                        <img class="karty-card__image" src="{{ $logoUrl }}" alt="{{ $bank->name }}" width="101" height="66">
-                                    @else
-                                        <div class="karty-card__image karty-card__image-placeholder">—</div>
-                                    @endif
-                                    <div class="karty-card__name-block">
-                                        <div class="karty-card__name-text">{{ $bank->name }}</div>
-                                        <span class="karty-card__label">Банк</span>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="karty-card__col karty-card__action">
-                                @if($bank->website)
-                                    <a href="{{ $bank->website }}" class="tf-btn btn-primary2 btn-px-28 height-2 rounded-12" target="_blank" rel="noopener">
-                                        <span>Сайт</span>
-                                        <span class="bg-effect"></span>
-                                    </a>
-                                @endif
-                            </div>
-                        </div>
-                    @endforeach
+            @php
+                $banksCount = isset($items) ? (method_exists($items, 'total') ? $items->total() : $items->count()) : 0;
+                $banksWord = match (true) {
+                    $banksCount % 100 >= 11 && $banksCount % 100 <= 14 => 'банков',
+                    $banksCount % 10 === 1 => 'банк',
+                    $banksCount % 10 >= 2 && $banksCount % 10 <= 4 => 'банка',
+                    default => 'банков',
+                };
+                $foundWord = ($banksCount % 100 < 11 || $banksCount % 100 > 14) && $banksCount % 10 === 1
+                    ? 'Найден'
+                    : 'Найдено';
+                $categoryTitle = trim((string) ($category->title ?? ''));
+                $categoryLabel = $categoryTitle !== ''
+                    ? mb_strtolower(mb_substr($categoryTitle, 0, 1)) . mb_substr($categoryTitle, 1)
+                    : '';
+            @endphp
+            <div class="mb_24 text-body-2">
+                {{ $foundWord }} {{ $banksCount }} {{ $banksWord }}{{ $categoryLabel !== '' ? ' ' . $categoryLabel : '' }}
+            </div>
+            <div class="d-grid gap_10" id="banks-list">
+                @if(isset($items) && $items->count() > 0)
+                    @include('banks.partials.list-items', ['items' => $items, 'variant' => 'category'])
                 @else
                     <p class="text-body-1 text_mono-gray-7">В этой категории пока нет банков.</p>
                 @endif
             </div>
+            @if(isset($items) && $items->count() > 0)
+                @include('partials.load-more-button', ['paginator' => $items, 'targetId' => 'banks-list'])
+            @endif
         </div>
     </div>
 

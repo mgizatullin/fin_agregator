@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Controllers\Concerns\HandlesLoadMorePagination;
 use App\Http\Helpers\SectionRouteResolver;
 use App\Models\Loan;
 use App\Models\LoanCategory;
@@ -12,6 +13,8 @@ use Symfony\Component\HttpFoundation\Response;
 
 class LoanCategoryController extends Controller
 {
+    use HandlesLoadMorePagination;
+
     public function show(Request $request, string $slug, ?string $citySlug = null): View|Response
     {
         $city = SectionRouteResolver::resolveCity($citySlug);
@@ -20,7 +23,14 @@ class LoanCategoryController extends Controller
         $items = $category->loans()
             ->where('loans.is_active', true)
             ->orderBy('loans.name')
-            ->get();
+            ->paginate(20)
+            ->withQueryString();
+
+        if ($response = $this->loadMoreResponse($request, $items, 'loans.partials.list-items', [
+            'items' => $items,
+        ])) {
+            return $response;
+        }
 
         $sectionSetting = SectionSetting::getOrCreateForType('loans');
         $serviceName = $sectionSetting->title ?? 'Займы';

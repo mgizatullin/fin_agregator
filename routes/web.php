@@ -69,13 +69,13 @@ Route::get('/kredity/{first}/{second}', function (string $first, string $second)
     abort(404);
 })->name('credits.category.city');
 Route::get('/kredity/{first}', function (string $first) {
-    $credit = \App\Models\Credit::where('slug', $first)->where('is_active', true)->first();
-    if ($credit) {
-        return app(CreditController::class)->show(request(), $first);
-    }
     $category = \App\Models\CreditCategory::where('slug', $first)->first();
     if ($category) {
         return app(CreditCategoryController::class)->show(request(), $first, null);
+    }
+    $credit = \App\Models\Credit::where('slug', $first)->where('is_active', true)->first();
+    if ($credit) {
+        return app(CreditController::class)->show(request(), $first);
     }
     $city = City::where('slug', $first)->where('is_active', true)->first();
     if ($city) {
@@ -165,3 +165,5 @@ Route::get('/banki/{first}', function (string $first) {
 Route::get('/blog', [BlogController::class, 'index'])->name('blog.index');
 Route::get('/blog/category/{slug}', [BlogController::class, 'category'])->name('blog.category');
 Route::get('/blog/{slug}', [BlogController::class, 'show'])->name('blog.show');
+
+Route::get('/api/deposits/{deposit}/conditions', [DepositController::class, 'conditions'])->name('api.deposits.conditions');

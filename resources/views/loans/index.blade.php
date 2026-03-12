@@ -15,6 +15,19 @@
     <div class="section-opportunities tf-spacing-27">
         <div class="tf-container">
 
+            @php
+                $loansCount = isset($items) ? (method_exists($items, 'total') ? $items->total() : $items->count()) : 0;
+                $loansWord = match (true) {
+                    $loansCount % 100 >= 11 && $loansCount % 100 <= 14 => 'займов',
+                    $loansCount % 10 === 1 => 'займ',
+                    $loansCount % 10 >= 2 && $loansCount % 10 <= 4 => 'займа',
+                    default => 'займов',
+                };
+                $foundWord = ($loansCount % 100 < 11 || $loansCount % 100 > 14) && $loansCount % 10 === 1
+                    ? 'Найден'
+                    : 'Найдено';
+            @endphp
+
             @if(isset($categories) && $categories->count())
             <div class="category-nav overflow-x-auto mb_40">
                 @php
@@ -33,15 +46,20 @@
             </div>
             @endif
 
-            <div class="loan-cards-grid">
-                @if(isset($items) && $items->isNotEmpty())
-                    @foreach ($items as $item)
-                        <x-loan-card :item="$item" />
-                    @endforeach
+            <div class="mb_24 text-body-2">
+                {{ $foundWord }} {{ $loansCount }} {{ $loansWord }}
+            </div>
+
+            <div class="loan-cards-grid" id="loans-list">
+                @if(isset($items) && $items->count() > 0)
+                    @include('loans.partials.list-items', ['items' => $items])
                 @else
                     <p class="text-body-1 text_mono-gray-7">Нет займов.</p>
                 @endif
             </div>
+            @if(isset($items) && $items->count() > 0)
+                @include('partials.load-more-button', ['paginator' => $items, 'targetId' => 'loans-list'])
+            @endif
         </div>
     </div>
 

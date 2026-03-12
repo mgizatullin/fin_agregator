@@ -2,9 +2,10 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Str;
 
 class Deposit extends Model
@@ -13,9 +14,10 @@ class Deposit extends Model
         'bank_id',
         'name',
         'slug',
-        'rate',
-        'term_months',
-        'min_amount',
+        'deposit_type',
+        'capitalization',
+        'online_opening',
+        'monthly_interest_payment',
         'replenishment',
         'partial_withdrawal',
         'early_termination',
@@ -29,9 +31,10 @@ class Deposit extends Model
     {
         return [
             'bank_id' => 'integer',
-            'rate' => 'decimal:2',
-            'term_months' => 'integer',
-            'min_amount' => 'decimal:2',
+            'deposit_type' => 'string',
+            'capitalization' => 'boolean',
+            'online_opening' => 'boolean',
+            'monthly_interest_payment' => 'boolean',
             'replenishment' => 'boolean',
             'partial_withdrawal' => 'boolean',
             'early_termination' => 'boolean',
@@ -47,7 +50,6 @@ class Deposit extends Model
             if (blank($deposit->name)) {
                 return;
             }
-
             if ($deposit->isDirty('name') || blank($deposit->slug)) {
                 $deposit->slug = static::generateUniqueSlug($deposit->name, $deposit->id);
             }
@@ -62,6 +64,11 @@ class Deposit extends Model
     public function categories(): BelongsToMany
     {
         return $this->belongsToMany(DepositCategory::class, 'deposit_deposit_category');
+    }
+
+    public function currencies(): HasMany
+    {
+        return $this->hasMany(DepositCurrency::class)->orderBy('sort_order');
     }
 
     protected static function generateUniqueSlug(string $name, ?int $ignoreId = null): string

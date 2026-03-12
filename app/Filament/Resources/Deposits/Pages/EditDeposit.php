@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\Deposits\Pages;
 
 use App\Filament\Resources\Deposits\DepositResource;
+use App\Services\DepositConditionsMapper\DepositConditionsMapper;
 use Filament\Actions\DeleteAction;
 use Filament\Resources\Pages\EditRecord;
 use Illuminate\Database\Eloquent\Model;
@@ -23,6 +24,7 @@ class EditDeposit extends EditRecord
         if (isset($data['description']) && is_string($data['description'])) {
             $data['description'] = description_to_html($data['description']);
         }
+        $data['currencies'] = DepositConditionsMapper::toFormStructure($this->record);
         return $data;
     }
 
@@ -39,6 +41,10 @@ class EditDeposit extends EditRecord
         if (array_key_exists('description', $data)) {
             $data['description'] = description_ensure_html($data['description'] ?? '');
         }
-        return parent::handleRecordUpdate($record, $data);
+        $currencies = $data['currencies'] ?? [];
+        unset($data['currencies']);
+        $record = parent::handleRecordUpdate($record, $data);
+        DepositConditionsMapper::fromFormStructure($record, $currencies);
+        return $record;
     }
 }

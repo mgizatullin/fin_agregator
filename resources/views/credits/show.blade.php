@@ -13,19 +13,13 @@
 @endsection
 
 @section('content')
-
-        <div class="main-content style-1 ">
-    <div class="section-opportunities tf-spacing-27">
-        <div class="tf-container">
-            <div class="content">
-                @if(filled($credit->description))
-                    {!! description_to_html($credit->description) !!}
-                @else
-                    <p class="text-body-1 text_mono-gray-7">Описание кредита пока не добавлено.</p>
-                @endif
+    <div class="main-content style-1">
+        <div class="section-opportunities tf-spacing-27">
+            <div class="tf-container">
+                <div class="content">
+                    <x-credit-offer-card :credit="$credit" />
+                </div>
             </div>
         </div>
     </div>
-        </div>
-
 @endsection

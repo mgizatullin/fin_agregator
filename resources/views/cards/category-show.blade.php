@@ -6,6 +6,20 @@
         $sectionPath = 'karty';
         $currentCity = $city ?? null;
         $currentCategory = $category->slug ?? null;
+        $cardsCount = isset($items) ? (method_exists($items, 'total') ? $items->total() : $items->count()) : 0;
+        $cardsWord = match (true) {
+            $cardsCount % 100 >= 11 && $cardsCount % 100 <= 14 => 'карт',
+            $cardsCount % 10 === 1 => 'карта',
+            $cardsCount % 10 >= 2 && $cardsCount % 10 <= 4 => 'карты',
+            default => 'карт',
+        };
+        $foundWord = ($cardsCount % 100 < 11 || $cardsCount % 100 > 14) && $cardsCount % 10 === 1
+            ? 'Найдена'
+            : 'Найдено';
+        $categoryTitle = trim((string) ($category->title ?? ''));
+        $categoryLabel = $categoryTitle !== ''
+            ? mb_strtolower(mb_substr($categoryTitle, 0, 1)) . mb_substr($categoryTitle, 1)
+            : '';
     @endphp
     <div class="section-opportunities tf-spacing-27">
         <div class="tf-container">
@@ -22,61 +36,20 @@
             </div>
             @endif
 
-            <div class="d-grid gap_40">
-                @if(isset($items) && $items->isNotEmpty())
-                    @foreach ($items as $card)
-                        @php
-                            $bankName = $card->bank ? ($card->bank->name ?: '-') : '-';
-                            $cardName = $card->name ?: '-';
-                            $gracePeriod = $card->grace_period !== null && $card->grace_period !== '' ? $card->grace_period . ' дн.' : '-';
-                            $creditLimit = $card->credit_limit !== null && $card->credit_limit !== '' ? 'до ' . number_format((float) $card->credit_limit, 0, '', ' ') . ' ₽' : '-';
-                            $annualFee = $card->annual_fee !== null && $card->annual_fee !== '' ? $card->annual_fee . ' ₽' : '-';
-                            $rate = $card->rate !== null && $card->rate !== '' ? $card->rate . '%' : '-';
-                            $cardUrl = $card->slug ? route('cards.show', $card->slug) : '#';
-                            $cardImage = $card->image ? asset('storage/' . $card->image) : null;
-                        @endphp
-                        <div class="karty-card">
-                            <div class="karty-card__col karty-card__name">
-                                <div class="karty-card__name-inner">
-                                    @if($cardImage)
-                                        <img class="karty-card__image" src="{{ $cardImage }}" alt="{{ $cardName }}" width="101" height="66">
-                                    @else
-                                        <div class="karty-card__image karty-card__image-placeholder">—</div>
-                                    @endif
-                                    <div class="karty-card__name-block">
-                                        <div class="karty-card__name-text">{{ $bankName }}</div>
-                                        <span class="karty-card__label">{{ $cardName }}</span>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="karty-card__col">
-                                <span class="karty-card__label">Льготный период</span>
-                                <span class="karty-card__value">{{ $gracePeriod }}</span>
-                            </div>
-                            <div class="karty-card__col">
-                                <span class="karty-card__label">Кредитный лимит</span>
-                                <span class="karty-card__value">{{ $creditLimit }}</span>
-                            </div>
-                            <div class="karty-card__col">
-                                <span class="karty-card__label">Годовое обслуживание</span>
-                                <span class="karty-card__value">{{ $annualFee }}</span>
-                            </div>
-                            <div class="karty-card__col">
-                                <span class="karty-card__label">Ставка</span>
-                                <span class="karty-card__value">{{ $rate }}</span>
-                            </div>
-                            <div class="karty-card__col karty-card__action">
-                                <a href="{{ $cardUrl }}" class="tf-btn btn-primary2 btn-px-28 height-2 rounded-12">
-                                    <span>Подробнее</span>
-                                    <span class="bg-effect"></span>
-                                </a>
-                            </div>
-                        </div>
-                    @endforeach
+            <div class="mb_24 text-body-2">
+                {{ $foundWord }} {{ $cardsCount }} {{ $cardsWord }}{{ $categoryLabel !== '' ? ' ' . $categoryLabel : '' }}
+            </div>
+
+            <div class="d-grid gap_10" id="cards-list">
+                @if(isset($items) && $items->count() > 0)
+                    @include('cards.partials.list-items', ['items' => $items])
                 @else
                     <p class="text-body-1 text_mono-gray-7">В этой категории пока нет карт.</p>
                 @endif
             </div>
+            @if(isset($items) && $items->count() > 0)
+                @include('partials.load-more-button', ['paginator' => $items, 'targetId' => 'cards-list'])
+            @endif
         </div>
     </div>
 

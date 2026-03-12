@@ -10,11 +10,22 @@
     $psk = $item->psk !== null && $item->psk !== '' ? $item->psk . '%' : '—';
     $maxAmount = $item->max_amount !== null && $item->max_amount !== '' ? number_format((float) $item->max_amount, 0, '', ' ') . ' ₽' : '—';
     $term = $item->term_months !== null && $item->term_months !== '' ? $item->term_months . ' мес.' : '—';
+    $receiveMethodIds = $item->relationLoaded('receiveMethods')
+        ? $item->receiveMethods->pluck('id')->implode(',')
+        : '';
 
     $detailUrl = route('credits.category.show', $item->slug);
 @endphp
 
-<div class="credit-card">
+<div
+    class="credit-card"
+    data-credit-card
+    data-amount="{{ (float) ($item->max_amount ?? 0) }}"
+    data-term="{{ (int) ($item->term_months ?? 0) }}"
+    data-rate="{{ (float) ($item->rate ?? 0) }}"
+    data-psk="{{ (float) ($item->psk ?? 0) }}"
+    data-receive-method-ids="{{ $receiveMethodIds }}"
+>
     <div class="credit-card__col credit-card__name">
         <div class="credit-card__name-inner">
             @if($logoPath)
