@@ -17,7 +17,11 @@
         <div class="section-opportunities tf-spacing-27">
             <div class="tf-container">
                 <div class="content">
-                    <x-credit-offer-card :credit="$credit" />
+                    <x-credit-offer-card :credit="$credit">
+                        <x-slot:sidebar>
+                            <x-credit-calculator :credit="$credit" />
+                        </x-slot:sidebar>
+                    </x-credit-offer-card>
                 </div>
             </div>
         </div>

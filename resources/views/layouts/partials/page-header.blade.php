@@ -10,7 +10,7 @@
 
                     @if(!empty($showCitySelect) && !empty($citySelectBase))
                         <button type="button" class="city-select-btn" data-section-base="{{ $citySelectBase }}">
-                            Выбрать город
+                            <span class="header-city-label">@isset($city){{ $city->name }}@else{{ $cityName ?? 'Вся Россия' }}@endisset</span>
                         </button>
                     @endif
 

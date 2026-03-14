@@ -62,7 +62,7 @@ class LoanController extends Controller
 
         $title = $page_h1;
 
-        return view('loans.index', [
+        return view('loans.index', array_merge([
             'items' => $items,
             'section' => $section,
             'categories' => $categories,
@@ -72,7 +72,7 @@ class LoanController extends Controller
             'title' => $title,
             'page_h1' => $page_h1,
             'page_content' => $page_content,
-        ]);
+        ], $city ? [] : ['redirectToCityIfStored' => true, 'sectionBaseForRedirect' => 'zaimy']));
     }
 
     /**

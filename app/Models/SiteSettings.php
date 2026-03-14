@@ -10,12 +10,18 @@ class SiteSettings extends Model
 
     protected $fillable = [
         'navigation',
+        'footer_menu_1',
+        'footer_menu_2',
+        'footer_heading_1',
+        'footer_heading_2',
     ];
 
     protected function casts(): array
     {
         return [
             'navigation' => 'array',
+            'footer_menu_1' => 'array',
+            'footer_menu_2' => 'array',
         ];
     }
 

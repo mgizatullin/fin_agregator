@@ -69,6 +69,7 @@ class BankCategoryController extends Controller
             'description' => $category->description ?? '',
         ];
 
+        $base = 'banki/' . $category->slug;
         return view('banks.category-show', array_merge(compact('category', 'items', 'section', 'city'), [
             'sectionIndexUrl' => $city ? url('banki/' . $city->slug) : route('banks.index'),
             'sectionIndexTitle' => 'Банки',
@@ -76,7 +77,7 @@ class BankCategoryController extends Controller
             'seo_description' => $seoDescription,
             'title' => $title,
             'showCitySelect' => true,
-            'citySelectBase' => 'banki/' . $category->slug,
-        ]));
+            'citySelectBase' => $base,
+        ], $city ? [] : ['redirectToCityIfStored' => true, 'sectionBaseForRedirect' => $base]));
     }
 }

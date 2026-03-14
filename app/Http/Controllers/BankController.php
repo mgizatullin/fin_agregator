@@ -60,7 +60,7 @@ class BankController extends Controller
 
         $title = $page_h1;
 
-        return view('banks.index', [
+        return view('banks.index', array_merge([
             'items' => $items,
             'section' => $section,
             'city' => $city,
@@ -69,7 +69,7 @@ class BankController extends Controller
             'title' => $title,
             'page_h1' => $page_h1,
             'page_content' => $page_content,
-        ]);
+        ], $city ? [] : ['redirectToCityIfStored' => true, 'sectionBaseForRedirect' => 'banki']));
     }
 
     /**

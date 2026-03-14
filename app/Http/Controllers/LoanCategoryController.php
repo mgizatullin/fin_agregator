@@ -67,6 +67,7 @@ class LoanCategoryController extends Controller
             'description' => $category->description ?? '',
         ];
 
+        $base = 'zaimy/' . $category->slug;
         return view('loans.category-show', array_merge(compact('category', 'items', 'section', 'city'), [
             'sectionIndexUrl' => $city ? url('zaimy/' . $city->slug) : route('loans.index'),
             'sectionIndexTitle' => 'Займы',
@@ -74,7 +75,7 @@ class LoanCategoryController extends Controller
             'seo_description' => $seoDescription,
             'title' => $title,
             'showCitySelect' => true,
-            'citySelectBase' => 'zaimy/' . $category->slug,
-        ]));
+            'citySelectBase' => $base,
+        ], $city ? [] : ['redirectToCityIfStored' => true, 'sectionBaseForRedirect' => $base]));
     }
 }

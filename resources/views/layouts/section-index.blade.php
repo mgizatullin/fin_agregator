@@ -38,7 +38,7 @@
                                 <h1 class="text_black letter-spacing-1 ">{{ $section->title ?? '' }}</h1>
                                 @if(!empty($showCitySelect) && !empty($citySelectBase))
                                     <button type="button" class="city-select-btn" data-section-base="{{ $citySelectBase }}">
-                                        Выбрать город
+                                        <span class="header-city-label">@isset($city){{ $city->name }}@else{{ $cityName ?? 'Вся Россия' }}@endisset</span>
                                     </button>
                                 @endif
                                 <p class="sub-heading text_mono-gray-7">{{ $section->subtitle ?? '' }}</p>
@@ -70,6 +70,10 @@
     <script src="{{ asset('assets/js/carousel.js') }}"></script>
     <script src="{{ asset('assets/js/ScrollSmooth.js') }}"></script>
     <script src="{{ asset('assets/js/main.js') }}"></script>
+    @stack('redirect-city')
+    <script>
+    (function(){ if (typeof window.__REDIRECT_TO_CITY === 'undefined') window.__REDIRECT_TO_CITY = { enabled: false }; })();
+    </script>
     <script src="{{ asset('assets/js/city-dialog.js') }}"></script>
 </body>
 

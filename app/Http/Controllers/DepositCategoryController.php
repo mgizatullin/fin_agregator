@@ -68,6 +68,7 @@ class DepositCategoryController extends Controller
             'description' => $category->description ?? '',
         ];
 
+        $base = 'vklady/' . $category->slug;
         return view('deposits.category-show', array_merge(compact('category', 'items', 'section', 'city'), [
             'sectionIndexUrl' => $city ? url('vklady/' . $city->slug) : route('deposits.index'),
             'sectionIndexTitle' => 'Вклады',
@@ -75,7 +76,7 @@ class DepositCategoryController extends Controller
             'seo_description' => $seoDescription,
             'title' => $title,
             'showCitySelect' => true,
-            'citySelectBase' => 'vklady/' . $category->slug,
-        ]));
+            'citySelectBase' => $base,
+        ], $city ? [] : ['redirectToCityIfStored' => true, 'sectionBaseForRedirect' => $base]));
     }
 }

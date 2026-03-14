@@ -68,6 +68,7 @@ class CreditCategoryController extends Controller
             'description' => $category->description ?? '',
         ];
 
+        $base = 'kredity/' . $category->slug;
         return view('credits.category-show', array_merge(compact('category', 'items', 'section', 'city'), [
             'sectionIndexUrl' => $city ? url('kredity/' . $city->slug) : route('credits.index'),
             'sectionIndexTitle' => 'Кредиты',
@@ -75,7 +76,7 @@ class CreditCategoryController extends Controller
             'seo_description' => $seoDescription,
             'title' => $title,
             'showCitySelect' => true,
-            'citySelectBase' => 'kredity/' . $category->slug,
-        ]));
+            'citySelectBase' => $base,
+        ], $city ? [] : ['redirectToCityIfStored' => true, 'sectionBaseForRedirect' => $base]));
     }
 }

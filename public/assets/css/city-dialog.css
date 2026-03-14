@@ -80,7 +80,114 @@
 }
 
 .city-modal__search-wrap {
-    margin-bottom: 4rem;
+    position: relative;
+    margin-bottom: 1rem;
+}
+
+/* Выпадающий список под полем поиска (подсказки) */
+.city-modal__search-dropdown {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 100%;
+    margin-top: 4px;
+    z-index: 1060;
+    max-height: 280px;
+    overflow-y: auto;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.12);
+    border: 1px solid var(--Mono-gray-2, #e0e3e6);
+}
+
+.city-modal__search-dropdown[hidden] {
+    display: none !important;
+}
+
+.city-modal__quick {
+    margin-bottom: 1.5rem;
+}
+
+.city-modal__item--quick {
+    padding: 0.5rem 1rem;
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--Primary, #0075ff);
+    background: rgba(0, 117, 255, 0.08);
+    border: 1px solid rgba(0, 117, 255, 0.3);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.15s, border-color 0.15s;
+}
+
+.city-modal__item--quick:hover {
+    background: rgba(0, 117, 255, 0.15);
+    border-color: var(--Primary, #0075ff);
+}
+
+.city-modal__search-result-item {
+    display: block;
+    width: 100%;
+    padding: 0.5rem 0.75rem;
+    font-size: 15px;
+    text-align: left;
+    color: var(--Mono-gray-6, #636e78);
+    background: #fff;
+    text-decoration: none;
+    border: none;
+    border-bottom: 1px solid var(--Mono-gray-1, #f5f6f7);
+    cursor: pointer;
+    transition: background 0.15s, color 0.15s;
+}
+
+.city-modal__search-result-item:hover {
+    background: var(--Mono-gray-1, #f5f6f7);
+    color: #000;
+}
+
+.city-modal__search-result-item:last-child {
+    border-bottom: none;
+}
+
+.city-modal__search-result-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.city-modal__search-result-list li {
+    margin: 0;
+    padding: 0;
+}
+
+.city-modal__search-results-loading,
+.city-modal__search-results-empty {
+    padding: 0.75rem;
+    font-size: 14px;
+    color: var(--Mono-gray-6, #636e78);
+}
+
+.city-modal__quick-list,
+.city-modal__group-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.city-modal__quick-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 1rem;
+}
+
+.city-modal__quick-list li,
+.city-modal__group-list li {
+    margin: 0;
+    padding: 0;
+}
+
+.city-modal__list-wrap {
+    margin-top: 0.5rem;
 }
 
 .city-modal__search {
@@ -96,9 +203,6 @@
     outline: 0;
 }
 
-.city-modal__list-wrap {
-    margin: 0;
-}
 
 .city-modal__list {
     column-count: 4;
@@ -133,6 +237,10 @@
 
 .city-modal__item:hover {
     color: #000;
+}
+
+.city-modal__group-list .city-modal__item {
+    padding: 0.35rem 0;
 }
 
 body.city-modal-open {

@@ -1,5 +1,6 @@
         <!-- .footer -->
         <footer id="footer" class="footer style-default">
+            @php($settings = $siteSettings ?? null)
             <div class="footer-wrap">
                 <div class="tf-container">
                     <div class="footer-body">
@@ -27,29 +28,17 @@
                             <div class="col-lg-2 col-md-6">
                                 <div class="footer-col-block">
                                     <h6 class="footer-heading  footer-heading-mobile">
-                                        Компания
+                                        {{ $settings?->footer_heading_1 ?? 'Компания' }}
                                     </h6>
                                     <div class="tf-collapse-content">
                                         <ul class="footer-menu-list">
-                                            <li class="text-body-2 text_mono-gray-6">
-                                                <a href="about.html" class=" link footer-menu_item">О компании
-                                                    Advitex</a>
-                                            </li>
-                                            <li class="text-body-2 text_mono-gray-6">
-                                                <a href="contact-us.html" class=" link footer-menu_item">Свяжитесь с нами</a>
-                                            </li>
-                                            <li class="text-body-2 text_mono-gray-6">
-                                                <a href="portfolio.html" class=" link footer-menu_item">Портфолио</a>
-                                            </li>
-                                            <li class="text-body-2 text_mono-gray-6">
-                                                <a href="faqs.html" class=" link footer-menu_item">Как мы работаем</a>
-                                            </li>
-                                            <li class="text-body-2 text_mono-gray-6">
-                                                <a href="career.html" class=" link footer-menu_item">Карьера</a>
-                                            </li>
-                                            <li class="text-body-2 text_mono-gray-6">
-                                                <a href="team.html" class=" link footer-menu_item">Наша команда</a>
-                                            </li>
+                                            @foreach(($settings?->footer_menu_1 ?? []) as $item)
+                                                <li class="text-body-2 text_mono-gray-6">
+                                                    <a href="{{ $item['url'] ?? '#' }}" class=" link footer-menu_item">
+                                                        {{ $item['label'] ?? '' }}
+                                                    </a>
+                                                </li>
+                                            @endforeach
                                         </ul>
                                     </div>
                                 </div>
@@ -58,22 +47,17 @@
                                 <div>
                                     <div class="footer-col-block">
                                         <h6 class="footer-heading  footer-heading-mobile">
-                                            Ссылки
+                                            {{ $settings?->footer_heading_2 ?? 'Ссылки' }}
                                         </h6>
                                         <div class="tf-collapse-content">
                                             <ul class="footer-menu-list">
-                                                <li class="text-body-2 text_mono-gray-6">
-                                                    <a href="contact-us.html" class=" link footer-menu_item">Центр поддержки</a>
-                                                </li>
-                                                <li class="text-body-2 text_mono-gray-6">
-                                                    <a href="pricing.html" class=" link footer-menu_item">Политика конфиденциальности</a>
-                                                </li>
-                                                <li class="text-body-2 text_mono-gray-6">
-                                                    <a href="#" class=" link footer-menu_item">Условия использования</a>
-                                                </li>
-                                                <li class="text-body-2 text_mono-gray-6">
-                                                    <a href="faqs.html" class=" link footer-menu_item">Вопросы и ответы</a>
-                                                </li>
+                                                @foreach(($settings?->footer_menu_2 ?? []) as $item)
+                                                    <li class="text-body-2 text_mono-gray-6">
+                                                        <a href="{{ $item['url'] ?? '#' }}" class=" link footer-menu_item">
+                                                            {{ $item['label'] ?? '' }}
+                                                        </a>
+                                                    </li>
+                                                @endforeach
                                             </ul>
                                         </div>
                                     </div>

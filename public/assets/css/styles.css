@@ -9462,6 +9462,34 @@ form.style-line-bot.style-2 button {
   margin-bottom: 0;
 }
 
+.credit-page-row {
+  display: grid;
+  grid-template-columns: 1fr 380px;
+  gap: 40px;
+  align-items: start;
+  margin-top: 32px;
+  padding-top: 28px;
+  border-top: 1px solid var(--credit-offer-border, rgba(25, 20, 0, 0.12));
+}
+@media (max-width: 991px) {
+  .credit-page-row {
+    grid-template-columns: 1fr;
+  }
+}
+.credit-page-main {
+  min-width: 0;
+}
+.credit-page-sidebar {
+  position: sticky;
+  top: 24px;
+}
+.credit-page-sidebar .deposit-calculator {
+  background: #fafaff;
+  border: 1px solid var(--credit-offer-border, rgba(25, 20, 0, 0.12));
+  border-radius: 14px;
+  padding: 24px;
+}
+
 /* Karty card (credit cards list) - same visual rules as credit-card */
 .karty-card {
   display: grid;

@@ -60,7 +60,7 @@ class CardController extends Controller
 
         $title = $page_h1;
 
-        return view('cards.index', [
+        return view('cards.index', array_merge([
             'cards' => $cards,
             'categories' => $categories,
             'section' => $section,
@@ -70,7 +70,7 @@ class CardController extends Controller
             'title' => $title,
             'page_h1' => $page_h1,
             'page_content' => $page_content,
-        ]);
+        ], $city ? [] : ['redirectToCityIfStored' => true, 'sectionBaseForRedirect' => 'karty']));
     }
 
     /**

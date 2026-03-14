@@ -116,6 +116,8 @@
     </div>
 </section>
 
+<div class="credit-page-row">
+    <div class="credit-page-main">
 <div class="credit-offer-card__section" id="credit-parameters">
     <h3 class="credit-offer-card__section-title">Параметры кредита</h3>
     <div class="credit-offer-card__table">
@@ -161,3 +163,8 @@
     'bankName' => $credit->bank?->name ?? '—',
     'formId' => 'credit-' . $credit->id,
 ])
+    </div>
+    <div class="credit-page-sidebar">
+        {{ $sidebar ?? '' }}
+    </div>
+</div>

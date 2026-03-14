@@ -1,4 +1,5 @@
 @extends('layouts.section-index')
+@include('layouts.partials.redirect-city-push')
 
 @section('content')
     @php

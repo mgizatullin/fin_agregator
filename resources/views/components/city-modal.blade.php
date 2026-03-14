@@ -1,4 +1,8 @@
-<div id="city-modal-root" class="city-modal" aria-hidden="true" role="dialog" aria-labelledby="city-modal-title">
+@php
+    $base = $sectionBase ?? '';
+    $basePath = $base ? '/' . $base : '';
+@endphp
+<div id="city-modal-root" class="city-modal" aria-hidden="true" role="dialog" aria-labelledby="city-modal-title" data-section-base="{{ $base }}">
     <div class="city-modal__overlay" data-city-modal-close></div>
     <div class="city-modal__box">
         <div class="city-modal__header">
@@ -15,15 +19,29 @@
                        autocomplete="off"
                        data-city-search
                        id="city-modal-search">
+                <div class="city-modal__search-dropdown" id="city-modal-search-results" aria-live="polite" hidden></div>
+            </div>
+            <div class="city-modal__quick" id="city-modal-quick">
+                <ul class="city-modal__quick-list">
+                    <li><a href="{{ $basePath }}" class="city-modal__item city-modal__item--quick" data-city-slug="" data-city-name="Вся Россия">Вся Россия</a></li>
+                    @if(!empty($moscowSlug))
+                        <li><a href="{{ $basePath }}/{{ $moscowSlug }}" class="city-modal__item city-modal__item--quick" data-city-slug="{{ $moscowSlug }}" data-city-name="Москва">Москва</a></li>
+                    @endif
+                    @if(!empty($spbSlug))
+                        <li><a href="{{ $basePath }}/{{ $spbSlug }}" class="city-modal__item city-modal__item--quick" data-city-slug="{{ $spbSlug }}" data-city-name="Санкт-Петербург">Санкт-Петербург</a></li>
+                    @endif
+                </ul>
             </div>
             <div class="city-modal__list-wrap" id="city-modal-list">
                 <div class="city-modal__list">
                     @foreach($groupedCities as $letter => $cities)
                         <div class="city-modal__group" data-city-group="{{ $letter }}">
                             <div class="city-modal__letter">{{ $letter }}</div>
-                            @foreach($cities as $city)
-                                <a href="#" class="city-modal__item city-modal-item" data-city-slug="{{ $city->slug }}" data-city-name="{{ $city->name }}">{{ $city->name }}</a>
-                            @endforeach
+                            <ul class="city-modal__group-list">
+                                @foreach($cities as $city)
+                                    <li><a href="{{ $basePath }}/{{ $city->slug }}" class="city-modal__item" data-city-slug="{{ $city->slug }}" data-city-name="{{ $city->name }}">{{ $city->name }}</a></li>
+                                @endforeach
+                            </ul>
                         </div>
                     @endforeach
                 </div>

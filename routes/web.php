@@ -13,6 +13,7 @@ use App\Http\Controllers\DepositController;
 use App\Http\Controllers\DepositReviewController;
 use App\Http\Controllers\LoanCategoryController;
 use App\Http\Controllers\LoanController;
+use App\Http\Controllers\PageController;
 use App\Http\Controllers\ReviewController;
 use App\Models\City;
 use App\Models\HomePageSetting;
@@ -37,6 +38,32 @@ Route::get('/', function () {
 })->name('home');
 
 Route::get('/city-dialog', CityDialogController::class)->name('city.dialog');
+
+Route::get('/api/cities/search', function (\Illuminate\Http\Request $request) {
+    $q = $request->input('q', '');
+    $q = is_string($q) ? trim($q) : '';
+    if (mb_strlen($q) < 2) {
+        return response()->json(['cities' => []]);
+    }
+    $qLower = mb_strtolower($q, 'UTF-8');
+    $first = mb_substr($q, 0, 1, 'UTF-8');
+    $firstUpper = mb_strtoupper($first, 'UTF-8');
+    $firstLower = mb_strtolower($first, 'UTF-8');
+    $escape = fn ($s) => str_replace(['\\', '%', '_'], ['\\\\', '\\%', '\\_'], $s);
+    $candidates = \App\Models\City::query()
+        ->where('is_active', true)
+        ->where(function ($query) use ($firstUpper, $firstLower, $escape) {
+            $query->where('name', 'like', $escape($firstUpper) . '%')
+                ->orWhere('name', 'like', $escape($firstLower) . '%');
+        })
+        ->orderBy('name')
+        ->limit(300)
+        ->get(['id', 'name', 'slug']);
+    $cities = $candidates->filter(function ($city) use ($qLower) {
+        return mb_stripos($city->name, $qLower, 0, 'UTF-8') === 0;
+    })->take(50)->values();
+    return response()->json(['cities' => $cities->toArray()]);
+})->name('api.cities.search');
 
 // Cards: /karty, /karty/{card|city}, /karty/category/{slug}, /karty/category/{slug}/{city}
 Route::get('/karty', [CardController::class, 'index'])->name('cards.index');
@@ -170,8 +197,15 @@ Route::post('/karty/{card:slug}/reviews', [ReviewController::class, 'storeCard']
 Route::post('/zaimy/{loan:slug}/reviews', [ReviewController::class, 'storeLoan'])->name('loans.reviews.store');
 Route::post('/banki/{bank:slug}/reviews', [ReviewController::class, 'storeBank'])->name('banks.reviews.store');
 
+Route::get('/search', [\App\Http\Controllers\SearchController::class, 'index'])->name('search');
+
 Route::get('/blog', [BlogController::class, 'index'])->name('blog.index');
 Route::get('/blog/category/{slug}', [BlogController::class, 'category'])->name('blog.category');
 Route::get('/blog/{slug}', [BlogController::class, 'show'])->name('blog.show');
 
 Route::get('/api/deposits/{deposit}/conditions', [DepositController::class, 'conditions'])->name('api.deposits.conditions');
+
+// Static pages: /{slug} (must be last)
+Route::get('/{slug}', [PageController::class, 'show'])
+    ->where('slug', '[A-Za-z0-9\\-]+')
+    ->name('pages.show');

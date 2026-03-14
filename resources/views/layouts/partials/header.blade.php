@@ -29,11 +29,11 @@
                                                 <div class="close-form">
                                                     <i class="icon-times-solid"></i>
                                                 </div>
-                                                <form class="form-search style-line-bot style-1" action="#">
+                                                <form class="form-search style-line-bot style-1" action="{{ url('/search') }}" method="get" role="search" accept-charset="UTF-8">
                                                     <fieldset class="text">
-                                                        <input type="text" placeholder="Поиск..." class="" name="text" tabindex="0" value="" aria-required="true" required="">
+                                                        <input type="search" placeholder="Поиск..." class="" name="q" tabindex="0" value="{{ request()->get('q', '') }}" autocomplete="off">
                                                     </fieldset>
-                                                    <button class="" type="submit">
+                                                    <button type="submit" aria-label="Искать">
                                                         <i class="icon icon-search-solid"></i>
                                                     </button>
                                                 </form>
@@ -60,10 +60,10 @@
                                             @if(isset($currencyRates['CNY']))<span class="header-rates__item">CNY {{ number_format((float)$currencyRates['CNY'], 4, '.', '') }}</span>@endif
                                         </div>
                                         @endif
-                                        <a href="javascript:void(0)" class="hide-sm city-select-btn" id="header-city-btn">
-                                            <span class="header-city-label">Выбрать город</span>
+                                        <button type="button" class="hide-sm city-select-btn" id="header-city-btn" data-section-base="{{ $headerCitySelectBase ?? '' }}">
+                                            <span class="header-city-label">@isset($city){{ $city->name }}@else{{ $cityName ?? 'Вся Россия' }}@endisset</span>
                                             <span class="bg-effect"></span>
-                                        </a>
+                                        </button>
                                         <div class="mobile-button" data-bs-toggle="offcanvas" data-bs-target="#menu-mobile" aria-controls="menu-mobile">
                                             <div class="burger">
                                                 <span></span>

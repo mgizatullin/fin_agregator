@@ -68,6 +68,7 @@ class CardCategoryController extends Controller
             'description' => $category->description ?? '',
         ];
 
+        $base = 'karty/category/' . $category->slug;
         return view('cards.category-show', array_merge(compact('category', 'items', 'section', 'city'), [
             'sectionIndexUrl' => $city ? url('karty/' . $city->slug) : route('cards.index'),
             'sectionIndexTitle' => 'Кредитные карты',
@@ -75,7 +76,7 @@ class CardCategoryController extends Controller
             'seo_description' => $seoDescription,
             'title' => $title,
             'showCitySelect' => true,
-            'citySelectBase' => 'karty/category/' . $category->slug,
-        ]));
+            'citySelectBase' => $base,
+        ], $city ? [] : ['redirectToCityIfStored' => true, 'sectionBaseForRedirect' => $base]));
     }
 }
