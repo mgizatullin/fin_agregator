@@ -6,7 +6,7 @@
     'subtitle' => $article->excerpt ?? null,
     'breadcrumbs' => array_filter([
         ['url' => '/', 'label' => 'Главная'],
-        $article->category ? ['url' => url('/blog/category/' . $article->category->slug), 'label' => $article->category->name] : null,
+        $article->category ? ['url' => url_section('blog/category/' . $article->category->slug), 'label' => $article->category->name] : null,
         ['label' => $article->title],
     ]),
 ])

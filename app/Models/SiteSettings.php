@@ -14,6 +14,17 @@ class SiteSettings extends Model
         'footer_menu_2',
         'footer_heading_1',
         'footer_heading_2',
+        'copyright',
+        'custom_scripts',
+        'logo',
+        'footer_under_logo',
+        'social_twitter',
+        'social_facebook',
+        'social_github',
+        'social_instagram',
+        'social_youtube',
+        'social_zen',
+        'social_telegram',
     ];
 
     protected function casts(): array

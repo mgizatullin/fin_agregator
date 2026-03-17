@@ -153,11 +153,11 @@ class ReviewsTable
             return '#';
         }
         return match ($record->reviewable_type) {
-            \App\Models\Credit::class => url('/kredity/' . $slug) . '#product-reviews',
-            \App\Models\Card::class => url('/karty/' . $slug) . '#product-reviews',
-            \App\Models\Loan::class => url('/zaimy/' . $slug) . '#product-reviews',
-            \App\Models\Bank::class => url('/banki/' . $slug) . '#product-reviews',
-            \App\Models\Deposit::class => url('/vklady/' . $slug) . '#deposit-reviews',
+            \App\Models\Credit::class => url_section('kredity/' . $slug) . '#product-reviews',
+            \App\Models\Card::class => url_section('karty/' . $slug) . '#product-reviews',
+            \App\Models\Loan::class => url_section('zaimy/' . $slug) . '#product-reviews',
+            \App\Models\Bank::class => url_section('banki/' . $slug) . '#product-reviews',
+            \App\Models\Deposit::class => url_section('vklady/' . $slug) . '#deposit-reviews',
             default => '#',
         };
     }

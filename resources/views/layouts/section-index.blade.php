@@ -75,6 +75,9 @@
     (function(){ if (typeof window.__REDIRECT_TO_CITY === 'undefined') window.__REDIRECT_TO_CITY = { enabled: false }; })();
     </script>
     <script src="{{ asset('assets/js/city-dialog.js') }}"></script>
+    @if(!empty($siteSettings?->custom_scripts))
+    {!! $siteSettings->custom_scripts !!}
+    @endif
 </body>
 
 </html>

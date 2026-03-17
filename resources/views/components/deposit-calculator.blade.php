@@ -14,22 +14,27 @@
         $active = $currency->conditions->where('is_active', true)->values();
         $list = [];
         $amountMins = [];
-        $amountMaxs = [];
         $termMins = [];
         $termMaxs = [];
+        $hasConditionWithoutMax = false;
+        $cappingMaxes = [];
         foreach ($active as $c) {
+            $amountMin = $c->amount_min !== null ? (float) $c->amount_min : null;
+            $amountMax = $c->amount_max !== null ? (float) $c->amount_max : null;
             $list[] = [
-                'amount_min' => $c->amount_min !== null ? (float) $c->amount_min : null,
-                'amount_max' => $c->amount_max !== null ? (float) $c->amount_max : null,
+                'amount_min' => $amountMin,
+                'amount_max' => $amountMax,
                 'term_days_min' => $c->term_days_min !== null ? (int) $c->term_days_min : null,
                 'term_days_max' => $c->term_days_max !== null ? (int) $c->term_days_max : null,
                 'rate' => $c->rate !== null ? (float) $c->rate : null,
             ];
-            if ($c->amount_min !== null) {
-                $amountMins[] = (float) $c->amount_min;
+            if ($amountMin !== null) {
+                $amountMins[] = $amountMin;
             }
-            if ($c->amount_max !== null) {
-                $amountMaxs[] = (float) $c->amount_max;
+            if ($amountMax === null) {
+                $hasConditionWithoutMax = true;
+            } elseif ($amountMin === null || $amountMax > $amountMin) {
+                $cappingMaxes[] = $amountMax;
             }
             if ($c->term_days_min !== null) {
                 $termMins[] = (int) $c->term_days_min;
@@ -39,9 +44,23 @@
             }
         }
         $conditionsByCurrency[$code] = $list;
+        $defaultMaxByCurrency = [
+            'RUB' => 100_000_000,
+            'USD' => 1_000_000,
+            'EUR' => 1_000_000,
+            'CNY' => 10_000_000,
+        ];
+        $defaultMax = $defaultMaxByCurrency[$code] ?? 100_000_000;
+        $highestCap = count($cappingMaxes) > 0 ? max($cappingMaxes) : null;
+        $hasUnboundedTierAboveCap = $highestCap !== null && $hasConditionWithoutMax && collect($active)->contains(
+            fn ($c) => $c->amount_max === null && ($c->amount_min === null || (float) $c->amount_min >= $highestCap)
+        );
+        $effectiveMax = $hasUnboundedTierAboveCap
+            ? $defaultMax
+            : ($highestCap ?? $defaultMax);
         $limitsByCurrency[$code] = [
             'min_amount' => count($amountMins) > 0 ? min($amountMins) : null,
-            'max_amount' => count($amountMaxs) > 0 ? max($amountMaxs) : null,
+            'max_amount' => $effectiveMax,
             'min_term' => count($termMins) > 0 ? min($termMins) : null,
             'max_term' => count(array_merge($termMins, $termMaxs)) > 0 ? max(array_merge($termMins, $termMaxs)) : null,
         ];
@@ -76,7 +95,13 @@
 
     <div class="deposit-calculator__field">
         <label class="deposit-calculator__label" for="deposit-calc-amount">Сумма вклада</label>
-        <input type="text" id="deposit-calc-amount" inputmode="numeric" class="deposit-calculator__input deposit-calculator__input--no-spinner" data-min="{{ (int)($firstLimits['min_amount'] ?? 0) }}" data-max="{{ isset($firstLimits['max_amount']) && $firstLimits['max_amount'] !== null ? (int)$firstLimits['max_amount'] : '' }}" value="{{ number_format((int)$defaultAmount, 0, '', ' ') }}" autocomplete="off">
+        <input type="text" id="deposit-calc-amount" inputmode="numeric" class="deposit-calculator__input deposit-calculator__input--no-spinner" data-deposit-amount data-min="{{ (int)($firstLimits['min_amount'] ?? 0) }}" data-max="{{ isset($firstLimits['max_amount']) && $firstLimits['max_amount'] !== null ? (int)$firstLimits['max_amount'] : '' }}" value="{{ number_format((int)$defaultAmount, 0, '', ' ') }}" autocomplete="off">
+        @php
+            $minA = (int)($firstLimits['min_amount'] ?? 0);
+            $maxA = isset($firstLimits['max_amount']) && $firstLimits['max_amount'] !== null ? (int)$firstLimits['max_amount'] : 100_000_000;
+            $stepA = $maxA > $minA ? max(1, (int)(($maxA - $minA) / 500)) : 1;
+        @endphp
+        <input type="range" class="deposit-calculator__range" data-deposit-amount-range min="{{ $minA }}" max="{{ $maxA }}" step="{{ $stepA }}" value="{{ (int)$defaultAmount }}">
     </div>
 
     <div class="deposit-calculator__field">
@@ -119,6 +144,7 @@
 
     var currencyBtns = document.querySelectorAll('#deposit-calculator .deposit-calculator__currency-btn');
     var amountInput = document.getElementById('deposit-calc-amount');
+    var amountRange = document.querySelector('#deposit-calculator [data-deposit-amount-range]');
     var termInput = document.getElementById('deposit-calc-term');
     var termRange = document.querySelector('#deposit-calculator [data-deposit-term-range]');
     var incomeEl = document.getElementById('deposit-calc-income');
@@ -131,6 +157,28 @@
     function getTermLimits() {
         var lim = limits[currentCurrency] || {};
         return { min: lim.min_term != null ? lim.min_term : 1, max: lim.max_term != null ? lim.max_term : 3650 };
+    }
+
+    function getAmountLimits() {
+        var lim = limits[currentCurrency] || {};
+        var minA = lim.min_amount != null ? lim.min_amount : 0;
+        var maxA = lim.max_amount != null ? lim.max_amount : 100000000;
+        return { min: minA, max: maxA };
+    }
+
+    function syncAmountPair() {
+        var lim = getAmountLimits();
+        var cur = parseAmount(amountInput && amountInput.value ? amountInput.value : 0);
+        if (cur < lim.min) cur = lim.min;
+        if (cur > lim.max) cur = lim.max;
+        if (amountInput) amountInput.value = formatAmount(cur);
+        if (amountRange) {
+            amountRange.min = lim.min;
+            amountRange.max = lim.max;
+            amountRange.step = Math.max(1, Math.round((lim.max - lim.min) / 500));
+            amountRange.value = cur;
+        }
+        return cur;
     }
 
     function syncTermPair(fromInput) {
@@ -187,14 +235,22 @@
     function updateLimits() {
         var lim = limits[currentCurrency] || {};
         var minA = lim.min_amount != null ? lim.min_amount : 0;
-        var maxA = lim.max_amount;
+        var maxA = lim.max_amount != null ? lim.max_amount : 100000000;
         if (amountInput) {
             amountInput.setAttribute('data-min', minA);
-            amountInput.setAttribute('data-max', maxA != null ? maxA : '');
+            amountInput.setAttribute('data-max', lim.max_amount != null ? lim.max_amount : '');
             var cur = parseAmount(amountInput.value);
             if (cur < minA) cur = minA;
-            if (maxA != null && cur > maxA) cur = maxA;
+            if (lim.max_amount != null && cur > lim.max_amount) cur = lim.max_amount;
             amountInput.value = formatAmount(cur);
+        }
+        if (amountRange) {
+            amountRange.min = minA;
+            amountRange.max = maxA;
+            amountRange.step = Math.max(1, Math.round((maxA - minA) / 500));
+            var curAm = parseAmount(amountInput && amountInput.value ? amountInput.value : 0);
+            curAm = Math.min(Math.max(curAm, minA), maxA);
+            amountRange.value = curAm;
         }
         var termLim = getTermLimits();
         if (termInput) {
@@ -306,7 +362,41 @@
         });
     }
 
-    if (amountInput) {
+    if (amountInput && amountRange) {
+        amountInput.addEventListener('input', function() {
+            var minA = parseInt(amountInput.getAttribute('data-min'), 10) || 0;
+            var maxA = amountInput.getAttribute('data-max');
+            maxA = maxA !== '' && maxA !== null ? parseInt(maxA, 10) : null;
+            var cur = parseAmount(amountInput.value);
+            if (maxA != null && cur > maxA) cur = maxA;
+            if (cur < minA && amountInput.value !== '') cur = minA;
+            amountInput.value = formatAmount(cur);
+            amountRange.value = cur;
+            scheduleRecalc();
+        });
+        amountInput.addEventListener('blur', function() {
+            var minA = parseInt(amountInput.getAttribute('data-min'), 10) || 0;
+            var maxA = amountInput.getAttribute('data-max');
+            maxA = maxA !== '' && maxA !== null ? parseInt(maxA, 10) : null;
+            var cur = parseAmount(amountInput.value);
+            if (cur < minA) cur = minA;
+            if (maxA != null && cur > maxA) cur = maxA;
+            amountInput.value = formatAmount(cur);
+            amountRange.value = cur;
+            scheduleRecalc();
+        });
+        amountInput.addEventListener('change', function() { syncAmountPair(); scheduleRecalc(); });
+        amountRange.addEventListener('input', function() {
+            var v = parseInt(amountRange.value, 10);
+            if (amountInput) amountInput.value = formatAmount(v);
+            scheduleRecalc();
+        });
+        amountRange.addEventListener('change', function() {
+            var v = parseInt(amountRange.value, 10);
+            if (amountInput) amountInput.value = formatAmount(v);
+            scheduleRecalc();
+        });
+    } else if (amountInput) {
         amountInput.addEventListener('input', function() {
             var minA = parseInt(amountInput.getAttribute('data-min'), 10) || 0;
             var maxA = amountInput.getAttribute('data-max');

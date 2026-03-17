@@ -91,7 +91,7 @@ class CreditController extends Controller
         ];
 
         return view('credits.show', array_merge(compact('credit', 'section'), [
-            'sectionIndexUrl' => route('credits.index'),
+            'sectionIndexUrl' => url_canonical(route('credits.index')),
             'sectionIndexTitle' => 'Кредиты',
             'seo_title' => null,
             'seo_description' => null,

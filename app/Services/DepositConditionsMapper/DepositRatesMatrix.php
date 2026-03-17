@@ -15,7 +15,10 @@ class DepositRatesMatrix
      */
     public static function forCurrency(DepositCurrency $currency): array
     {
-        $conditions = $currency->conditions->where('is_active', true)->values();
+        $conditions = $currency->conditions
+            ->where('is_active', true)
+            ->filter(fn ($c) => $c->term_days_min !== null)
+            ->values();
         if ($conditions->isEmpty()) {
             return ['rows' => [], 'columns' => [], 'grid' => []];
         }
@@ -23,7 +26,12 @@ class DepositRatesMatrix
         $byAmount = $conditions->groupBy(function ($c) {
             return (string) ($c->amount_min ?? '') . '_' . (string) ($c->amount_max ?? '');
         });
-        $rows = $byAmount->sortBy(fn (Collection $g) => (float) ($g->first()->amount_min ?? 0))->values();
+        $rows = $byAmount->sortBy(function (Collection $g) {
+            $first = $g->first();
+            $min = $first->amount_min !== null ? (float) $first->amount_min : null;
+            $max = $first->amount_max !== null ? (float) $first->amount_max : null;
+            return $min ?? $max ?? 0;
+        })->values();
         $columns = $conditions->pluck('term_days_min')->unique()->sort()->values()->all();
 
         $rowList = [];

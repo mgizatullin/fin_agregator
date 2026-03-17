@@ -9,7 +9,7 @@
     'citySelectBase' => 'vklady/' . $category->slug,
     'breadcrumbs' => [
         ['url' => url('/'), 'label' => 'Главная'],
-        ['url' => $sectionIndexUrl ?? route('deposits.index'), 'label' => $sectionIndexTitle ?? 'Вклады'],
+        ['url' => $sectionIndexUrl ?? url_canonical(route('deposits.index')), 'label' => $sectionIndexTitle ?? 'Вклады'],
         ['label' => $section->title ?? ''],
     ],
 ])
@@ -43,11 +43,11 @@
             @if($categories->count())
             <div class="category-nav overflow-x-auto mb_40">
                 <div class="category-item {{ !$currentCategory ? 'active' : '' }}">
-                    <a href="{{ $currentCity ? url($sectionPath . '/' . $currentCity->slug) : url($sectionPath) }}">Все</a>
+                    <a href="{{ $currentCity ? url_section($sectionPath . '/' . $currentCity->slug) : url_section($sectionPath) }}">Все</a>
                 </div>
                 @foreach($categories as $cat)
                 <div class="category-item {{ $currentCategory === $cat->slug ? 'active' : '' }}">
-                    <a href="{{ $currentCity ? url($sectionPath . '/' . $cat->slug . '/' . $currentCity->slug) : url($sectionPath . '/' . $cat->slug) }}">{{ $cat->title }}</a>
+                    <a href="{{ $currentCity ? url_section($sectionPath . '/' . $cat->slug . '/' . $currentCity->slug) : url_section($sectionPath . '/' . $cat->slug) }}">{{ $cat->title }}</a>
                 </div>
                 @endforeach
             </div>

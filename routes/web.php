@@ -28,14 +28,24 @@ Route::get('/', function () {
         ->latest('published_at')
         ->take(4)
         ->get();
+    try {
+        $currencyRatesWithChange = app(\App\Services\CbrRatesService::class)->getRatesWithChange();
+    } catch (\Throwable $e) {
+        $currencyRatesWithChange = ['date' => null, 'date_label' => '', 'rates' => []];
+    }
     return view('home_new', [
         'settings' => $settings,
         'posts' => $posts,
         'seo_title' => $settings->seo_title,
         'seo_description' => $settings->seo_description,
         'title' => $settings->hero_title ?? config('app.name', 'Финансовый маркетплейс'),
+        'currencyRatesWithChange' => $currencyRatesWithChange,
     ]);
 })->name('home');
+
+Route::get('/currency-calculator', function () {
+    return view('currency-calculator-placeholder');
+})->name('currency.calculator');
 
 Route::get('/city-dialog', CityDialogController::class)->name('city.dialog');
 

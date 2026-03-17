@@ -70,7 +70,7 @@ class CardCategoryController extends Controller
 
         $base = 'karty/category/' . $category->slug;
         return view('cards.category-show', array_merge(compact('category', 'items', 'section', 'city'), [
-            'sectionIndexUrl' => $city ? url('karty/' . $city->slug) : route('cards.index'),
+            'sectionIndexUrl' => $city ? url_section('karty/' . $city->slug) : url_canonical(route('cards.index')),
             'sectionIndexTitle' => 'Кредитные карты',
             'seo_title' => $seoTitle,
             'seo_description' => $seoDescription,

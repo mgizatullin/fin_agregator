@@ -11,7 +11,7 @@
     $replenishment = $item->replenishment ? 'Да' : 'Нет';
     $logoPath = $item->bank->logo_square ?? $item->bank->logo ?? null;
     $logo = $logoPath ? (str_starts_with($logoPath, 'http') ? $logoPath : asset('storage/' . $logoPath)) : null;
-    $detailUrl = $item->slug ? url('/vklady/' . $item->slug) : '#';
+    $detailUrl = $item->slug ? url_section('vklady/' . $item->slug) : '#';
 @endphp
 
 <div class="deposit-card">
@@ -45,9 +45,12 @@
         <span class="deposit-card__value">{{ $replenishment }}</span>
     </div>
     <div class="deposit-card__col deposit-card__action">
-        <a href="{{ $detailUrl }}" class="tf-btn btn-primary2 btn-px-28 height-2 rounded-12">
-            <span>Подробнее</span>
-            <span class="bg-effect"></span>
-        </a>
+        <div class="d-flex align-items-center gap_12 flex-wrap">
+            <a href="{{ $detailUrl }}" class="card-action__info-btn" title="Подробнее" aria-label="Подробнее">i</a>
+            <a href="{{ $detailUrl }}" class="tf-btn btn-primary2 btn-px-28 height-2 rounded-12">
+                <span>Открыть вклад</span>
+                <span class="bg-effect"></span>
+            </a>
+        </div>
     </div>
 </div>

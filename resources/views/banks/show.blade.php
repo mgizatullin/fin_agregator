@@ -6,7 +6,7 @@
     'subtitle' => $section->subtitle ?? null,
     'breadcrumbs' => [
         ['url' => url('/'), 'label' => 'Главная'],
-        ['url' => url('/banki'), 'label' => 'Банки'],
+        ['url' => url_section('banki'), 'label' => 'Банки'],
         ['label' => $bank->name ?? 'Банк'],
     ],
 ])

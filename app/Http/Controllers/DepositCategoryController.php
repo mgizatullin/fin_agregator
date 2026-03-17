@@ -70,7 +70,7 @@ class DepositCategoryController extends Controller
 
         $base = 'vklady/' . $category->slug;
         return view('deposits.category-show', array_merge(compact('category', 'items', 'section', 'city'), [
-            'sectionIndexUrl' => $city ? url('vklady/' . $city->slug) : route('deposits.index'),
+            'sectionIndexUrl' => $city ? url_section('vklady/' . $city->slug) : url_canonical(route('deposits.index')),
             'sectionIndexTitle' => 'Вклады',
             'seo_title' => $seoTitle,
             'seo_description' => $seoDescription,

@@ -37,7 +37,7 @@ class DepositReviewController extends Controller
         ]);
 
         return redirect()
-            ->to(url('/vklady/' . $deposit->slug) . '#deposit-reviews')
+            ->to(url_section('vklady/' . $deposit->slug) . '#deposit-reviews')
             ->with('status', 'Спасибо! Ваш отзыв отправлен.');
     }
 }

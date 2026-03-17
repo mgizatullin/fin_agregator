@@ -102,7 +102,12 @@
     <div class="offcanvas offcanvas-start canvas-mb" id="menu-mobile">
         <div class="offcanvas-header top-nav-mobile justify-content-between">
             <a href="/" class="logo">
-                <img src="{{ asset('assets/images/logo/favicon.svg') }}" alt="logo">
+                @php
+                    $mobileLogoUrl = !empty($siteSettings->logo ?? null)
+                        ? (str_starts_with($siteSettings->logo, 'http') ? $siteSettings->logo : asset('storage/' . $siteSettings->logo))
+                        : asset('assets/images/logo/favicon.svg');
+                @endphp
+                <img src="{{ $mobileLogoUrl }}" alt="{{ config('app.name') }}">
             </a>
             <div class="close-menu" data-bs-dismiss="offcanvas">
                 <i class=" icon-times-solid"></i>
@@ -174,7 +179,7 @@
                             </a>
                             <div id="dropdown-menu-blog" class="collapse" data-bs-parent="#menu-mobile">
                                 <ul class="sub-nav-menu">
-                                    <li><a href="{{ url('/blog') }}" class="sub-nav-link ">Блог</a></li>
+                                    <li><a href="{{ url_section('blog') }}" class="sub-nav-link ">Блог</a></li>
                                     <li><a href="single-post.html" class="sub-nav-link">Статья</a>
                                     </li>
                                 </ul>
@@ -264,6 +269,9 @@
     </script>
     <script src="{{ asset('assets/js/city-dialog.js') }}"></script>
     @stack('scripts')
+    @if(!empty($siteSettings?->custom_scripts))
+    {!! $siteSettings->custom_scripts !!}
+    @endif
     <!-- /Javascript -->
 
 </body>

@@ -10,7 +10,7 @@
     $bankWebsite = filled($bank?->website)
         ? (str_starts_with($bank->website, 'http') ? $bank->website : 'https://' . ltrim($bank->website, '/'))
         : null;
-    $bankDetailUrl = filled($bank?->slug) ? url('/banki/' . $bank->slug) : null;
+    $bankDetailUrl = filled($bank?->slug) ? url_section('banki/' . $bank->slug) : null;
 
     $deposit->loadMissing('reviews');
     $reviewsForRating = $deposit->reviews;

@@ -18,6 +18,7 @@ class DepositsTable
     public static function configure(Table $table): Table
     {
         return $table
+            ->modifyQueryUsing(fn ($query) => $query->with(['currencies.conditions']))
             ->columns([
                 TextColumn::make('name')
                     ->label('Название')
@@ -33,6 +34,14 @@ class DepositsTable
                     ->label('URL-код')
                     ->searchable()
                     ->copyable(),
+
+                TextColumn::make('currencies_list')
+                    ->label('Валюты')
+                    ->state(function (Deposit $record): string {
+                        $codes = $record->currencies->pluck('currency_code')->filter()->values();
+                        return $codes->isNotEmpty() ? $codes->implode(', ') : '—';
+                    })
+                    ->toggleable(),
 
                 TextColumn::make('rate_range')
                     ->label('Ставка')
@@ -54,39 +63,45 @@ class DepositsTable
                 TextColumn::make('min_amount')
                     ->label('Мин. сумма')
                     ->state(function (Deposit $record): string {
-                        $best = DepositCurrencySummary::bestOfferForDeposit($record);
-                        return $best !== null && $best['amount_min'] !== null ? number_format((float) $best['amount_min'], 0, '.', ' ') : '—';
+                        $currency = $record->currencies->firstWhere('currency_code', 'RUB') ?? $record->currencies->first();
+                        if (! $currency) {
+                            return '—';
+                        }
+                        $active = $currency->conditions->where('is_active', true)->values();
+                        $amountMins = $active->pluck('amount_min')->filter(fn ($v) => $v !== null)->map(fn ($v) => (float) $v);
+                        if ($amountMins->isEmpty()) {
+                            return '—';
+                        }
+                        return number_format($amountMins->min(), 0, '.', ' ');
+                    })
+                    ->toggleable(),
+
+                TextColumn::make('max_amount')
+                    ->label('Макс. сумма')
+                    ->state(function (Deposit $record): string {
+                        $currency = $record->currencies->firstWhere('currency_code', 'RUB') ?? $record->currencies->first();
+                        if (! $currency) {
+                            return '—';
+                        }
+                        $active = $currency->conditions->where('is_active', true)->values();
+                        $cappingMaxes = $active
+                            ->filter(fn ($c) => $c->amount_max !== null && ($c->amount_min === null || (float) $c->amount_max > (float) $c->amount_min))
+                            ->pluck('amount_max')
+                            ->map(fn ($v) => (float) $v);
+                        $highestCap = $cappingMaxes->isNotEmpty() ? $cappingMaxes->max() : null;
+                        $hasUnboundedTierAboveCap = $highestCap !== null && $active->contains(
+                            fn ($c) => $c->amount_max === null && ($c->amount_min === null || (float) $c->amount_min >= $highestCap)
+                        );
+                        if ($hasUnboundedTierAboveCap || $highestCap === null) {
+                            return '—';
+                        }
+                        return number_format($highestCap, 0, '.', ' ');
                     })
                     ->toggleable(),
 
                 TextColumn::make('deposit_type')
                     ->label('Тип вклада')
                     ->sortable()
-                    ->toggleable(),
-
-                IconColumn::make('capitalization')
-                    ->label('Капитализация')
-                    ->boolean()
-                    ->toggleable(),
-
-                IconColumn::make('online_opening')
-                    ->label('Открытие онлайн')
-                    ->boolean()
-                    ->toggleable(),
-
-                IconColumn::make('monthly_interest_payment')
-                    ->label('Выплата % ежемесячно')
-                    ->boolean()
-                    ->toggleable(),
-
-                IconColumn::make('replenishment')
-                    ->label('Пополнение')
-                    ->boolean()
-                    ->toggleable(),
-
-                IconColumn::make('partial_withdrawal')
-                    ->label('Частичное снятие')
-                    ->boolean()
                     ->toggleable(),
 
                 IconColumn::make('is_active')
@@ -98,10 +113,6 @@ class DepositsTable
                 SelectFilter::make('bank_id')
                     ->label('Банк')
                     ->relationship('bank', 'name'),
-                TernaryFilter::make('replenishment')
-                    ->label('Пополнение'),
-                TernaryFilter::make('partial_withdrawal')
-                    ->label('Частичное снятие'),
                 TernaryFilter::make('is_active')
                     ->label('Активен'),
             ])

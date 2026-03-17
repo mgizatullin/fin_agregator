@@ -14,7 +14,7 @@
         ? $item->receiveMethods->pluck('id')->implode(',')
         : '';
 
-    $detailUrl = route('credits.category.show', $item->slug);
+    $detailUrl = url_canonical(route('credits.category.show', $item->slug));
 @endphp
 
 <div
@@ -61,9 +61,12 @@
     </div>
 
     <div class="credit-card__col credit-card__action">
-        <a href="{{ $detailUrl }}" class="tf-btn btn-primary2 btn-px-28 height-2 rounded-12">
-            <span>Подробнее</span>
-            <span class="bg-effect"></span>
-        </a>
+        <div class="d-flex align-items-center gap_12 flex-wrap">
+            <a href="{{ $detailUrl }}" class="card-action__info-btn" title="Подробнее" aria-label="Подробнее">i</a>
+            <a href="{{ $detailUrl }}" class="tf-btn btn-primary2 btn-px-28 height-2 rounded-12">
+                <span>Взять кредит</span>
+                <span class="bg-effect"></span>
+            </a>
+        </div>
     </div>
 </div>

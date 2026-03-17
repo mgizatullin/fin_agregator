@@ -2,8 +2,11 @@
 
 namespace App\Services;
 
+use App\Models\CbrRate;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 
 class CbrRatesService
 {
@@ -14,7 +17,8 @@ class CbrRatesService
     private const CACHE_TTL_SECONDS = 3600; // 1 hour
 
     /**
-     * Возвращает курсы USD, EUR, CNY (руб. за единицу). При ошибке — запасные значения.
+     * Возвращает курсы USD, EUR, CNY из БД (для хедера и др.).
+     * Не обращается к сайту ЦБ — обновление БД по крону (cbr:fetch-rates).
      *
      * @return array{USD: float, EUR: float, CNY: float}
      */
@@ -22,23 +26,172 @@ class CbrRatesService
     {
         try {
             return Cache::remember(self::CACHE_KEY, self::CACHE_TTL_SECONDS, function (): array {
-                $response = Http::timeout(10)->get(self::CBR_JSON_URL);
-                if (! $response->successful()) {
-                    return $this->fallbackRates();
-                }
-                $json = $response->json();
-                $valute = $json['Valute'] ?? [];
-                $result = [];
-                foreach (['USD', 'EUR', 'CNY'] as $code) {
-                    if (isset($valute[$code]['Value'])) {
-                        $result[$code] = (float) $valute[$code]['Value'];
+                $row = CbrRate::orderByDesc('rate_date')->first();
+                if ($row) {
+                    $usd = $row->getRate('USD');
+                    $eur = $row->getRate('EUR');
+                    $cny = $row->getRate('CNY');
+                    if ($usd !== null && $eur !== null && $cny !== null) {
+                        return ['USD' => $usd, 'EUR' => $eur, 'CNY' => $cny];
                     }
                 }
-                return $result ?: $this->fallbackRates();
+                return $this->fallbackRates();
             });
         } catch (\Throwable $e) {
             return $this->fallbackRates();
         }
+    }
+
+    /** Коды валют для виджета (курсы из ЦБ, хранятся в БД). */
+    private const WIDGET_CURRENCY_CODES = ['USD', 'EUR', 'CNY', 'GBP', 'CHF', 'JPY'];
+
+    /**
+     * Курсы ЦБ с изменением за сутки для виджета на главной.
+     * Только чтение из БД; обновление БД — по крону (php artisan cbr:fetch-rates).
+     *
+     * @return array{date: string, date_label: string, rates: array<int, array{code: string, rate: float, change: float|null, change_positive: bool|null}>}
+     */
+    public function getRatesWithChange(): array
+    {
+        $latest = CbrRate::orderByDesc('rate_date')->first();
+        $previous = $latest
+            ? CbrRate::where('rate_date', '<', $latest->rate_date)->orderByDesc('rate_date')->first()
+            : null;
+
+        $rates = [];
+        foreach (self::WIDGET_CURRENCY_CODES as $code) {
+            $rate = $latest ? $latest->getRate($code) : null;
+            $prevRate = $previous ? $previous->getRate($code) : null;
+            $change = $rate !== null && $prevRate !== null ? round($rate - $prevRate, 2) : null;
+            $rates[] = [
+                'code' => $code,
+                'rate' => $rate,
+                'change' => $change,
+                'change_positive' => $change === null ? null : $change > 0,
+            ];
+        }
+
+        $date = $latest?->rate_date;
+        $dateLabel = $date
+            ? 'НА ' . strtoupper(Carbon::parse($date)->locale('ru')->translatedFormat('j F'))
+            : '';
+
+        return [
+            'date' => $date?->format('Y-m-d'),
+            'date_label' => $dateLabel,
+            'rates' => $rates,
+        ];
+    }
+
+    /**
+     * Загружает курсы с сайта ЦБ и сохраняет/обновляет запись в БД за указанную дату.
+     * Все курсы хранятся как цена за 1 единицу валюты (для JPY: Value/Nominal, т.к. ЦБ отдаёт за 100 йен).
+     * Вызывать только из крона или вручную: php artisan cbr:fetch-rates
+     *
+     * @param  string|null  $forDate  Дата в формате Y-m-d (по умолчанию — сегодня)
+     * @param  bool  $force  При true — перезаписать даже если запись за дату уже есть (пересчёт по Nominal)
+     * @return bool
+     */
+    public function fetchAndStoreRates(?string $forDate = null, bool $force = false): bool
+    {
+        $forDate = $forDate ?? now()->toDateString();
+        $existing = CbrRate::where('rate_date', $forDate)->first();
+        if (! $force && $existing && $existing->rates_json !== null && $existing->rates_json !== []) {
+            return true;
+        }
+        try {
+            $response = Http::connectTimeout(15)
+                ->timeout(45)
+                ->withHeaders(['User-Agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'])
+                ->get(self::CBR_JSON_URL);
+
+            if (! $response->successful()) {
+                Log::warning('CbrRatesService: ЦБ вернул HTTP ' . $response->status(), ['body' => mb_substr($response->body(), 0, 300)]);
+
+                return false;
+            }
+
+            $body = $response->body();
+            if (str_starts_with($body, "\xEF\xBB\xBF")) {
+                $body = substr($body, 3);
+            }
+            $json = json_decode($body, true);
+            if (json_last_error() !== JSON_ERROR_NONE) {
+                Log::warning('CbrRatesService: не удалось разобрать JSON от ЦБ', ['error' => json_last_error_msg()]);
+
+                return false;
+            }
+
+            $valute = $json['Valute'] ?? [];
+            $ratesJson = [];
+            foreach ($valute as $code => $item) {
+                if (isset($item['Value'])) {
+                    $nominal = max(1, (int) ($item['Nominal'] ?? 1));
+                    $ratesJson[$code] = round((float) $item['Value'] / $nominal, 4);
+                }
+            }
+            if (empty($ratesJson)) {
+                Log::warning('CbrRatesService: в ответе ЦБ нет курсов (Valute пустой или без Value)');
+
+                return false;
+            }
+            if ($existing) {
+                $existing->update([
+                    'rates_json' => $ratesJson,
+                    'usd' => $ratesJson['USD'] ?? $existing->usd,
+                    'eur' => $ratesJson['EUR'] ?? $existing->eur,
+                    'cny' => $ratesJson['CNY'] ?? $existing->cny,
+                ]);
+            } else {
+                CbrRate::create([
+                    'rate_date' => $forDate,
+                    'usd' => $ratesJson['USD'] ?? 0,
+                    'eur' => $ratesJson['EUR'] ?? 0,
+                    'cny' => $ratesJson['CNY'] ?? 0,
+                    'rates_json' => $ratesJson,
+                ]);
+            }
+
+            return true;
+        } catch (\Throwable $e) {
+            Log::error('CbrRatesService: ошибка при загрузке курсов ЦБ', [
+                'message' => $e->getMessage(),
+                'url' => self::CBR_JSON_URL,
+            ]);
+
+            return false;
+        }
+    }
+
+    /** Сохраняет в БД все курсы ЦБ за дату из ответа API. */
+    private function storeRatesIfNew(array $json): void
+    {
+        $dateStr = $json['Date'] ?? null;
+        if (! $dateStr) {
+            return;
+        }
+        $date = Carbon::parse($dateStr)->toDateString();
+        if (CbrRate::where('rate_date', $date)->exists()) {
+            return;
+        }
+        $valute = $json['Valute'] ?? [];
+        $ratesJson = [];
+        foreach ($valute as $code => $item) {
+            if (isset($item['Value'])) {
+                $nominal = max(1, (int) ($item['Nominal'] ?? 1));
+                $ratesJson[$code] = round((float) $item['Value'] / $nominal, 4);
+            }
+        }
+        if (empty($ratesJson)) {
+            return;
+        }
+        CbrRate::create([
+            'rate_date' => $date,
+            'usd' => $ratesJson['USD'] ?? 0,
+            'eur' => $ratesJson['EUR'] ?? 0,
+            'cny' => $ratesJson['CNY'] ?? 0,
+            'rates_json' => $ratesJson,
+        ]);
     }
 
     /**

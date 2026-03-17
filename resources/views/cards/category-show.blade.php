@@ -27,11 +27,11 @@
             @if($categories->count())
             <div class="category-nav overflow-x-auto mb_40">
                 <div class="category-item {{ !$currentCategory ? 'active' : '' }}">
-                    <a href="{{ $currentCity ? url($sectionPath . '/' . $currentCity->slug) : url($sectionPath) }}">Все</a>
+                    <a href="{{ $currentCity ? url_section($sectionPath . '/' . $currentCity->slug) : url_section($sectionPath) }}">Все</a>
                 </div>
                 @foreach($categories as $cat)
                 <div class="category-item {{ $currentCategory === $cat->slug ? 'active' : '' }}">
-                    <a href="{{ $currentCity ? url($sectionPath . '/category/' . $cat->slug . '/' . $currentCity->slug) : url($sectionPath . '/category/' . $cat->slug) }}">{{ $cat->title }}</a>
+                    <a href="{{ $currentCity ? url_section($sectionPath . '/category/' . $cat->slug . '/' . $currentCity->slug) : url_section($sectionPath . '/category/' . $cat->slug) }}">{{ $cat->title }}</a>
                 </div>
                 @endforeach
             </div>

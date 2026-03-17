@@ -3,7 +3,7 @@
         <h6 class="sidebar-title mb_21 ">
             Поиск
         </h6>
-        <form class="form-search style-2" action="{{ url('/blog') }}" method="get">
+        <form class="form-search style-2" action="{{ url_section('blog') }}" method="get">
             <fieldset class="text">
                 <input type="text" placeholder="Поиск" class="style-2" name="search" tabindex="0" value="{{ request('search') }}" aria-required="true">
             </fieldset>
@@ -18,7 +18,7 @@
         </h6>
         @foreach($latestArticles ?? [] as $latest)
         <div class="relatest-post-item style-default hover-image-2">
-            <a href="{{ url('/blog/' . $latest->slug) }}" class="image-rotate image ">
+            <a href="{{ url_section('blog/' . $latest->slug) }}" class="image-rotate image ">
                 @if($latest->image)
                 @php
                     $thumbPath = 'blog/thumbs/' . basename($latest->image);
@@ -31,14 +31,14 @@
             </a>
             <div class="content">
                 <div class="text-body-1 mb_12">
-                    <a href="{{ url('/blog/' . $latest->slug) }}" class="link">
+                    <a href="{{ url_section('blog/' . $latest->slug) }}" class="link">
                         {{ $latest->title }}
                     </a>
                 </div>
                 <ul class="blog-article-meta  d-flex align-items-center">
                     @if($latest->category)
                     <li class="meta-item text-body-3">
-                        <a href="{{ url('/blog/category/' . $latest->category->slug) }}" class="link-black">{{ $latest->category->name }}</a>
+                        <a href="{{ url_section('blog/category/' . $latest->category->slug) }}" class="link-black">{{ $latest->category->name }}</a>
                     </li>
                     @endif
                     <li class="meta-item date text-body-3">
@@ -55,7 +55,7 @@
         </h6>
         <div class="sidebar-categories">
             @foreach($categories ?? [] as $category)
-            <div class="item"><a href="{{ url('/blog/category/' . $category->slug) }}" class="text-body-1  text_mono-gray-6">{{ $category->name }}</a><span class="text-body-3 text_mono-gray-6">{{ $category->articles_count }}</span>
+            <div class="item"><a href="{{ url_section('blog/category/' . $category->slug) }}" class="text-body-1  text_mono-gray-6">{{ $category->name }}</a><span class="text-body-3 text_mono-gray-6">{{ $category->articles_count }}</span>
             </div>
             @endforeach
         </div>
@@ -65,25 +65,25 @@
             Популярные теги
         </h6>
         <div class="wrap-popular-tag">
-            <a href="{{ url('/blog') }}" class="popular-tag-item link">
+            <a href="{{ url_section('blog') }}" class="popular-tag-item link">
                 Аналитика
             </a>
-            <a href="{{ url('/blog') }}" class="popular-tag-item link">
+            <a href="{{ url_section('blog') }}" class="popular-tag-item link">
                 Консалтинг
             </a>
-            <a href="{{ url('/blog') }}" class="popular-tag-item link">
+            <a href="{{ url_section('blog') }}" class="popular-tag-item link">
                 Бизнес
             </a>
-            <a href="{{ url('/blog') }}" class="popular-tag-item link">
+            <a href="{{ url_section('blog') }}" class="popular-tag-item link">
                 Данные
             </a>
-            <a href="{{ url('/blog') }}" class="popular-tag-item link">
+            <a href="{{ url_section('blog') }}" class="popular-tag-item link">
                 Бизнес-консалтинг
             </a>
-            <a href="{{ url('/blog') }}" class="popular-tag-item link">
+            <a href="{{ url_section('blog') }}" class="popular-tag-item link">
                 Маркетинг
             </a>
-            <a href="{{ url('/blog') }}" class="popular-tag-item link">
+            <a href="{{ url_section('blog') }}" class="popular-tag-item link">
                 Решения
             </a>
         </div>

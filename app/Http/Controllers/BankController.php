@@ -88,7 +88,7 @@ class BankController extends Controller
         ];
 
         return view('banks.show', array_merge(compact('bank', 'section'), [
-            'sectionIndexUrl' => route('banks.index'),
+            'sectionIndexUrl' => url_canonical(route('banks.index')),
             'sectionIndexTitle' => 'Банки',
             'seo_title' => $bank->seo_title,
             'seo_description' => $bank->seo_description,

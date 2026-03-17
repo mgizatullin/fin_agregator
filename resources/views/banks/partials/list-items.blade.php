@@ -3,7 +3,7 @@
         $variant = $variant ?? 'index';
         $logoPath = $bank->logo_square ?? $bank->logo;
         $logoUrl = $logoPath ? (str_starts_with($logoPath, 'http') ? $logoPath : asset('storage/' . $logoPath)) : null;
-        $bankSlug = $bank->slug ? url('/banki/' . $bank->slug) : '#';
+        $bankSlug = $bank->slug ? url_section('banki/' . $bank->slug) : '#';
         $branchesCount = $bank->branches_count ?? null;
         $rating = $bank->rating !== null && $bank->rating !== '' ? (float) $bank->rating : null;
     @endphp

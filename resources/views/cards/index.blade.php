@@ -37,11 +37,11 @@
                                 : 'Найдено';
                         @endphp
                         <div class="category-item {{ !$currentCategory ? 'active' : '' }}">
-                            <a href="{{ $currentCity ? url($sectionPath . '/' . $currentCity->slug) : url($sectionPath) }}">Все</a>
+                            <a href="{{ $currentCity ? url_section($sectionPath . '/' . $currentCity->slug) : url_section($sectionPath) }}">Все</a>
                         </div>
                         @foreach($categories as $category)
                         <div class="category-item {{ $currentCategory === $category->slug ? 'active' : '' }}">
-                            <a href="{{ $currentCity ? url($sectionPath . '/category/' . $category->slug . '/' . $currentCity->slug) : url($sectionPath . '/category/' . $category->slug) }}">{{ $category->title }}</a>
+                            <a href="{{ $currentCity ? url_section($sectionPath . '/category/' . $category->slug . '/' . $currentCity->slug) : url_section($sectionPath . '/category/' . $category->slug) }}">{{ $category->title }}</a>
                         </div>
                         @endforeach
                     </div>

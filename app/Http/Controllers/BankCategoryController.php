@@ -71,7 +71,7 @@ class BankCategoryController extends Controller
 
         $base = 'banki/' . $category->slug;
         return view('banks.category-show', array_merge(compact('category', 'items', 'section', 'city'), [
-            'sectionIndexUrl' => $city ? url('banki/' . $city->slug) : route('banks.index'),
+            'sectionIndexUrl' => $city ? url_section('banki/' . $city->slug) : url_canonical(route('banks.index')),
             'sectionIndexTitle' => 'Банки',
             'seo_title' => $seoTitle,
             'seo_description' => $seoDescription,

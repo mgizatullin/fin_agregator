@@ -69,7 +69,7 @@ class LoanCategoryController extends Controller
 
         $base = 'zaimy/' . $category->slug;
         return view('loans.category-show', array_merge(compact('category', 'items', 'section', 'city'), [
-            'sectionIndexUrl' => $city ? url('zaimy/' . $city->slug) : route('loans.index'),
+            'sectionIndexUrl' => $city ? url_section('zaimy/' . $city->slug) : url_canonical(route('loans.index')),
             'sectionIndexTitle' => 'Займы',
             'seo_title' => $seoTitle,
             'seo_description' => $seoDescription,

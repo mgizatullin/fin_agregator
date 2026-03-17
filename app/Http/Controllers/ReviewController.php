@@ -27,7 +27,7 @@ class ReviewController extends Controller
             'email' => $data['email'] ?? null,
             'phone' => $data['phone'] ?? null,
         ]);
-        return redirect()->to(url('/kredity/' . $credit->slug) . '#product-reviews')->with('status', 'Спасибо! Ваш отзыв отправлен.');
+        return redirect()->to(url_section('kredity/' . $credit->slug) . '#product-reviews')->with('status', 'Спасибо! Ваш отзыв отправлен.');
     }
 
     public function storeCard(Request $request, Card $card): RedirectResponse
@@ -45,7 +45,7 @@ class ReviewController extends Controller
             'email' => $data['email'] ?? null,
             'phone' => $data['phone'] ?? null,
         ]);
-        return redirect()->to(url('/karty/' . $card->slug) . '#product-reviews')->with('status', 'Спасибо! Ваш отзыв отправлен.');
+        return redirect()->to(url_section('karty/' . $card->slug) . '#product-reviews')->with('status', 'Спасибо! Ваш отзыв отправлен.');
     }
 
     public function storeLoan(Request $request, Loan $loan): RedirectResponse
@@ -63,7 +63,7 @@ class ReviewController extends Controller
             'email' => $data['email'] ?? null,
             'phone' => $data['phone'] ?? null,
         ]);
-        return redirect()->to(url('/zaimy/' . $loan->slug) . '#product-reviews')->with('status', 'Спасибо! Ваш отзыв отправлен.');
+        return redirect()->to(url_section('zaimy/' . $loan->slug) . '#product-reviews')->with('status', 'Спасибо! Ваш отзыв отправлен.');
     }
 
     public function storeBank(Request $request, Bank $bank): RedirectResponse
@@ -81,7 +81,7 @@ class ReviewController extends Controller
             'email' => $data['email'] ?? null,
             'phone' => $data['phone'] ?? null,
         ]);
-        return redirect()->to(url('/banki/' . $bank->slug) . '#product-reviews')->with('status', 'Спасибо! Ваш отзыв отправлен.');
+        return redirect()->to(url_section('banki/' . $bank->slug) . '#product-reviews')->with('status', 'Спасибо! Ваш отзыв отправлен.');
     }
 
     private function validateReview(Request $request): array

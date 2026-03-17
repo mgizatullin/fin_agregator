@@ -81,6 +81,7 @@ class LoanController extends Controller
     public function show(Request $request, string $slug): View
     {
         $loan = Loan::with('reviews.bank')
+            ->withCount('reviews')
             ->where('slug', $slug)
             ->where('is_active', true)
             ->firstOrFail();
@@ -91,7 +92,7 @@ class LoanController extends Controller
         ];
 
         return view('loans.show', array_merge(compact('loan', 'section'), [
-            'sectionIndexUrl' => route('loans.index'),
+            'sectionIndexUrl' => url_canonical(route('loans.index')),
             'sectionIndexTitle' => 'Займы',
             'seo_title' => null,
             'seo_description' => null,

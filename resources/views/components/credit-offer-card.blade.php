@@ -9,7 +9,7 @@
     $bankWebsite = filled($bank?->website)
         ? (str_starts_with($bank->website, 'http') ? $bank->website : 'https://' . ltrim($bank->website, '/'))
         : null;
-    $bankDetailUrl = filled($bank?->slug) ? url('/banki/' . $bank->slug) : null;
+    $bankDetailUrl = filled($bank?->slug) ? url_section('banki/' . $bank->slug) : null;
 
     $rating = (float) ($credit->review_rating ?? $bank?->rating ?? 0);
     $ratingValue = $rating > 0 ? number_format($rating, 1, '.', ' ') : null;
@@ -18,7 +18,14 @@
 
     $maxAmount = filled($credit->max_amount) ? 'до ' . number_format((float) $credit->max_amount, 0, '', ' ') . ' ₽' : '—';
     $minAmount = filled($credit->min_amount) ? number_format((float) $credit->min_amount, 0, '', ' ') . ' ₽' : '—';
-    $rate = filled($credit->rate) ? 'от ' . rtrim(rtrim(number_format((float) $credit->rate, 2, '.', ''), '0'), '.') . '%' : '—';
+    $rateMin = $credit->rate_min ?? $credit->rate;
+    $rateMax = $credit->rate_max ?? $credit->rate ?? $rateMin;
+    $rate = '—';
+    if (filled($rateMin) || filled($rateMax)) {
+        $minF = filled($rateMin) ? rtrim(rtrim(number_format((float) $rateMin, 2, '.', ''), '0'), '.') : null;
+        $maxF = filled($rateMax) ? rtrim(rtrim(number_format((float) $rateMax, 2, '.', ''), '0'), '.') : null;
+        $rate = $minF !== null && $maxF !== null && $minF === $maxF ? $minF . '%' : (($minF ? 'от ' . $minF . '%' : '') . ($maxF && $minF !== $maxF ? ' до ' . $maxF . '%' : ''));
+    }
     $psk = filled($credit->psk) ? 'до ' . rtrim(rtrim(number_format((float) $credit->psk, 2, '.', ''), '0'), '.') . '%' : '—';
 
     $termFrom = $credit->min_term_months ?? $credit->term_months;

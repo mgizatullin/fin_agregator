@@ -3,7 +3,7 @@
 @php
     /** @var \App\Models\Credit $credit */
     $defaultAmount = (float) ($credit->max_amount ?? $credit->min_amount ?? 500000);
-    $defaultRate = (float) ($credit->rate ?? 12);
+    $defaultRate = (float) ($credit->rate_min ?? $credit->rate ?? 12);
     $defaultTerm = (int) ($credit->term_months ?? $credit->max_term_months ?? $credit->min_term_months ?? 12);
     $minAmount = (float) ($credit->min_amount ?? 0);
     $maxAmount = (float) ($credit->max_amount ?? 5000000);

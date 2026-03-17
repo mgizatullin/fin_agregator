@@ -130,6 +130,8 @@
             </div>
             @endif
 
+            @include('home.partials.currency-rates-widget')
+
             <!-- .section-service -->
             <div class="section-service style-1 pb_61">
                 <div class="tf-container-2">
@@ -754,7 +756,7 @@
                                 regulatory changes, and <br> best practices to help you make informed decisions.</p>
                         </div>
                         <div class="right">
-                            <a href="{{ url('/blog') }}" class="tf-btn height-3 rounded-12 btn-px-28">
+                            <a href="{{ url_section('blog') }}" class="tf-btn height-3 rounded-12 btn-px-28">
                                 <span>View Details</span>
                                 <span class="bg-effect"></span>
                             </a>
@@ -767,7 +769,7 @@
                             @foreach($posts ?? [] as $post)
                             <div class="swiper-slide">
                                 <div class="blog-article-item style-4 ">
-                                    <a href="{{ url('/blog/'.$post->slug) }}" class="article-thumb mb_11 ">
+                                    <a href="{{ url_section('blog/'.$post->slug) }}" class="article-thumb mb_11 ">
                                         @if($post->image)
                                         <img class="lazyload " data-src="{{ asset('storage/'.$post->image) }}" src="{{ asset('storage/'.$post->image) }}" alt="{{ $post->title }}">
                                         <img class="lazyload " data-src="{{ asset('storage/'.$post->image) }}" src="{{ asset('storage/'.$post->image) }}" alt="{{ $post->title }}">
@@ -784,7 +786,7 @@
                                                 0 комментариев
                                             </li>
                                         </ul>
-                                        <h6 class="title fw-5 letter-spacing-2 text_mono-dark-9 line-clamp-2"> <a href="{{ url('/blog/'.$post->slug) }}" class="link ">{{ $post->title }}</a>
+                                        <h6 class="title fw-5 letter-spacing-2 text_mono-dark-9 line-clamp-2"> <a href="{{ url_section('blog/'.$post->slug) }}" class="link ">{{ $post->title }}</a>
                                         </h6>
                                     </div>
                                 </div>

@@ -6,7 +6,7 @@
         $creditLimit = $card->credit_limit !== null && $card->credit_limit !== '' ? 'до ' . number_format((float) $card->credit_limit, 0, '', ' ') . ' ₽' : '-';
         $annualFee = $card->annual_fee !== null && $card->annual_fee !== '' ? $card->annual_fee . ' ₽' : '-';
         $rate = $card->rate !== null && $card->rate !== '' ? $card->rate . '%' : '-';
-        $cardUrl = $card->slug ? route('cards.show', $card->slug) : '#';
+        $cardUrl = $card->slug ? url_canonical(route('cards.show', $card->slug)) : '#';
         $cardImage = $card->image ? asset('storage/' . $card->image) : null;
     @endphp
     <div class="karty-card">
@@ -40,10 +40,13 @@
             <span class="karty-card__value">{{ $rate }}</span>
         </div>
         <div class="karty-card__col karty-card__action">
-            <a href="{{ $cardUrl }}" class="tf-btn btn-primary2 btn-px-28 height-2 rounded-12">
-                <span>Подробнее</span>
-                <span class="bg-effect"></span>
-            </a>
+            <div class="d-flex align-items-center gap_12 flex-wrap">
+                <a href="{{ $cardUrl }}" class="card-action__info-btn" title="Подробнее" aria-label="Подробнее">i</a>
+                <a href="{{ $cardUrl }}" class="tf-btn btn-primary2 btn-px-28 height-2 rounded-12">
+                    <span>Оформить карту</span>
+                    <span class="bg-effect"></span>
+                </a>
+            </div>
         </div>
     </div>
 @endforeach

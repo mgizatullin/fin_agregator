@@ -13432,3 +13432,26 @@ form.style-line-bot.style-2 button {
 .header-rates__item + .header-rates__item { margin-left: 0; }
 .header-rates--mobile { white-space: normal; flex-wrap: wrap; }
 @media (max-width: 991px) { .header-rates.header-rates--mobile .header-rates__item { font-size: 12px; } }
+
+/* Круглая кнопка «i» слева от основной кнопки в карточках (займы, кредиты, вклады, карты) */
+.card-action__info-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: var(--Mono-gray-3, #bec5cb);
+  color: var(--White, #fff);
+  text-decoration: none;
+  font-size: 1rem;
+  font-weight: 600;
+  font-style: italic;
+  line-height: 1;
+  flex-shrink: 0;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+.card-action__info-btn:hover {
+  background-color: var(--Primary, #0075ff);
+  color: var(--White, #fff);
+}

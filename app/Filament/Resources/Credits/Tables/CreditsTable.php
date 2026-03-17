@@ -27,24 +27,20 @@ class CreditsTable
                     ->searchable()
                     ->sortable(),
 
-                TextColumn::make('review_rating')
-                    ->label('Рейтинг')
-                    ->numeric(decimalPlaces: 1)
-                    ->sortable()
-                    ->toggleable(),
-
-                TextColumn::make('review_count')
-                    ->label('Отзывы')
-                    ->sortable()
-                    ->toggleable(),
-
                 TextColumn::make('slug')
                     ->label('URL-код')
                     ->searchable()
                     ->copyable(),
 
-                TextColumn::make('rate')
-                    ->label('Ставка')
+                TextColumn::make('rate_min')
+                    ->label('Ставка мин')
+                    ->numeric()
+                    ->suffix('%')
+                    ->sortable()
+                    ->toggleable(),
+
+                TextColumn::make('rate_max')
+                    ->label('Ставка макс')
                     ->numeric()
                     ->suffix('%')
                     ->sortable()

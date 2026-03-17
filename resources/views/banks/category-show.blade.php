@@ -9,7 +9,7 @@
     'citySelectBase' => 'banki/' . $category->slug,
     'breadcrumbs' => [
         ['url' => url('/'), 'label' => 'Главная'],
-        ['url' => $sectionIndexUrl ?? route('banks.index'), 'label' => $sectionIndexTitle ?? 'Банки'],
+        ['url' => $sectionIndexUrl ?? url_canonical(route('banks.index')), 'label' => $sectionIndexTitle ?? 'Банки'],
         ['label' => $section->title ?? ''],
     ],
 ])

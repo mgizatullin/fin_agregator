@@ -8,6 +8,7 @@ use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Schema;
+use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Utilities\Set;
 use Illuminate\Support\Str;
 
@@ -31,55 +32,51 @@ class CreditForm
                     ->live(onBlur: true)
                     ->afterStateUpdated(fn (Set $set, ?string $state) => $set('slug', Str::slug((string) $state))),
 
-                TextInput::make('review_rating')
-                    ->label('Рейтинг')
-                    ->numeric()
-                    ->step('0.01')
-                    ->minValue(0)
-                    ->maxValue(5),
-
-                TextInput::make('review_count')
-                    ->label('Кол-во отзывов')
-                    ->numeric()
-                    ->minValue(0),
-
                 TextInput::make('slug')
                     ->label('URL-код')
                     ->required()
                     ->maxLength(255)
                     ->unique(ignoreRecord: true),
 
-                TextInput::make('rate')
-                    ->label('Ставка')
-                    ->numeric()
-                    ->step('0.01'),
+                Grid::make(2)->schema([
+                    TextInput::make('rate_min')
+                        ->label('Ставка мин (%)')
+                        ->numeric()
+                        ->step('0.01'),
+                    TextInput::make('rate_max')
+                        ->label('Ставка макс (%)')
+                        ->numeric()
+                        ->step('0.01'),
+                ]),
 
-                TextInput::make('psk')
-                    ->label('ПСК')
-                    ->numeric()
-                    ->step('0.01'),
+                Grid::make(2)->schema([
+                    TextInput::make('min_amount')
+                        ->label('Сумма мин')
+                        ->numeric()
+                        ->step('0.01'),
+                    TextInput::make('max_amount')
+                        ->label('Сумма макс')
+                        ->numeric()
+                        ->step('0.01'),
+                ]),
 
-                TextInput::make('max_amount')
-                    ->label('Макс. сумма')
-                    ->numeric()
-                    ->step('0.01'),
-
-                TextInput::make('min_amount')
-                    ->label('Мин. сумма')
-                    ->numeric()
-                    ->step('0.01'),
+                Grid::make(2)->schema([
+                    TextInput::make('min_term_months')
+                        ->label('Срок мин (мес.)')
+                        ->numeric(),
+                    TextInput::make('max_term_months')
+                        ->label('Срок макс (мес.)')
+                        ->numeric(),
+                ]),
 
                 TextInput::make('term_months')
                     ->label('Срок для списка (мес.)')
                     ->numeric(),
 
-                TextInput::make('min_term_months')
-                    ->label('Срок от (мес.)')
-                    ->numeric(),
-
-                TextInput::make('max_term_months')
-                    ->label('Срок до (мес.)')
-                    ->numeric(),
+                TextInput::make('psk')
+                    ->label('ПСК')
+                    ->numeric()
+                    ->step('0.01'),
 
                 Toggle::make('income_proof_required')
                     ->label('Подтверждение дохода')

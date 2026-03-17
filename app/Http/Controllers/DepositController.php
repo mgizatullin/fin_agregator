@@ -95,7 +95,7 @@ class DepositController extends Controller
         $banks = Bank::where('is_active', true)->orderBy('name')->get();
 
         return view('deposits.show', array_merge(compact('deposit', 'section', 'banks'), [
-            'sectionIndexUrl' => route('deposits.index'),
+            'sectionIndexUrl' => url_canonical(route('deposits.index')),
             'sectionIndexTitle' => 'Вклады',
             'seo_title' => null,
             'seo_description' => null,

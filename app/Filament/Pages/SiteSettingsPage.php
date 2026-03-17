@@ -4,7 +4,10 @@ namespace App\Filament\Pages;
 
 use App\Models\SiteSettings;
 use Filament\Actions\Action;
+use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Repeater;
+use Filament\Forms\Components\RichEditor;
+use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Notifications\Notification;
 use Filament\Pages\Concerns\CanUseDatabaseTransactions;
@@ -62,6 +65,17 @@ class SiteSettingsPage extends Page
             'footer_menu_2' => $setting->footer_menu_2 ?? [],
             'footer_heading_1' => $setting->footer_heading_1 ?? '',
             'footer_heading_2' => $setting->footer_heading_2 ?? '',
+            'copyright' => $setting->copyright ?? '',
+            'custom_scripts' => $setting->custom_scripts ?? '',
+            'logo' => $setting->logo ? [$setting->logo] : [],
+            'footer_under_logo' => $setting->footer_under_logo ?? '',
+            'social_twitter' => $setting->social_twitter ?? '',
+            'social_facebook' => $setting->social_facebook ?? '',
+            'social_github' => $setting->social_github ?? '',
+            'social_instagram' => $setting->social_instagram ?? '',
+            'social_youtube' => $setting->social_youtube ?? '',
+            'social_zen' => $setting->social_zen ?? '',
+            'social_telegram' => $setting->social_telegram ?? '',
         ];
     }
 
@@ -82,6 +96,11 @@ class SiteSettingsPage extends Page
             $footer2 = is_array($footer2) ? $footer2 : [];
             $footerHeading1 = isset($data['footer_heading_1']) ? (string) $data['footer_heading_1'] : null;
             $footerHeading2 = isset($data['footer_heading_2']) ? (string) $data['footer_heading_2'] : null;
+            $logo = $data['logo'] ?? [];
+            $logoPath = is_array($logo) ? (isset($logo[0]) ? $logo[0] : null) : $logo;
+            if ($logoPath === '' || $logoPath === []) {
+                $logoPath = null;
+            }
 
             $this->getSetting()->update([
                 'navigation' => $navigation,
@@ -89,6 +108,17 @@ class SiteSettingsPage extends Page
                 'footer_menu_2' => $footer2,
                 'footer_heading_1' => $footerHeading1 !== '' ? $footerHeading1 : null,
                 'footer_heading_2' => $footerHeading2 !== '' ? $footerHeading2 : null,
+                'copyright' => isset($data['copyright']) && (string) $data['copyright'] !== '' ? (string) $data['copyright'] : null,
+                'custom_scripts' => isset($data['custom_scripts']) && (string) $data['custom_scripts'] !== '' ? (string) $data['custom_scripts'] : null,
+                'logo' => $logoPath,
+                'footer_under_logo' => isset($data['footer_under_logo']) && (string) $data['footer_under_logo'] !== '' ? (string) $data['footer_under_logo'] : null,
+                'social_twitter' => isset($data['social_twitter']) && (string) $data['social_twitter'] !== '' ? (string) $data['social_twitter'] : null,
+                'social_facebook' => isset($data['social_facebook']) && (string) $data['social_facebook'] !== '' ? (string) $data['social_facebook'] : null,
+                'social_github' => isset($data['social_github']) && (string) $data['social_github'] !== '' ? (string) $data['social_github'] : null,
+                'social_instagram' => isset($data['social_instagram']) && (string) $data['social_instagram'] !== '' ? (string) $data['social_instagram'] : null,
+                'social_youtube' => isset($data['social_youtube']) && (string) $data['social_youtube'] !== '' ? (string) $data['social_youtube'] : null,
+                'social_zen' => isset($data['social_zen']) && (string) $data['social_zen'] !== '' ? (string) $data['social_zen'] : null,
+                'social_telegram' => isset($data['social_telegram']) && (string) $data['social_telegram'] !== '' ? (string) $data['social_telegram'] : null,
             ]);
 
             $this->callHook('afterSave');
@@ -123,9 +153,81 @@ class SiteSettingsPage extends Page
                         Tab::make('Основные')
                             ->label('Основные')
                             ->schema([
-                                Section::make()
-                                    ->schema([])
-                                    ->description('Раздел в разработке.')
+                                Section::make('Копирайт и скрипты')
+                                    ->schema([
+                                        Textarea::make('copyright')
+                                            ->label('Копирайты')
+                                            ->placeholder('© 2025. Все права защищены.')
+                                            ->rows(2)
+                                            ->columnSpanFull(),
+                                        Textarea::make('custom_scripts')
+                                            ->label('Кастомные скрипты')
+                                            ->helperText('Вставьте код вместе с тегами <script>. Скрипты выводятся на всех страницах перед закрывающим тегом </body>.')
+                                            ->rows(8)
+                                            ->columnSpanFull(),
+                                    ])
+                                    ->columnSpanFull(),
+                                Section::make('Логотип')
+                                    ->description('Отображается в шапке сайта и в подвале. Если не задан — используется логотип по умолчанию.')
+                                    ->schema([
+                                        FileUpload::make('logo')
+                                            ->label('Логотип')
+                                            ->image()
+                                            ->disk('public')
+                                            ->directory('site')
+                                            ->visibility('public')
+                                            ->maxFiles(1)
+                                            ->columnSpanFull(),
+                                        RichEditor::make('footer_under_logo')
+                                            ->label('Подпись под логотипом')
+                                            ->helperText('Текст под логотипом в подвале (контакты, адрес).')
+                                            ->toolbarButtons([
+                                                ['bold', 'italic', 'link'],
+                                                ['bulletList', 'orderedList'],
+                                            ])
+                                            ->columnSpanFull(),
+                                    ])
+                                    ->columnSpanFull(),
+                                Section::make('Соцсети')
+                                    ->description('Ссылки на соцсети в подвале. Иконка показывается только если указана ссылка.')
+                                    ->schema([
+                                        TextInput::make('social_twitter')
+                                            ->label('Twitter / X')
+                                            ->url()
+                                            ->placeholder('https://twitter.com/...')
+                                            ->maxLength(500),
+                                        TextInput::make('social_facebook')
+                                            ->label('Facebook')
+                                            ->url()
+                                            ->placeholder('https://facebook.com/...')
+                                            ->maxLength(500),
+                                        TextInput::make('social_github')
+                                            ->label('GitHub')
+                                            ->url()
+                                            ->placeholder('https://github.com/...')
+                                            ->maxLength(500),
+                                        TextInput::make('social_instagram')
+                                            ->label('Instagram')
+                                            ->url()
+                                            ->placeholder('https://instagram.com/...')
+                                            ->maxLength(500),
+                                        TextInput::make('social_youtube')
+                                            ->label('YouTube')
+                                            ->url()
+                                            ->placeholder('https://youtube.com/...')
+                                            ->maxLength(500),
+                                        TextInput::make('social_zen')
+                                            ->label('Дзен')
+                                            ->url()
+                                            ->placeholder('https://dzen.ru/...')
+                                            ->maxLength(500),
+                                        TextInput::make('social_telegram')
+                                            ->label('Телеграм')
+                                            ->url()
+                                            ->placeholder('https://t.me/...')
+                                            ->maxLength(500),
+                                    ])
+                                    ->columns(2)
                                     ->columnSpanFull(),
                             ]),
                         Tab::make('Навигация')

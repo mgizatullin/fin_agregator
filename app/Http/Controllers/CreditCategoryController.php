@@ -70,7 +70,7 @@ class CreditCategoryController extends Controller
 
         $base = 'kredity/' . $category->slug;
         return view('credits.category-show', array_merge(compact('category', 'items', 'section', 'city'), [
-            'sectionIndexUrl' => $city ? url('kredity/' . $city->slug) : route('credits.index'),
+            'sectionIndexUrl' => $city ? url_section('kredity/' . $city->slug) : url_canonical(route('credits.index')),
             'sectionIndexTitle' => 'Кредиты',
             'seo_title' => $seoTitle,
             'seo_description' => $seoDescription,

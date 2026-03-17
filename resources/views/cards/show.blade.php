@@ -6,7 +6,7 @@
     'subtitle' => null,
     'breadcrumbs' => [
         ['url' => url('/'), 'label' => 'Главная'],
-        ['url' => url('/karty'), 'label' => 'Кредитные карты'],
+        ['url' => url_section('karty'), 'label' => 'Кредитные карты'],
         ['label' => $card->name ?? 'Кредитная карта'],
     ],
 ])
