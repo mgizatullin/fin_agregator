@@ -76,6 +76,8 @@ class SiteSettingsPage extends Page
             'social_youtube' => $setting->social_youtube ?? '',
             'social_zen' => $setting->social_zen ?? '',
             'social_telegram' => $setting->social_telegram ?? '',
+
+            // поля "О проекте" вынесены в отдельную страницу
         ];
     }
 
@@ -119,6 +121,8 @@ class SiteSettingsPage extends Page
                 'social_youtube' => isset($data['social_youtube']) && (string) $data['social_youtube'] !== '' ? (string) $data['social_youtube'] : null,
                 'social_zen' => isset($data['social_zen']) && (string) $data['social_zen'] !== '' ? (string) $data['social_zen'] : null,
                 'social_telegram' => isset($data['social_telegram']) && (string) $data['social_telegram'] !== '' ? (string) $data['social_telegram'] : null,
+
+                // поля "О проекте" вынесены в отдельную страницу
             ]);
 
             $this->callHook('afterSave');

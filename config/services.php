@@ -35,4 +35,9 @@ return [
         ],
     ],
 
+    'leadgid' => [
+        'base_url' => 'https://api.leadgid.com/offers/v1/affiliates/',
+        'token' => env('LEADGID_API_TOKEN'),
+    ],
+
 ];

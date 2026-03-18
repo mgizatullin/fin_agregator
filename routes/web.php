@@ -18,6 +18,7 @@ use App\Http\Controllers\ReviewController;
 use App\Models\City;
 use App\Models\HomePageSetting;
 use App\Models\Article;
+use App\Models\SiteSettings;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -46,6 +47,39 @@ Route::get('/', function () {
 Route::get('/currency-calculator', function () {
     return view('currency-calculator-placeholder');
 })->name('currency.calculator');
+
+Route::get('/test-leadgid', function () {
+    return app(\App\Services\LeadgidService::class)->testConnection();
+});
+
+Route::get('/test-network', function () {
+    return [
+        'dns' => gethostbyname('api.leadgid.com'),
+        'curl' => shell_exec('curl -I https://api.leadgid.com 2>&1'),
+    ];
+});
+
+Route::get('/about', function () {
+    $siteSettings = SiteSettings::getInstance();
+
+    return view('about-project', [
+        'siteSettings' => $siteSettings,
+        'seo_title' => $siteSettings->about_project_seo_title ?: ($siteSettings->about_project_team_title ?: 'О проекте'),
+        'seo_description' => $siteSettings->about_project_seo_description ?: ($siteSettings->about_project_reviews_description ?: ($siteSettings->about_project_approach_description ?: '')),
+        'title' => 'О проекте',
+    ]);
+});
+
+Route::get('/about.html', function () {
+    $siteSettings = SiteSettings::getInstance();
+
+    return view('about-project', [
+        'siteSettings' => $siteSettings,
+        'seo_title' => $siteSettings->about_project_seo_title ?: ($siteSettings->about_project_team_title ?: 'О проекте'),
+        'seo_description' => $siteSettings->about_project_seo_description ?: ($siteSettings->about_project_reviews_description ?: ($siteSettings->about_project_approach_description ?: '')),
+        'title' => 'О проекте',
+    ]);
+});
 
 Route::get('/city-dialog', CityDialogController::class)->name('city.dialog');
 

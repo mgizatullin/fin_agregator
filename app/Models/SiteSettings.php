@@ -25,6 +25,22 @@ class SiteSettings extends Model
         'social_youtube',
         'social_zen',
         'social_telegram',
+        'about_project_description_1',
+        'about_project_description_2',
+        'about_project_facts',
+        'about_project_team_title',
+        'about_project_team_description',
+        'about_project_team_items',
+        'about_project_approach_title',
+        'about_project_approach_description',
+        'about_project_approach_items',
+        'about_project_reviews_title',
+        'about_project_reviews_description',
+        'about_project_reviews_items',
+        'about_project_seo_title',
+        'about_project_seo_description',
+        'about_project_page_title',
+        'about_project_page_subtitle',
     ];
 
     protected function casts(): array
@@ -33,6 +49,10 @@ class SiteSettings extends Model
             'navigation' => 'array',
             'footer_menu_1' => 'array',
             'footer_menu_2' => 'array',
+            'about_project_facts' => 'array',
+            'about_project_team_items' => 'array',
+            'about_project_approach_items' => 'array',
+            'about_project_reviews_items' => 'array',
         ];
     }
 
