@@ -9,6 +9,7 @@ use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Schema;
 use Filament\Schemas\Components\Utilities\Set;
+use Filament\Schemas\Components\Grid;
 use Illuminate\Support\Str;
 
 class LoanForm
@@ -54,50 +55,68 @@ class LoanForm
                         ['h2', 'h3'],
                         ['bulletList', 'orderedList'],
                     ]),
-                Select::make('categories')
-                    ->label('Категории')
-                    ->relationship('categories', 'title')
-                    ->multiple()
-                    ->preload()
-                    ->searchable(),
+                Grid::make(2)->schema([
+                    TextInput::make('min_amount')
+                        ->label('Сумма (от)')
+                        ->numeric()
+                        ->step('0.01'),
+                    TextInput::make('max_amount')
+                        ->label('Сумма (до)')
+                        ->numeric()
+                        ->step('0.01'),
+                ]),
 
-                TextInput::make('max_amount')
-                    ->label('Макс. сумма')
-                    ->numeric()
-                    ->step('0.01'),
-
-                TextInput::make('term_days')
-                    ->label('Срок (дней)')
-                    ->numeric(),
+                Grid::make(2)->schema([
+                    TextInput::make('term_days_min')
+                        ->label('Срок (дней) от')
+                        ->numeric(),
+                    TextInput::make('term_days')
+                        ->label('Срок (дней) до')
+                        ->numeric(),
+                ]),
 
                 TextInput::make('term_no_interest')
                     ->label('Срок без процентов (дней)')
                     ->numeric(),
 
-                TextInput::make('psk')
-                    ->label('ПСК')
-                    ->numeric()
-                    ->step('0.01'),
+                Grid::make(2)->schema([
+                    TextInput::make('psk_min')
+                        ->label('ПСК от')
+                        ->numeric()
+                        ->step('0.01'),
+                    TextInput::make('psk')
+                        ->label('ПСК до')
+                        ->numeric()
+                        ->step('0.01'),
+                ]),
 
-                TextInput::make('rate')
-                    ->label('Ставка')
-                    ->numeric()
-                    ->step('0.01'),
+                Grid::make(2)->schema([
+                    TextInput::make('rate_min')
+                        ->label('Ставка от')
+                        ->numeric()
+                        ->step('0.01'),
+                    TextInput::make('rate')
+                        ->label('Ставка до')
+                        ->numeric()
+                        ->step('0.01'),
+                ]),
 
                 TextInput::make('website')
                     ->label('Сайт')
                     ->url()
                     ->maxLength(255),
 
-                TextInput::make('rating')
-                    ->label('Рейтинг')
-                    ->numeric()
-                    ->step('0.01'),
-
                 Toggle::make('is_active')
                     ->label('Активен')
                     ->default(true)
                     ->required(),
+
+                Select::make('categories')
+                    ->label('Категории')
+                    ->relationship('categories', 'title')
+                    ->multiple()
+                    ->preload()
+                    ->searchable(),
             ]);
     }
 }
