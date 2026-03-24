@@ -211,6 +211,14 @@ Route::get('/zaimy/{first}', function (string $first) {
 
 // Banks: /banki, /banki/{product|category|city}, /banki/{category}/{city}
 Route::get('/banki', [BankController::class, 'index'])->name('banks.index');
+
+// Bank detail pages (reviews, branches, deposits, cards, credits) - MUST be before {first}/{second}
+Route::get('/banki/{slug}/otzyvy', [BankController::class, 'reviews'])->name('banks.reviews');
+Route::get('/banki/{slug}/otdeleniya', [BankController::class, 'branches'])->name('banks.branches');
+Route::get('/banki/{slug}/vklady', [BankController::class, 'deposits'])->name('banks.deposits');
+Route::get('/banki/{slug}/karty', [BankController::class, 'cards'])->name('banks.cards');
+Route::get('/banki/{slug}/kredity', [BankController::class, 'credits'])->name('banks.credits');
+
 Route::get('/banki/{first}/{second}', function (string $first, string $second) {
     $category = \App\Models\BankCategory::where('slug', $first)->first();
     $city = City::where('slug', $second)->where('is_active', true)->first();
@@ -219,6 +227,7 @@ Route::get('/banki/{first}/{second}', function (string $first, string $second) {
     }
     abort(404);
 })->name('banks.category.city');
+
 Route::get('/banki/{first}', function (string $first) {
     $bank = \App\Models\Bank::where('slug', $first)->where('is_active', true)->first();
     if ($bank) {

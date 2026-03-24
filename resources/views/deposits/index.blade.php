@@ -1,12 +1,21 @@
 @extends('layouts.main')
-@include('layouts.partials.redirect-city-push')
 
 @section('page-header')
+@php
+    $title = $page_h1 ?? $title ?? $section->title ?? 'Вклады';
+    if (request()->has('bank')) {
+        $bankName = \App\Models\Bank::where('slug', request('bank'))->first()?->name;
+        if ($bankName) {
+            $title = 'Вклады в ' . $bankName;
+        }
+    }
+@endphp
 @include('layouts.partials.page-header', [
-    'title' => $page_h1 ?? $title ?? $section->title ?? 'Вклады',
-    'subtitle' => $section->subtitle ?? null,
-    'showCitySelect' => true,
-    'citySelectBase' => isset($city) && $city ? implode('/', array_slice(request()->segments(), 0, -1)) : request()->path(),
+    'title' => $title,
+    'breadcrumbs' => [
+        ['url' => url('/'), 'label' => 'Главная'],
+        ['label' => 'Вклады'],
+    ],
 ])
 @endsection
 
@@ -29,7 +38,7 @@
                     : 'Найдено';
             @endphp
 
-            @if(isset($categories) && $categories->count())
+            @if(false && isset($categories) && $categories->count())
             <div class="category-nav overflow-x-auto mb_40">
                 @php
                     $sectionPath = 'vklady';

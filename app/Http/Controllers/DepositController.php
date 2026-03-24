@@ -64,7 +64,7 @@ class DepositController extends Controller
 
         $title = $page_h1;
 
-        return view('deposits.index', array_merge([
+        return view('deposits.index', [
             'items' => $items,
             'section' => $section,
             'categories' => $categories,
@@ -74,7 +74,7 @@ class DepositController extends Controller
             'title' => $title,
             'page_h1' => $page_h1,
             'page_content' => $page_content,
-        ], $city ? [] : ['redirectToCityIfStored' => true, 'sectionBaseForRedirect' => 'vklady']));
+        ]);
     }
 
     /**

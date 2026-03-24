@@ -1,0 +1,35 @@
+@extends('layouts.app')
+
+@section('page-header')
+@include('layouts.partials.page-header', [
+    'title' => 'Карты ' . $bank->name,
+    'breadcrumbs' => $breadcrumbs ?? [
+        ['url' => url('/'), 'label' => 'Главная'],
+        ['url' => url_section('banki'), 'label' => 'Банки'],
+        ['url' => url_section('banki/' . $bank->slug), 'label' => $bank->name],
+        ['label' => 'Карты'],
+    ],
+])
+@endsection
+
+@section('content')
+<div class="main-content style-1">
+    <div class="section-cards-wrapper tf-spacing-27">
+        <div class="tf-container">
+            <div class="content">
+                @if($bank->cards->isNotEmpty())
+                    <p class="section-subtitle text-body-2 text_mono-gray-7 mb_29">
+                        Доступные банковские карты
+                    </p>
+                    
+                    <div class="d-grid gap_10" id="cards-list">
+                        @include('cards.partials.list-items', ['items' => $bank->cards])
+                    </div>
+                @else
+                    <p class="text-body-1 text_mono-gray-7">В данном банке нет доступных карт.</p>
+                @endif
+            </div>
+        </div>
+    </div>
+</div>
+@endsection

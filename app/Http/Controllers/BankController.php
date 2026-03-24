@@ -77,7 +77,13 @@ class BankController extends Controller
      */
     public function show(Request $request, string $slug): View
     {
-        $bank = Bank::with('reviews.bank')
+        $bank = Bank::with([
+            'reviews.bank',
+            'deposits',
+            'cards',
+            'credits',
+            'branches',
+        ])
             ->where('slug', $slug)
             ->where('is_active', true)
             ->firstOrFail();
@@ -94,5 +100,130 @@ class BankController extends Controller
             'seo_description' => $bank->seo_description,
             'title' => $section->title,
         ]));
+    }
+
+    /**
+     * Show bank reviews page
+     */
+    public function reviews(Request $request, string $slug): View
+    {
+        $bank = Bank::with('reviews.bank')
+            ->where('slug', $slug)
+            ->where('is_active', true)
+            ->firstOrFail();
+
+        $breadcrumbs = [
+            ['url' => url('/'), 'label' => 'Главная'],
+            ['url' => url_section('banki'), 'label' => 'Банки'],
+            ['url' => url_section('banki/' . $bank->slug), 'label' => $bank->name],
+            ['label' => 'Отзывы'],
+        ];
+
+        return view('banks.reviews', [
+            'bank' => $bank,
+            'breadcrumbs' => $breadcrumbs,
+            'title' => 'Отзывы о ' . $bank->name,
+            'seo_title' => 'Отзывы о ' . $bank->name,
+        ]);
+    }
+
+    /**
+     * Show bank branches page
+     */
+    public function branches(Request $request, string $slug): View
+    {
+        $bank = Bank::with('branches')
+            ->where('slug', $slug)
+            ->where('is_active', true)
+            ->firstOrFail();
+
+        $breadcrumbs = [
+            ['url' => url('/'), 'label' => 'Главная'],
+            ['url' => url_section('banki'), 'label' => 'Банки'],
+            ['url' => url_section('banki/' . $bank->slug), 'label' => $bank->name],
+            ['label' => 'Отделения'],
+        ];
+
+        return view('banks.branches', [
+            'bank' => $bank,
+            'breadcrumbs' => $breadcrumbs,
+            'title' => 'Отделения ' . $bank->name,
+            'seo_title' => 'Отделения ' . $bank->name,
+        ]);
+    }
+
+    /**
+     * Show bank deposits page
+     */
+    public function deposits(Request $request, string $slug): View
+    {
+        $bank = Bank::with('deposits')
+            ->where('slug', $slug)
+            ->where('is_active', true)
+            ->firstOrFail();
+
+        $breadcrumbs = [
+            ['url' => url('/'), 'label' => 'Главная'],
+            ['url' => url_section('banki'), 'label' => 'Банки'],
+            ['url' => url_section('banki/' . $bank->slug), 'label' => $bank->name],
+            ['label' => 'Вклады'],
+        ];
+
+        return view('banks.deposits', [
+            'bank' => $bank,
+            'breadcrumbs' => $breadcrumbs,
+            'title' => 'Вклады ' . $bank->name,
+            'seo_title' => 'Вклады ' . $bank->name,
+        ]);
+    }
+
+    /**
+     * Show bank cards page
+     */
+    public function cards(Request $request, string $slug): View
+    {
+        $bank = Bank::with('cards')
+            ->where('slug', $slug)
+            ->where('is_active', true)
+            ->firstOrFail();
+
+        $breadcrumbs = [
+            ['url' => url('/'), 'label' => 'Главная'],
+            ['url' => url_section('banki'), 'label' => 'Банки'],
+            ['url' => url_section('banki/' . $bank->slug), 'label' => $bank->name],
+            ['label' => 'Карты'],
+        ];
+
+        return view('banks.cards', [
+            'bank' => $bank,
+            'breadcrumbs' => $breadcrumbs,
+            'title' => 'Карты ' . $bank->name,
+            'seo_title' => 'Карты ' . $bank->name,
+        ]);
+    }
+
+    /**
+     * Show bank credits page
+     */
+    public function credits(Request $request, string $slug): View
+    {
+        $bank = Bank::with('credits')
+            ->where('slug', $slug)
+            ->where('is_active', true)
+            ->firstOrFail();
+
+        $breadcrumbs = [
+            ['url' => url('/'), 'label' => 'Главная'],
+            ['url' => url_section('banki'), 'label' => 'Банки'],
+            ['url' => url_section('banki/' . $bank->slug), 'label' => $bank->name],
+            ['label' => 'Кредиты'],
+        ];
+
+        return view('banks.credits', [
+            'bank' => $bank,
+            'breadcrumbs' => $breadcrumbs,
+            'title' => 'Кредиты ' . $bank->name,
+            'seo_title' => 'Кредиты ' . $bank->name,
+        ]);
     }
 }
