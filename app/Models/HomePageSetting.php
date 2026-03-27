@@ -18,7 +18,12 @@ class HomePageSetting extends Model
         'seo_description',
         'services',
         'partners',
-        'keywords',
+        'blog_block_title',
+        'blog_block_description',
+        'blog_block_link_text',
+        'faq_title',
+        'faq_description',
+        'faq_items',
         'main_value_block',
         'values_grid',
     ];
@@ -28,7 +33,7 @@ class HomePageSetting extends Model
         return [
             'services' => 'array',
             'partners' => 'array',
-            'keywords' => 'array',
+            'faq_items' => 'array',
             'main_value_block' => 'array',
             'values_grid' => 'array',
         ];
@@ -52,7 +57,12 @@ class HomePageSetting extends Model
             'seo_description' => null,
             'services' => null,
             'partners' => null,
-            'keywords' => null,
+            'blog_block_title' => null,
+            'blog_block_description' => null,
+            'blog_block_link_text' => null,
+            'faq_title' => null,
+            'faq_description' => null,
+            'faq_items' => null,
             'main_value_block' => null,
             'values_grid' => null,
         ]);

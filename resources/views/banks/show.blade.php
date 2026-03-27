@@ -2,12 +2,17 @@
 
 @section('page-header')
 @include('layouts.partials.page-header', [
-    'title' => $bank->name ?? $section->title ?? 'Банк',
+    'title' => $section->title ?? $bank->name ?? 'Банк',
     'subtitle' => $section->subtitle ?? null,
+    'showCitySelect' => true,
+    'citySelectBase' => 'banki/' . $bank->slug,
+    'allowedCitySlugs' => isset($availableCities) ? $availableCities->pluck('slug')->values()->all() : [],
+    'city' => $currentCity ?? null,
+    'cityName' => 'Вся Россия',
     'breadcrumbs' => [
         ['url' => url('/'), 'label' => 'Главная'],
         ['url' => url_section('banki'), 'label' => 'Банки'],
-        ['label' => $bank->name ?? 'Банк'],
+        ['label' => $section->title ?? ($bank->name ?? 'Банк')],
     ],
 ])
 @endsection
@@ -101,7 +106,13 @@
                         <a href="{{ route('banks.reviews', $bank->slug) }}" class="text-whitespace nav-tab-link">Отзывы ({{ $bank->reviews->count() }})</a>
                     </li>
                     <li class="item-title h6">
-                        <a href="{{ route('banks.branches', $bank->slug) }}" class="text-whitespace nav-tab-link">Отделения ({{ $bank->branches->count() }})</a>
+                        @php
+                            $branchesTabCount = $branchesCount ?? $bank->branches->count();
+                            $branchesTabUrl = !empty($currentCity)
+                                ? route('banks.branches.city', ['slug' => $bank->slug, 'citySlug' => $currentCity->slug])
+                                : route('banks.branches', $bank->slug);
+                        @endphp
+                        <a href="{{ $branchesTabUrl }}" class="text-whitespace nav-tab-link">Отделения ({{ $branchesTabCount }})</a>
                     </li>
                     <li class="item-title h6">
                         <a href="{{ route('banks.deposits', $bank->slug) }}" class="text-whitespace nav-tab-link">Вклады ({{ $bank->deposits->count() }})</a>

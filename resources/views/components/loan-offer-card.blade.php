@@ -12,26 +12,48 @@
     $reviewCount = (int) ($loan->reviews_count ?? 0);
     $updatedAt = $loan->updated_at?->format('d.m.Y');
 
-    $maxAmount = filled($loan->max_amount) ? 'до ' . number_format((float) $loan->max_amount, 0, '', ' ') . ' ₽' : '—';
-    $termDays = filled($loan->term_days) ? (int) $loan->term_days . ' дн.' : '—';
+    $minAmountValue = $loan->min_amount !== null ? (float) $loan->min_amount : 1.0;
+    $maxAmountValue = $loan->max_amount !== null ? (float) $loan->max_amount : null;
+
+    $minAmount = 'от ' . number_format((float) $minAmountValue, 0, '', ' ') . ' ₽';
+    $maxAmount = $maxAmountValue !== null
+        ? 'до ' . number_format((float) $maxAmountValue, 0, '', ' ') . ' ₽'
+        : '—';
+    $amountRange = $maxAmountValue !== null
+        ? 'от ' . number_format((float) $minAmountValue, 0, '', ' ') . ' до ' . number_format((float) $maxAmountValue, 0, '', ' ') . ' ₽'
+        : $minAmount;
+
+    $minTermValue = $loan->term_days_min !== null ? (int) $loan->term_days_min : 1;
+    $maxTermValue = $loan->term_days !== null ? (int) $loan->term_days : null;
+
     $termNoInterest = filled($loan->term_no_interest) ? (int) $loan->term_no_interest . ' дн.' : '—';
     $rate = filled($loan->rate) ? rtrim(rtrim(number_format((float) $loan->rate, 2, '.', ''), '0'), '.') . '%' : '—';
     $psk = filled($loan->psk) ? rtrim(rtrim(number_format((float) $loan->psk, 2, '.', ''), '0'), '.') . '%' : '—';
 
+    $termRange = $maxTermValue !== null
+        ? 'от ' . number_format((int) $minTermValue, 0, '', ' ') . ' до ' . number_format((int) $maxTermValue, 0, '', ' ') . ' дней'
+        : 'от ' . number_format((int) $minTermValue, 0, '', ' ') . ' дней';
+    $minTerm = 'от ' . number_format((int) $minTermValue, 0, '', ' ') . ' дней';
+    $maxTerm = $maxTermValue !== null
+        ? 'до ' . number_format((int) $maxTermValue, 0, '', ' ') . ' дней'
+        : '—';
+
     $fullTitle = 'Займ ' . $loan->name . (filled($companyName) ? ' — ' . $companyName : '');
 
     $summaryItems = [
-        'Макс. сумма' => $maxAmount,
-        'Срок' => $termDays,
+        'Сумма' => $amountRange,
+        'Срок' => $termRange,
         'Срок без процентов' => $termNoInterest,
         'ПСК' => $psk,
         'Ставка' => $rate,
     ];
 
     $parameterItems = [
+        'Мин. сумма' => $minAmount,
         'Макс. сумма' => $maxAmount,
-        'Срок (дней)' => filled($loan->term_days) ? (int) $loan->term_days : '—',
-        'Срок без процентов (дней)' => filled($loan->term_no_interest) ? (int) $loan->term_no_interest : '—',
+        'Мин. срок' => $minTerm,
+        'Макс. срок' => $maxTerm,
+        'Срок без процентов' => $termNoInterest,
         'ПСК' => $psk,
         'Ставка' => $rate,
         'Организация' => $companyName,

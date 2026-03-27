@@ -3000,16 +3000,19 @@ a:focus, a:hover {
   background-color: var(--Black);
 }
 .footer .footer-bottom .wrapper {
-  margin-top: 120px;
+  margin-top: 40px;
   padding: 33px 0;
   justify-content: space-between;
   border-top: 1px solid var(--Border);
 }
+.footer .footer-body .footer-copyright-row {
+  margin-top: 40px;
+}
+.footer .footer-body .footer-copyright-row p {
+  font-size: 12px;
+}
 .footer .footer-bottom .wrapper .right {
   gap: 12px 41px;
-}
-.footer.style-default .footer-body {
-  padding-top: 113px;
 }
 .footer.style-default.has-border-top .footer-body {
   border-top: 1px solid var(--Border);
@@ -8999,7 +9002,6 @@ form.style-line-bot.style-2 button {
 
 .wrap-logo-carousel {
   padding-top: 80px;
-  padding-bottom: 90px;
 }
 .wrap-logo-carousel .heading-section {
   margin-bottom: 50px;
@@ -9460,6 +9462,76 @@ form.style-line-bot.style-2 button {
 }
 .credit-offer-card__description p:last-child {
   margin-bottom: 0;
+}
+.card-offer-card__logo-wrap {
+  background: linear-gradient(180deg, #eef7ff 0%, #fff 100%);
+}
+.card-offer-card__logo {
+  width: 100%;
+  max-width: 320px;
+  max-height: 200px;
+  object-fit: contain;
+}
+.card-offer-sidebar {
+  background: #fff;
+  border: 1px solid var(--credit-offer-border, rgba(25, 20, 0, 0.12));
+  border-radius: 16px;
+  box-shadow: 0 16px 40px rgba(15, 23, 42, .05);
+  padding: 24px;
+}
+.card-offer-sidebar__top {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+.card-offer-sidebar__logo-wrap {
+  min-height: 132px;
+  padding: 20px;
+  border-radius: 16px;
+  border: 1px solid var(--credit-offer-border, rgba(25, 20, 0, 0.12));
+  background: linear-gradient(180deg, #f8fbff 0%, #fff 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.card-offer-sidebar__logo {
+  max-width: 100%;
+  max-height: 92px;
+  object-fit: contain;
+}
+.card-offer-sidebar__items {
+  display: grid;
+  gap: 16px;
+}
+.card-offer-sidebar__item {
+  display: grid;
+  gap: 6px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--credit-offer-border, rgba(25, 20, 0, 0.12));
+}
+.card-offer-sidebar__item:last-child {
+  padding-bottom: 0;
+  border-bottom: 0;
+}
+.card-offer-sidebar__label {
+  font-size: 12px;
+  line-height: 1.4;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: #98a2b3;
+}
+.card-offer-sidebar__item strong,
+.card-offer-sidebar__item a {
+  font-size: 16px;
+  line-height: 1.5;
+  color: #101828;
+  word-break: break-word;
+}
+.card-offer-sidebar__actions {
+  margin-top: 24px;
+}
+.card-offer-sidebar__actions .tf-btn {
+  width: 100%;
 }
 
 .credit-page-row {
@@ -10772,11 +10844,138 @@ form.style-line-bot.style-2 button {
   padding-top: 24px;
   margin-top: 24px;
 }
-.section-about.style-1 .left .content .tf-btn {
-  height: 44px;
-}
 .section-about.style-1 .left .content p {
   margin-bottom: 17px;
+}
+.main-content.style-1 {
+  margin-bottom: 100px;
+}
+.main-content > * + * {
+  margin-top: 80px;
+}
+.wrap-logo-carousel {
+  padding-top: 80px;
+}
+.section-currency-rates .currency-rates-widget {
+  width: 35%;
+  min-width: 280px;
+}
+.section-currency-rates .currency-calc-box {
+  background: transparent;
+  border-radius: 0;
+  padding: 0;
+  border: none;
+}
+.section-currency-rates .cbr-rates-box {
+  border: none;
+  background: #f2f6ff;
+  border-radius: 24px;
+  padding: 32px;
+}
+.section-currency-rates .cbr-rates-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.5rem 7rem;
+}
+.section-currency-rates .cbr-rate-row {
+  border-bottom: none;
+  padding: 0.35rem 0;
+}
+.section-currency-rates .currency-change {
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+.section-currency-rates .currency-change.text-success {
+  color: #198754;
+}
+.section-currency-rates .currency-change.text-danger {
+  color: #dc3545;
+}
+.section-currency-rates .currency-calc-amount,
+.section-currency-rates .currency-calc-result,
+.section-currency-rates .cbr-rate-value {
+  font-size: 1.75rem;
+  font-weight: 600;
+}
+.section-currency-rates .currency-calc-source {
+  position: relative;
+  cursor: pointer;
+  user-select: none;
+}
+.section-currency-rates .currency-calc-trigger {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 1.75rem;
+  font-weight: 600;
+}
+.section-currency-rates .currency-calc-trigger .currency-calc-arrow {
+  transition: transform 0.2s;
+}
+.section-currency-rates .currency-calc-source.is-open .currency-calc-arrow {
+  transform: rotate(180deg);
+}
+.section-currency-rates .currency-calc-dropdown {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 100%;
+  margin-top: 4px;
+  background: #fff;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  z-index: 100;
+  max-height: 220px;
+  overflow-y: auto;
+  display: none;
+}
+.section-currency-rates .currency-calc-source.is-open .currency-calc-dropdown {
+  display: block;
+}
+.section-currency-rates .currency-calc-option {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0.75rem;
+  cursor: pointer;
+  font-size: 1.1rem;
+}
+.section-currency-rates .currency-calc-option:hover {
+  background: #f0f0f0;
+}
+.section-currency-rates input.currency-calc-amount::-webkit-outer-spin-button,
+.section-currency-rates input.currency-calc-amount::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+.section-currency-rates input.currency-calc-amount[type=number] {
+  -moz-appearance: textfield;
+}
+@media (min-width: 992px) {
+  .section-about.style-1 .left .content {
+    margin-right: 50px;
+    max-width: none;
+  }
+  .section-faqs.style-2 .heading-section .right {
+    padding-top: 24px;
+    max-width: 500px;
+    width: 100%;
+    margin-left: 100px;
+  }
+}
+@media (min-width: 768px) {
+  .section-service.style-1 .heading-section .right {
+    margin-left: 100px;
+  }
+  .section-service.style-1 .heading-section .right p {
+    max-width: 500px;
+  }
+}
+@media (max-width: 991px) {
+  .section-currency-rates .currency-rates-widget {
+    width: 100%;
+  }
 }
 
 .section-team.style-1 {
@@ -11053,9 +11252,6 @@ form.style-line-bot.style-2 button {
     width: 63%;
     margin-left: auto;
     margin-right: auto;
-  }
-  .section-service.style-1 .heading-section .right p {
-    max-width: 406px;
   }
   .product-item .tooltip {
     display: block;
@@ -11550,7 +11746,7 @@ form.style-line-bot.style-2 button {
   }
   .section-service.style-1 .heading-section .right {
     padding-top: 24px;
-    max-width: 406px;
+    max-width: 500px;
     width: 100%;
   }
   .section-service.style-4 .wrap {
@@ -12054,7 +12250,6 @@ form.style-line-bot.style-2 button {
   }
   .wrap-logo-carousel {
     padding-top: 218px;
-    padding-bottom: 80px;
   }
   .wg-pagination {
     margin-top: 50px;
@@ -12478,9 +12673,6 @@ form.style-line-bot.style-2 button {
   .footer .footer-col-block .tf-collapse-content {
     display: none;
   }
-  .footer.style-default .footer-body {
-    padding-top: 60px;
-  }
   .footer.style-default .wrapper {
     margin-top: 58px;
   }
@@ -12541,7 +12733,6 @@ form.style-line-bot.style-2 button {
   .wrap-logo-carousel {
     margin-top: -8px;
     padding-top: 60px;
-    padding-bottom: 60px;
   }
   .form-contact .grid-2 {
     grid-template-columns: 1fr;
@@ -13350,11 +13541,11 @@ form.style-line-bot.style-2 button {
 .deposit-currency-tabs__btn { padding: 1.4rem 1.8rem; border: 1px solid rgba(25,20,0,0.2); background: #fafaff; cursor: pointer; font-size: 18px; border-radius: 4px; }
 .deposit-currency-tabs__btn:hover { background: rgba(25,20,0,0.05); }
 .deposit-currency-tabs__btn.is-active { background: rgb(212, 225, 255); border-color: rgb(212, 225, 255); font-weight: 600; }
-.deposit-page-row { display: grid; grid-template-columns: 75% 25%; gap: 1.5rem; align-items: start; margin-top: 1.5rem; }
+.deposit-page-row { display: grid; grid-template-columns: 1fr 380px; gap: 40px; align-items: start; margin-top: 32px; padding-top: 28px; border-top: 1px solid var(--credit-offer-border, rgba(25, 20, 0, 0.12)); }
 @media (max-width: 900px) { .deposit-page-row { grid-template-columns: 1fr; } }
 .deposit-page-main { min-width: 0; }
 .deposit-page-sidebar { min-width: 0; position: sticky; top: 1.5rem; align-self: flex-start; }
-.deposit-calculator { background: rgba(25,20,0,0.03); border: 1px solid rgba(25,20,0,0.12); border-radius: 8px; padding: 1.25rem; }
+.deposit-calculator { background: #fafaff; border: 1px solid var(--credit-offer-border, rgba(25, 20, 0, 0.12)); border-radius: 14px; padding: 24px; }
 .deposit-calculator__title { font-size: 22px; font-weight: 600; margin: 0 0 1rem 0; }
 .deposit-calculator__currency { margin-bottom: 20px; }
 .deposit-calculator__label { display: block; font-size: 16px; font-weight: 500; margin-bottom: 0.35rem; color: rgba(25,20,0,0.7); }

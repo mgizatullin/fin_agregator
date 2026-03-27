@@ -4,10 +4,10 @@
         $cardName = $card->name ?: '-';
         $gracePeriod = $card->grace_period !== null && $card->grace_period !== '' ? $card->grace_period . ' дн.' : '-';
         $creditLimit = $card->credit_limit !== null && $card->credit_limit !== '' ? 'до ' . number_format((float) $card->credit_limit, 0, '', ' ') . ' ₽' : '-';
-        $annualFee = $card->annual_fee !== null && $card->annual_fee !== '' ? $card->annual_fee . ' ₽' : '-';
-        $rate = $card->rate !== null && $card->rate !== '' ? $card->rate . '%' : '-';
+        $serviceCost = filled($card->annual_fee_text) ? $card->annual_fee_text : '-';
+        $psk = filled($card->psk_text) ? $card->psk_text : '-';
         $cardUrl = $card->slug ? url_canonical(route('cards.show', $card->slug)) : '#';
-        $cardImage = $card->image ? asset('storage/' . $card->image) : null;
+        $cardImage = $card->image ? (str_starts_with($card->image, 'http') ? $card->image : asset('storage/' . $card->image)) : null;
     @endphp
     <div class="karty-card">
         <div class="karty-card__col karty-card__name">
@@ -32,12 +32,12 @@
             <span class="karty-card__value">{{ $creditLimit }}</span>
         </div>
         <div class="karty-card__col">
-            <span class="karty-card__label">Годовое обслуживание</span>
-            <span class="karty-card__value">{{ $annualFee }}</span>
+            <span class="karty-card__label">Стоимость обслуживания</span>
+            <span class="karty-card__value">{{ $serviceCost }}</span>
         </div>
         <div class="karty-card__col">
-            <span class="karty-card__label">Ставка</span>
-            <span class="karty-card__value">{{ $rate }}</span>
+            <span class="karty-card__label">ПСК</span>
+            <span class="karty-card__value">{{ $psk }}</span>
         </div>
         <div class="karty-card__col karty-card__action">
             <div class="d-flex align-items-center gap_12 flex-wrap">

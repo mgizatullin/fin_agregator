@@ -13,28 +13,13 @@
 @endsection
 
 @section('content')
-
-        <div class="main-content style-1 ">
-            <div class="tf-container">
-                <div class="row">
-                    <div class="col-lg-8 col-xl-9">
-                        @include('cards.partials.card-product-content', ['card' => $card])
-                        @include('partials.reviews-section', [
-                            'reviewable' => $card,
-                            'sectionTitle' => 'Отзывы по карте',
-                            'serviceLabel' => filled($card->card_type) && stripos($card->card_type, 'дебет') !== false ? 'Дебетовая карта' : 'Кредитная карта',
-                            'productName' => $card->name,
-                            'formAction' => route('cards.reviews.store', $card),
-                            'bankId' => $card->bank_id,
-                            'bankName' => $card->bank?->name ?? '—',
-                            'formId' => 'card-' . $card->id,
-                        ])
-                    </div>
-                    <div class="col-lg-4 col-xl-3">
-                        @include('cards.partials.card-sidebar', ['card' => $card])
+        <div class="main-content style-1">
+            <div class="section-opportunities tf-spacing-27">
+                <div class="tf-container">
+                    <div class="content">
+                        <x-card-offer-card :card="$card" />
                     </div>
                 </div>
             </div>
         </div>
-
 @endsection

@@ -22,6 +22,7 @@ trait HandlesLoadMorePagination
             'html' => view($partialView, $data)->render(),
             'has_more' => $paginator->hasMorePages(),
             'next_page' => $paginator->hasMorePages() ? $paginator->currentPage() + 1 : null,
+            'next_page_url' => $paginator->hasMorePages() ? $paginator->nextPageUrl() : null,
         ]);
     }
 }

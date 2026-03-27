@@ -12,6 +12,9 @@
 @endphp
 @include('layouts.partials.page-header', [
     'title' => $title,
+    'subtitle' => $section->subtitle ?? null,
+    'showCitySelect' => true,
+    'citySelectBase' => isset($city) && $city ? implode('/', array_slice(request()->segments(), 0, -1)) : request()->path(),
     'breadcrumbs' => [
         ['url' => url('/'), 'label' => 'Главная'],
         ['label' => 'Вклады'],
@@ -37,6 +40,11 @@
                     ? 'Найден'
                     : 'Найдено';
             @endphp
+
+            @include('deposits.partials.filter-panel', [
+                'items' => $items ?? collect(),
+                'filterMeta' => $filterMeta ?? [],
+            ])
 
             @if(false && isset($categories) && $categories->count())
             <div class="category-nav overflow-x-auto mb_40">

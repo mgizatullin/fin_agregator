@@ -5,34 +5,7 @@
     $flagCodes = ['USD' => 'us', 'EUR' => 'eu', 'CNY' => 'cn', 'GBP' => 'gb', 'CHF' => 'ch', 'JPY' => 'jp'];
 @endphp
 @if(!empty($ratesList))
-@push('styles')
-<style>
-.section-currency-rates .currency-rates-widget { width: 35%; min-width: 280px; }
-.section-currency-rates .currency-calc-box { background: transparent; border-radius: 0; padding: 0; border: none; }
-.section-currency-rates .cbr-rates-box { border: none; background: #f2f6ff; border-radius: 24px; padding: 32px; }
-.section-currency-rates .cbr-rates-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem 7rem; }
-.section-currency-rates .cbr-rate-row { border-bottom: none; padding: 0.35rem 0; }
-.section-currency-rates .currency-change { font-size: 0.875rem; font-weight: 600; }
-.section-currency-rates .currency-change.text-success { color: #198754; }
-.section-currency-rates .currency-change.text-danger { color: #dc3545; }
-.section-currency-rates .currency-calc-amount,
-.section-currency-rates .currency-calc-result,
-.section-currency-rates .cbr-rate-value { font-size: 1.75rem; font-weight: 600; }
-.section-currency-rates .currency-calc-source { position: relative; cursor: pointer; user-select: none; }
-.section-currency-rates .currency-calc-trigger { display: flex; align-items: center; gap: 0.5rem; font-size: 1.75rem; font-weight: 600; }
-.section-currency-rates .currency-calc-trigger .currency-calc-arrow { transition: transform 0.2s; }
-.section-currency-rates .currency-calc-source.is-open .currency-calc-arrow { transform: rotate(180deg); }
-.section-currency-rates .currency-calc-dropdown { position: absolute; left: 0; right: 0; top: 100%; margin-top: 4px; background: #fff; border: 1px solid rgba(0,0,0,.1); border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,.15); z-index: 100; max-height: 220px; overflow-y: auto; display: none; }
-.section-currency-rates .currency-calc-source.is-open .currency-calc-dropdown { display: block; }
-.section-currency-rates .currency-calc-option { display: flex; align-items: center; gap: 0.5rem; padding: 0.5rem 0.75rem; cursor: pointer; font-size: 1.1rem; }
-.section-currency-rates .currency-calc-option:hover { background: #f0f0f0; }
-.section-currency-rates input.currency-calc-amount::-webkit-outer-spin-button,
-.section-currency-rates input.currency-calc-amount::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
-.section-currency-rates input.currency-calc-amount[type="number"] { -moz-appearance: textfield; }
-@media (max-width: 991px) { .section-currency-rates .currency-rates-widget { width: 100%; } }
-</style>
-@endpush
-<section class="section-currency-rates tf-spacing-20" id="currency-rates-widget" aria-label="Курсы валют ЦБ РФ">
+<section class="section-currency-rates" id="currency-rates-widget" aria-label="Курсы валют ЦБ РФ">
     <div class="tf-container-2">
         <div class="currency-rates-widget">
             <div class="cbr-rates-box">

@@ -29,6 +29,10 @@
                     : 'Найдено';
             @endphp
 
+            @include('loans.partials.filter-panel', [
+                'filterMeta' => $filterMeta ?? [],
+            ])
+
             @if(isset($categories) && $categories->count())
             <div class="category-nav overflow-x-auto mb_40">
                 @php

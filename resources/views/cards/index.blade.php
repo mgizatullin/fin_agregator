@@ -1,12 +1,24 @@
 @extends('layouts.main')
-@include('layouts.partials.redirect-city-push')
 
 @section('page-header')
+@php
+    $title = $page_h1 ?? $title ?? $section->title ?? 'Карты';
+    if (request()->has('bank')) {
+        $bankName = \App\Models\Bank::where('slug', request('bank'))->first()?->name;
+        if ($bankName) {
+            $title = 'Карты в ' . $bankName;
+        }
+    }
+@endphp
 @include('layouts.partials.page-header', [
-    'title' => $page_h1 ?? $title ?? $section->title ?? 'Кредитные карты',
+    'title' => $title,
     'subtitle' => $section->subtitle ?? null,
     'showCitySelect' => true,
     'citySelectBase' => isset($city) && $city ? implode('/', array_slice(request()->segments(), 0, -1)) : request()->path(),
+    'breadcrumbs' => [
+        ['url' => url('/'), 'label' => 'Главная'],
+        ['label' => 'Карты'],
+    ],
 ])
 @endsection
 
@@ -19,23 +31,28 @@
             <div class="section-opportunities tf-spacing-27">
                 <div class="tf-container">
 
-                    @if(isset($categories) && $categories->count())
+                    @php
+                        $sectionPath = 'karty';
+                        $currentCity = $city ?? null;
+                        $currentCategory = null;
+                        $cardsCount = isset($cards) ? (method_exists($cards, 'total') ? $cards->total() : $cards->count()) : 0;
+                        $cardsWord = match (true) {
+                            $cardsCount % 100 >= 11 && $cardsCount % 100 <= 14 => 'карт',
+                            $cardsCount % 10 === 1 => 'карта',
+                            $cardsCount % 10 >= 2 && $cardsCount % 10 <= 4 => 'карты',
+                            default => 'карт',
+                        };
+                        $foundWord = ($cardsCount % 100 < 11 || $cardsCount % 100 > 14) && $cardsCount % 10 === 1
+                            ? 'Найдена'
+                            : 'Найдено';
+                    @endphp
+
+                    @include('cards.partials.filter-panel', [
+                        'filterMeta' => $filterMeta ?? [],
+                    ])
+
+                    @if(false && isset($categories) && $categories->count())
                     <div class="category-nav overflow-x-auto mb_40">
-                        @php
-                            $sectionPath = 'karty';
-                            $currentCity = $city ?? null;
-                            $currentCategory = null;
-                            $cardsCount = isset($cards) ? (method_exists($cards, 'total') ? $cards->total() : $cards->count()) : 0;
-                            $cardsWord = match (true) {
-                                $cardsCount % 100 >= 11 && $cardsCount % 100 <= 14 => 'карт',
-                                $cardsCount % 10 === 1 => 'карта',
-                                $cardsCount % 10 >= 2 && $cardsCount % 10 <= 4 => 'карты',
-                                default => 'карт',
-                            };
-                            $foundWord = ($cardsCount % 100 < 11 || $cardsCount % 100 > 14) && $cardsCount % 10 === 1
-                                ? 'Найдена'
-                                : 'Найдено';
-                        @endphp
                         <div class="category-item {{ !$currentCategory ? 'active' : '' }}">
                             <a href="{{ $currentCity ? url_section($sectionPath . '/' . $currentCity->slug) : url_section($sectionPath) }}">Все</a>
                         </div>

@@ -7,6 +7,7 @@ use App\Http\Helpers\SectionRouteResolver;
 use App\Models\Credit;
 use App\Models\CreditCategory;
 use App\Models\SectionSetting;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 use Symfony\Component\HttpFoundation\Response;
@@ -19,8 +20,12 @@ class CreditController extends Controller
     {
         $city = SectionRouteResolver::resolveCity($citySlug);
 
-        $items = Credit::with(['bank', 'receiveMethods'])
-            ->where('is_active', true)
+        $query = Credit::with(['bank', 'receiveMethods'])
+            ->where('is_active', true);
+
+        $this->applyFilters($query, $request);
+
+        $items = $query
             ->orderBy('name')
             ->paginate(20)
             ->withQueryString();
@@ -43,7 +48,7 @@ class CreditController extends Controller
         if ($city) {
             $seo_title = filled($setting?->seo_title_template)
                 ? SectionRouteResolver::parseTemplate($setting->seo_title_template, $section, $city)
-                : ($setting?->seo_title ? $setting->seo_title . ' в ' . ($city->name_prepositional ?? $city->name) : null);
+                : ($setting?->seo_title ? $setting->seo_title.' в '.($city->name_prepositional ?? $city->name) : null);
             $seo_description = filled($setting?->seo_description_template)
                 ? SectionRouteResolver::parseTemplate($setting->seo_description_template, $section, $city)
                 : SectionRouteResolver::sectionDescription($setting?->seo_description, $city);
@@ -62,7 +67,7 @@ class CreditController extends Controller
 
         $title = $page_h1;
 
-        return view('credits.index', array_merge([
+        return view('credits.index', [
             'items' => $items,
             'section' => $section,
             'categories' => $categories,
@@ -72,7 +77,7 @@ class CreditController extends Controller
             'title' => $title,
             'page_h1' => $page_h1,
             'page_content' => $page_content,
-        ], $city ? [] : ['redirectToCityIfStored' => true, 'sectionBaseForRedirect' => 'kredity']));
+        ]);
     }
 
     /**
@@ -86,7 +91,7 @@ class CreditController extends Controller
             ->firstOrFail();
 
         $section = (object) [
-            'title' => $credit->name . ($credit->bank ? ' — ' . $credit->bank->name : ''),
+            'title' => $credit->name.($credit->bank ? ' — '.$credit->bank->name : ''),
             'subtitle' => $credit->bank ? $credit->bank->name : '',
         ];
 
@@ -97,5 +102,43 @@ class CreditController extends Controller
             'seo_description' => null,
             'title' => $section->title,
         ]));
+    }
+
+    protected function applyFilters(Builder $query, Request $request): void
+    {
+        $amount = (int) $request->integer('amount', 0);
+        $term = (int) $request->integer('term', 0);
+        $rate = $request->filled('rate') ? (float) $request->input('rate') : 0.0;
+        $psk = $request->filled('psk') ? (float) $request->input('psk') : 0.0;
+        $receiveMethods = collect((array) $request->input('receive_methods', []))
+            ->map(fn ($value): int => (int) $value)
+            ->filter()
+            ->values();
+
+        if ($amount > 0) {
+            $query->where('max_amount', '>=', $amount);
+        }
+
+        if ($term > 0) {
+            $query->where('term_months', '>=', $term);
+        }
+
+        if ($rate > 0) {
+            $query->whereNotNull('rate')
+                ->where('rate', '>', 0)
+                ->where('rate', '<=', $rate);
+        }
+
+        if ($psk > 0) {
+            $query->whereNotNull('psk')
+                ->where('psk', '>', 0)
+                ->where('psk', '<=', $psk);
+        }
+
+        if ($receiveMethods->isNotEmpty()) {
+            $query->whereHas('receiveMethods', function (Builder $receiveMethodsQuery) use ($receiveMethods): void {
+                $receiveMethodsQuery->whereIn('credit_receive_methods.id', $receiveMethods->all());
+            });
+        }
     }
 }

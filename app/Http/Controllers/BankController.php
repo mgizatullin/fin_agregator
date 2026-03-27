@@ -5,7 +5,8 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Concerns\HandlesLoadMorePagination;
 use App\Http\Helpers\SectionRouteResolver;
 use App\Models\Bank;
-use App\Models\BankCategory;
+use App\Models\Branch;
+use App\Models\City;
 use App\Models\SectionSetting;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -21,6 +22,7 @@ class BankController extends Controller
 
         $items = Bank::withCount('branches')
             ->where('is_active', true)
+            ->orderByDesc('branches_count')
             ->orderBy('name')
             ->paginate(20)
             ->withQueryString();
@@ -41,7 +43,7 @@ class BankController extends Controller
         if ($city) {
             $seo_title = filled($setting?->seo_title_template)
                 ? SectionRouteResolver::parseTemplate($setting->seo_title_template, $section, $city)
-                : ($setting?->seo_title ? $setting->seo_title . ' в ' . ($city->name_prepositional ?? $city->name) : null);
+                : ($setting?->seo_title ? $setting->seo_title.' в '.($city->name_prepositional ?? $city->name) : null);
             $seo_description = filled($setting?->seo_description_template)
                 ? SectionRouteResolver::parseTemplate($setting->seo_description_template, $section, $city)
                 : SectionRouteResolver::sectionDescription($setting?->seo_description, $city);
@@ -88,9 +90,12 @@ class BankController extends Controller
             ->where('is_active', true)
             ->firstOrFail();
 
+        $availableCities = $this->getBankAvailableCities($bank->id);
+        $branchesCountAll = Branch::query()->where('bank_id', $bank->id)->where('is_active', true)->count();
+
         $section = (object) [
             'title' => $bank->name,
-            'subtitle' => $bank->license_number ? 'Лиц. ' . $bank->license_number : '',
+            'subtitle' => null,
         ];
 
         return view('banks.show', array_merge(compact('bank', 'section'), [
@@ -99,7 +104,120 @@ class BankController extends Controller
             'seo_title' => $bank->seo_title,
             'seo_description' => $bank->seo_description,
             'title' => $section->title,
+            'availableCities' => $availableCities,
+            'currentCity' => null,
+            'city' => null,
+            'branchesCount' => $branchesCountAll,
+            'branchesCountAll' => $branchesCountAll,
+            'branchesCountCity' => null,
         ]));
+    }
+
+    /**
+     * Show a single bank by slug, scoped to a city that has branches.
+     */
+    public function showCity(Request $request, string $slug, string $citySlug): View
+    {
+        $bank = Bank::with([
+            'reviews.bank',
+            'deposits',
+            'cards',
+            'credits',
+            'branches',
+        ])
+            ->where('slug', $slug)
+            ->where('is_active', true)
+            ->firstOrFail();
+
+        $availableCities = $this->getBankAvailableCities($bank->id);
+        $city = $availableCities->firstWhere('slug', $citySlug);
+
+        if (! $city) {
+            abort(404);
+        }
+
+        $branchesCountAll = Branch::query()->where('bank_id', $bank->id)->where('is_active', true)->count();
+        $branchesCountCity = Branch::query()
+            ->where('bank_id', $bank->id)
+            ->where('is_active', true)
+            ->where('city_id', $city->id)
+            ->count();
+
+        $cityTitlePart = $city->name_prepositional ?? $city->name;
+
+        $section = (object) [
+            'title' => $bank->name.' в '.$cityTitlePart,
+            'subtitle' => null,
+        ];
+
+        return view('banks.show', array_merge(compact('bank', 'section'), [
+            'sectionIndexUrl' => url_canonical(route('banks.index')),
+            'sectionIndexTitle' => 'Банки',
+            'seo_title' => $bank->seo_title,
+            'seo_description' => $bank->seo_description,
+            'title' => $section->title,
+            'availableCities' => $availableCities,
+            'currentCity' => $city,
+            'city' => $city,
+            'branchesCount' => $branchesCountCity,
+            'branchesCountAll' => $branchesCountAll,
+            'branchesCountCity' => $branchesCountCity,
+        ]));
+    }
+
+    public function branchesCity(Request $request, string $slug, string $citySlug): View
+    {
+        $city = City::query()->where('slug', $citySlug)->where('is_active', true)->firstOrFail();
+
+        $bank = Bank::query()
+            ->where('slug', $slug)
+            ->where('is_active', true)
+            ->firstOrFail();
+
+        $availableCities = $this->getBankAvailableCities($bank->id);
+        if (! $availableCities->firstWhere('slug', $citySlug)) {
+            abort(404);
+        }
+
+        $branches = Branch::query()
+            ->where('bank_id', $bank->id)
+            ->where('is_active', true)
+            ->where('city_id', $city->id)
+            ->orderByRaw('CASE WHEN latitude IS NULL OR longitude IS NULL THEN 1 ELSE 0 END')
+            ->orderBy('id')
+            ->get();
+
+        $bank->setRelation('branches', $branches);
+
+        $breadcrumbs = [
+            ['url' => url('/'), 'label' => 'Главная'],
+            ['url' => url_section('banki'), 'label' => 'Банки'],
+            ['url' => url_section('banki/'.$bank->slug), 'label' => $bank->name],
+            ['label' => 'Отделения'],
+        ];
+
+        $cityTitlePart = $city->name_prepositional ?? $city->name;
+
+        return view('banks.branches', [
+            'bank' => $bank,
+            'breadcrumbs' => $breadcrumbs,
+            'title' => 'Отделения '.$bank->name.' в '.$cityTitlePart,
+            'currentCity' => $city,
+            'availableCities' => $availableCities,
+        ]);
+    }
+
+    protected function getBankAvailableCities(int $bankId)
+    {
+        return City::query()
+            ->select('cities.*')
+            ->join('branches', 'branches.city_id', '=', 'cities.id')
+            ->where('branches.bank_id', $bankId)
+            ->where('branches.is_active', true)
+            ->whereNotNull('branches.city_id')
+            ->distinct()
+            ->orderBy('cities.name')
+            ->get();
     }
 
     /**
@@ -115,15 +233,15 @@ class BankController extends Controller
         $breadcrumbs = [
             ['url' => url('/'), 'label' => 'Главная'],
             ['url' => url_section('banki'), 'label' => 'Банки'],
-            ['url' => url_section('banki/' . $bank->slug), 'label' => $bank->name],
+            ['url' => url_section('banki/'.$bank->slug), 'label' => $bank->name],
             ['label' => 'Отзывы'],
         ];
 
         return view('banks.reviews', [
             'bank' => $bank,
             'breadcrumbs' => $breadcrumbs,
-            'title' => 'Отзывы о ' . $bank->name,
-            'seo_title' => 'Отзывы о ' . $bank->name,
+            'title' => 'Отзывы о '.$bank->name,
+            'seo_title' => 'Отзывы о '.$bank->name,
         ]);
     }
 
@@ -132,23 +250,34 @@ class BankController extends Controller
      */
     public function branches(Request $request, string $slug): View
     {
-        $bank = Bank::with('branches')
+        $bank = Bank::query()
             ->where('slug', $slug)
             ->where('is_active', true)
             ->firstOrFail();
 
+        $branches = Branch::query()
+            ->where('bank_id', $bank->id)
+            ->where('is_active', true)
+            ->orderByRaw('CASE WHEN latitude IS NULL OR longitude IS NULL THEN 1 ELSE 0 END')
+            ->orderBy('id')
+            ->get();
+
+        $bank->setRelation('branches', $branches);
+
         $breadcrumbs = [
             ['url' => url('/'), 'label' => 'Главная'],
             ['url' => url_section('banki'), 'label' => 'Банки'],
-            ['url' => url_section('banki/' . $bank->slug), 'label' => $bank->name],
+            ['url' => url_section('banki/'.$bank->slug), 'label' => $bank->name],
             ['label' => 'Отделения'],
         ];
 
         return view('banks.branches', [
             'bank' => $bank,
             'breadcrumbs' => $breadcrumbs,
-            'title' => 'Отделения ' . $bank->name,
-            'seo_title' => 'Отделения ' . $bank->name,
+            'title' => 'Отделения '.$bank->name,
+            'seo_title' => 'Отделения '.$bank->name,
+            'currentCity' => null,
+            'availableCities' => $this->getBankAvailableCities($bank->id),
         ]);
     }
 
@@ -165,15 +294,15 @@ class BankController extends Controller
         $breadcrumbs = [
             ['url' => url('/'), 'label' => 'Главная'],
             ['url' => url_section('banki'), 'label' => 'Банки'],
-            ['url' => url_section('banki/' . $bank->slug), 'label' => $bank->name],
+            ['url' => url_section('banki/'.$bank->slug), 'label' => $bank->name],
             ['label' => 'Вклады'],
         ];
 
         return view('banks.deposits', [
             'bank' => $bank,
             'breadcrumbs' => $breadcrumbs,
-            'title' => 'Вклады ' . $bank->name,
-            'seo_title' => 'Вклады ' . $bank->name,
+            'title' => 'Вклады '.$bank->name,
+            'seo_title' => 'Вклады '.$bank->name,
         ]);
     }
 
@@ -190,15 +319,15 @@ class BankController extends Controller
         $breadcrumbs = [
             ['url' => url('/'), 'label' => 'Главная'],
             ['url' => url_section('banki'), 'label' => 'Банки'],
-            ['url' => url_section('banki/' . $bank->slug), 'label' => $bank->name],
+            ['url' => url_section('banki/'.$bank->slug), 'label' => $bank->name],
             ['label' => 'Карты'],
         ];
 
         return view('banks.cards', [
             'bank' => $bank,
             'breadcrumbs' => $breadcrumbs,
-            'title' => 'Карты ' . $bank->name,
-            'seo_title' => 'Карты ' . $bank->name,
+            'title' => 'Карты '.$bank->name,
+            'seo_title' => 'Карты '.$bank->name,
         ]);
     }
 
@@ -215,15 +344,15 @@ class BankController extends Controller
         $breadcrumbs = [
             ['url' => url('/'), 'label' => 'Главная'],
             ['url' => url_section('banki'), 'label' => 'Банки'],
-            ['url' => url_section('banki/' . $bank->slug), 'label' => $bank->name],
+            ['url' => url_section('banki/'.$bank->slug), 'label' => $bank->name],
             ['label' => 'Кредиты'],
         ];
 
         return view('banks.credits', [
             'bank' => $bank,
             'breadcrumbs' => $breadcrumbs,
-            'title' => 'Кредиты ' . $bank->name,
-            'seo_title' => 'Кредиты ' . $bank->name,
+            'title' => 'Кредиты '.$bank->name,
+            'seo_title' => 'Кредиты '.$bank->name,
         ]);
     }
 }

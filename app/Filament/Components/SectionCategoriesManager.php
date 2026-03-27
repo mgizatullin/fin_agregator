@@ -4,18 +4,18 @@ namespace App\Filament\Components;
 
 use Filament\Actions\Concerns\InteractsWithActions;
 use Filament\Actions\Contracts\HasActions;
+use Filament\Actions\CreateAction;
+use Filament\Actions\DeleteAction;
+use Filament\Actions\EditAction;
 use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Concerns\InteractsWithSchemas;
 use Filament\Schemas\Contracts\HasSchemas;
-use Filament\Actions\CreateAction;
-use Filament\Actions\DeleteAction;
-use Filament\Actions\EditAction;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Contracts\HasTable;
 use Filament\Tables\Table;
-use Filament\Tables\Concerns\InteractsWithTable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
@@ -76,6 +76,7 @@ class SectionCategoriesManager extends Component implements HasActions, HasSchem
                         $maxSortOrder = $modelClass::query()->max('sort_order');
                         $data['sort_order'] = ((int) $maxSortOrder) + 1;
                         $data['slug'] = $data['slug'] ?? Str::slug($data['title'] ?? '');
+
                         return $modelClass::create($data);
                     }),
             ])
@@ -87,6 +88,7 @@ class SectionCategoriesManager extends Component implements HasActions, HasSchem
                         if (isset($data['description']) && is_string($data['description'])) {
                             $data['description'] = description_to_html($data['description']);
                         }
+
                         return $data;
                     }),
                 DeleteAction::make()
@@ -118,6 +120,7 @@ class SectionCategoriesManager extends Component implements HasActions, HasSchem
 
             RichEditor::make('description')
                 ->label('Описание')
+                ->json(false)
                 ->toolbarButtons([
                     ['bold', 'italic', 'link'],
                     ['h2', 'h3'],

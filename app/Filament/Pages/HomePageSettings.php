@@ -57,7 +57,15 @@ class HomePageSettings extends Page
 
     protected function ensureMigrationsRan(): void
     {
-        if (\Illuminate\Support\Facades\Schema::hasTable('home_page_settings')) {
+        if (
+            \Illuminate\Support\Facades\Schema::hasTable('home_page_settings')
+            && \Illuminate\Support\Facades\Schema::hasColumn('home_page_settings', 'blog_block_title')
+            && \Illuminate\Support\Facades\Schema::hasColumn('home_page_settings', 'blog_block_description')
+            && \Illuminate\Support\Facades\Schema::hasColumn('home_page_settings', 'blog_block_link_text')
+            && \Illuminate\Support\Facades\Schema::hasColumn('home_page_settings', 'faq_title')
+            && \Illuminate\Support\Facades\Schema::hasColumn('home_page_settings', 'faq_description')
+            && \Illuminate\Support\Facades\Schema::hasColumn('home_page_settings', 'faq_items')
+        ) {
             return;
         }
         if (\Illuminate\Support\Facades\Schema::hasTable('migrations')) {
@@ -103,7 +111,9 @@ class HomePageSettings extends Page
             'logo' => ! empty($p['logo']) ? [$p['logo']] : [],
         ])->values()->toArray();
 
-        $data['keywords'] = $setting->keywords ?? [];
+        $data['faq_title'] = $setting->faq_title ?? '';
+        $data['faq_description'] = $setting->faq_description ?? '';
+        $data['faq_items'] = $setting->faq_items ?? [];
 
         $mainBlock = $setting->main_value_block ?? [];
         $data['main_value_block'] = is_array($mainBlock) ? $mainBlock : [];
@@ -121,7 +131,7 @@ class HomePageSettings extends Page
     }
 
     /**
-     * @param array<string, mixed> $data
+     * @param  array<string, mixed>  $data
      * @return array<string, mixed>
      */
     protected function mutateFormDataBeforeSave(array $data): array
@@ -129,11 +139,12 @@ class HomePageSettings extends Page
         if (isset($data['about_image']) && is_array($data['about_image'])) {
             $data['about_image'] = Arr::first($data['about_image']) ?: null;
         }
+
         return $data;
     }
 
     /**
-     * @param array<string, mixed> $data
+     * @param  array<string, mixed>  $data
      * @return array<string, mixed>
      */
     protected function normalizeDataForUpdate(array $data): array
@@ -142,6 +153,7 @@ class HomePageSettings extends Page
         $data['services'] = collect($services)->map(function ($item) {
             $img = $item['image'] ?? [];
             $item['image'] = is_array($img) ? (Arr::first($img) ?: null) : $img;
+
             return Arr::only($item, ['title', 'alt_title', 'description', 'image', 'link']);
         })->values()->toArray();
 
@@ -151,12 +163,17 @@ class HomePageSettings extends Page
             'title' => $partnersTitle,
             'items' => collect($partnersItems)->map(function ($p) {
                 $logo = $p['logo'] ?? [];
+
                 return ['logo' => is_array($logo) ? (Arr::first($logo) ?: null) : $logo];
             })->values()->toArray(),
         ];
 
-        $data['keywords'] = Arr::pull($data, 'keywords', []);
-        $data['keywords'] = collect($data['keywords'])->map(fn ($k) => is_array($k) ? $k : ['phrase' => $k])->values()->toArray();
+        $data['faq_title'] = Arr::pull($data, 'faq_title', '');
+        $data['faq_description'] = Arr::pull($data, 'faq_description', '');
+        $data['faq_items'] = Arr::pull($data, 'faq_items', []);
+        $data['faq_items'] = collect($data['faq_items'])->map(function ($item) {
+            return Arr::only(is_array($item) ? $item : [], ['question', 'answer']);
+        })->filter(fn ($item) => filled($item['question'] ?? null) || filled($item['answer'] ?? null))->values()->toArray();
 
         $mainBlock = Arr::pull($data, 'main_value_block', []);
         if (is_array($mainBlock) && isset($mainBlock['icon'])) {
@@ -169,6 +186,7 @@ class HomePageSettings extends Page
         $data['values_grid'] = collect($valuesGrid)->map(function ($item) {
             $icon = $item['icon'] ?? [];
             $item['icon'] = is_array($icon) ? (Arr::first($icon) ?: null) : $icon;
+
             return Arr::only($item, ['title', 'description', 'url', 'icon']);
         })->take(6)->values()->toArray();
 
@@ -210,6 +228,7 @@ class HomePageSettings extends Page
                     if ($adv) {
                         $adv->update($payload);
                         $existingIds[] = $adv->id;
+
                         continue;
                     }
                 }
@@ -223,6 +242,7 @@ class HomePageSettings extends Page
             $exception->shouldRollbackDatabaseTransaction()
                 ? $this->rollBackDatabaseTransaction()
                 : $this->commitDatabaseTransaction();
+
             return;
         } catch (Throwable $exception) {
             $this->rollBackDatabaseTransaction();
@@ -328,6 +348,26 @@ class HomePageSettings extends Page
                                             ->columnSpanFull(),
                                     ])
                                     ->columns(1),
+
+                                Section::make('Блок журнала')
+                                    ->description('Заголовок, описание и текст ссылки для блока журнала')
+                                    ->schema([
+                                        TextInput::make('blog_block_title')
+                                            ->label('Заголовок блока журнала')
+                                            ->maxLength(255)
+                                            ->columnSpanFull(),
+
+                                        Textarea::make('blog_block_description')
+                                            ->label('Описание блока журнала')
+                                            ->rows(4)
+                                            ->columnSpanFull(),
+
+                                        TextInput::make('blog_block_link_text')
+                                            ->label('Текст ссылки блока журнала')
+                                            ->maxLength(255)
+                                            ->columnSpanFull(),
+                                    ])
+                                    ->columns(1),
                             ]),
 
                         Tab::make('SEO настройки')
@@ -422,23 +462,40 @@ class HomePageSettings extends Page
                                     ->columns(1),
                             ]),
 
-                        Tab::make('Ключевые слова')
+                        Tab::make('FAQ')
                             ->schema([
-                                Section::make('Ключевые слова')
+                                Section::make('FAQ')
                                     ->schema([
-                                        Repeater::make('keywords')
-                                            ->label('Ключевые слова')
+                                        TextInput::make('faq_title')
+                                            ->label('Заголовок')
+                                            ->maxLength(255)
+                                            ->columnSpanFull(),
+
+                                        Textarea::make('faq_description')
+                                            ->label('Описание')
+                                            ->rows(4)
+                                            ->columnSpanFull(),
+
+                                        Repeater::make('faq_items')
+                                            ->label('Вопросы и ответы')
                                             ->schema([
-                                                TextInput::make('phrase')
-                                                    ->label('Фраза')
-                                                    ->maxLength(500),
+                                                TextInput::make('question')
+                                                    ->label('Вопрос')
+                                                    ->maxLength(500)
+                                                    ->required(),
+
+                                                Textarea::make('answer')
+                                                    ->label('Ответ')
+                                                    ->rows(4)
+                                                    ->required()
+                                                    ->columnSpanFull(),
                                             ])
                                             ->defaultItems(0)
-                                            ->addActionLabel('Добавить фразу')
+                                            ->addActionLabel('Добавить вопрос')
                                             ->reorderable()
                                             ->reorderableWithButtons()
                                             ->collapsible()
-                                            ->itemLabel(fn (array $state): ?string => $state['phrase'] ?? null)
+                                            ->itemLabel(fn (array $state): ?string => $state['question'] ?? null)
                                             ->columnSpanFull(),
                                     ])
                                     ->columns(1),

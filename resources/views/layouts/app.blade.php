@@ -152,7 +152,7 @@
                                     </li>
                                     <li><a href="faqs.html" class="sub-nav-link">Вопросы и ответы</a>
                                     </li>
-                                    <li><a href="team.html" class="sub-nav-link ">Команда</a>
+                                    <li><a href="{{ url_section('team') }}" class="sub-nav-link ">Команда</a>
                                     </li>
                                     <li><a href="career.html" class="sub-nav-link active">Карьера</a>
                                     </li>

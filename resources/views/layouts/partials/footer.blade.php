@@ -106,6 +106,11 @@
                                 </div>
                             </div>
                         </div>
+                        <div class="row footer-copyright-row">
+                            <div class="col-12">
+                                <p class="text-body-2">{!! $siteSettings?->copyright ?? '© ' . date('Y') . '. Все права защищены.' !!}</p>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -114,7 +119,6 @@
                     <div class="row">
                         <div class="col-12">
                             <div class="wrapper d-flex align-items-center flex-wrap gap_12 ">
-                                <p class="text-body-2">{!! $siteSettings?->copyright ?? '© ' . date('Y') . '. Все права защищены.' !!}</p>
                                 <ul class="right d-flex align-items-center">
                                     <li><a href="/" class="link text_mono-gray-5 text-body-1">Главная</a></li>
                                     <li><a href="about.html" class="link text_mono-gray-5 text-body-1">О компании</a>

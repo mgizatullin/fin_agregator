@@ -54,12 +54,12 @@ abstract class BaseSectionSettingsPage extends Page
 
     public static function getNavigationLabel(): string
     {
-        return 'Настройки раздела «' . static::sectionLabel() . '»';
+        return 'Настройки раздела «'.static::sectionLabel().'»';
     }
 
     public function getTitle(): string
     {
-        return 'Настройки раздела «' . static::sectionLabel() . '»';
+        return 'Настройки раздела «'.static::sectionLabel().'»';
     }
 
     public function mount(): void
@@ -81,6 +81,7 @@ abstract class BaseSectionSettingsPage extends Page
                 return ['title' => $item, 'description' => '', 'image' => []];
             }
             $img = $item['image'] ?? null;
+
             return [
                 'title' => $item['title'] ?? $item['text'] ?? '',
                 'description' => $item['description'] ?? '',
@@ -120,6 +121,7 @@ abstract class BaseSectionSettingsPage extends Page
                 'advantages' => collect($advantages)->map(function ($a) {
                     $img = $a['image'] ?? null;
                     $path = is_array($img) ? (Arr::first($img) ?: null) : $img;
+
                     return [
                         'title' => $a['title'] ?? '',
                         'description' => $a['description'] ?? '',
@@ -146,6 +148,7 @@ abstract class BaseSectionSettingsPage extends Page
                     if ($cat) {
                         $cat->update($payload);
                         $existingIds[] = $cat->id;
+
                         continue;
                     }
                 }
@@ -160,6 +163,7 @@ abstract class BaseSectionSettingsPage extends Page
             $exception->shouldRollbackDatabaseTransaction()
                 ? $this->rollBackDatabaseTransaction()
                 : $this->commitDatabaseTransaction();
+
             return;
         } catch (Throwable $exception) {
             $this->rollBackDatabaseTransaction();
@@ -184,6 +188,7 @@ abstract class BaseSectionSettingsPage extends Page
     {
         $listUrl = static::resourceListUrl();
         $label = static::sectionLabel();
+
         return $schema
             ->components([
                 Tabs::make('tabs')
@@ -191,7 +196,7 @@ abstract class BaseSectionSettingsPage extends Page
                         Tab::make('Список')
                             ->schema([
                                 Section::make('Список элементов')
-                                    ->description('Управление элементами раздела «' . $label . '»')
+                                    ->description('Управление элементами раздела «'.$label.'»')
                                     ->schema([
                                         \Filament\Schemas\Components\Text::make('Перейдите к списку для добавления и редактирования элементов.')
                                             ->columnSpanFull(),
@@ -236,7 +241,7 @@ abstract class BaseSectionSettingsPage extends Page
                                                 FileUpload::make('image')
                                                     ->label('Картинка')
                                                     ->image()
-                                                    ->directory('section-advantages/' . static::sectionType())
+                                                    ->directory('section-advantages/'.static::sectionType())
                                                     ->disk('public')
                                                     ->maxSize(2048)
                                                     ->columnSpanFull(),
@@ -274,6 +279,7 @@ abstract class BaseSectionSettingsPage extends Page
                                                     ->maxLength(255),
                                                 RichEditor::make('description')
                                                     ->label('Описание')
+                                                    ->json(false)
                                                     ->toolbarButtons([
                                                         ['bold', 'italic', 'link'],
                                                         ['h2', 'h3'],

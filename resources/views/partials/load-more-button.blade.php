@@ -1,5 +1,11 @@
 @if(method_exists($paginator, 'hasMorePages') && $paginator->hasMorePages())
-    <div class="catalog-load-more" data-load-more-root data-next-page="{{ $paginator->currentPage() + 1 }}" data-target-id="{{ $targetId }}">
+    <div
+        class="catalog-load-more"
+        data-load-more-root
+        data-next-page="{{ $paginator->currentPage() + 1 }}"
+        data-next-url="{{ $paginator->nextPageUrl() }}"
+        data-target-id="{{ $targetId }}"
+    >
         <button type="button" class="tf-btn btn-primary2 btn-px-28 height-2 rounded-12" data-load-more-button>
             <span>Показать еще</span>
             <span class="bg-effect"></span>
@@ -38,17 +44,16 @@
 
                     const targetId = root.dataset.targetId;
                     const nextPage = Number(root.dataset.nextPage || 0);
+                    const nextUrl = root.dataset.nextUrl || '';
                     const target = targetId ? document.getElementById(targetId) : null;
 
-                    if (!target || nextPage <= 0) {
+                    if (!target || nextPage <= 0 || !nextUrl) {
                         return;
                     }
 
                     const buttonLabel = button.querySelector('span');
                     const originalLabel = buttonLabel ? buttonLabel.textContent : 'Показать еще';
-                    const url = new URL(window.location.href);
-
-                    url.searchParams.set('page', String(nextPage));
+                    const url = new URL(nextUrl, window.location.origin);
                     url.searchParams.set('load_more', '1');
 
                     root.classList.add('is-loading');
@@ -82,8 +87,9 @@
                             }));
                         }
 
-                        if (payload.has_more && payload.next_page) {
+                        if (payload.has_more && payload.next_page && payload.next_page_url) {
                             root.dataset.nextPage = String(payload.next_page);
+                            root.dataset.nextUrl = payload.next_page_url;
                         } else {
                             root.remove();
                         }

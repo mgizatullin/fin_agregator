@@ -1,10 +1,21 @@
+@php
+    $detailSections = [
+        'Условия' => \App\Support\CardData::normalizeDetailItems($card->conditions_items ?? ($card->conditions_text ?? null)),
+        'Проценты' => \App\Support\CardData::normalizeDetailItems($card->rates_items ?? ($card->rates_text ?? null)),
+        'Кешбэк' => \App\Support\CardData::normalizeDetailItems($card->cashback_details_items ?? ($card->cashback_details_text ?? null)),
+    ];
+    $cardImage = filled($card->image ?? null)
+        ? (str_starts_with($card->image, 'http') ? $card->image : asset('storage/' . $card->image))
+        : null;
+@endphp
+
 <div class="card-product-hero tf-spacing-11">
     <div class="tf-container card-product-hero__container">
         <div class="row align-items-center">
             <div class="col-lg-4 mb_24 mb-lg-0">
-                @if($card->image)
+                @if($cardImage)
                     <div class="card-product-hero__img-wrap">
-                        <img class="card-product-hero__img" src="{{ asset('storage/' . $card->image) }}" alt="{{ $card->name }}" width="300" height="190">
+                        <img class="card-product-hero__img" src="{{ $cardImage }}" alt="{{ $card->name }}" width="300" height="190">
                     </div>
                 @else
                     <div class="card-product-hero__img-placeholder"></div>
@@ -22,26 +33,20 @@
                         <tr>
                             <td class="card-product-specs__cell card-product-specs__cell--label"><span class="karty-card__label">Льготный период (дней)</span></td>
                             <td class="card-product-specs__cell card-product-specs__cell--value"><span class="karty-card__value">{{ filled($card->grace_period) ? $card->grace_period : '—' }}</span></td>
-                            <td class="card-product-specs__cell card-product-specs__cell--label"><span class="karty-card__label">Стоимость выпуска</span></td>
-                            <td class="card-product-specs__cell card-product-specs__cell--value"><span class="karty-card__value">{{ filled($card->issue_cost) ? $card->issue_cost . ' ₽' : '—' }}</span></td>
+                            <td class="card-product-specs__cell card-product-specs__cell--label"><span class="karty-card__label">Стоимость обслуживания</span></td>
+                            <td class="card-product-specs__cell card-product-specs__cell--value"><span class="karty-card__value">{{ filled($card->annual_fee_text) ? $card->annual_fee_text : '—' }}</span></td>
                         </tr>
                         <tr>
-                            <td class="card-product-specs__cell card-product-specs__cell--label"><span class="karty-card__label">Годовое обслуживание</span></td>
-                            <td class="card-product-specs__cell card-product-specs__cell--value"><span class="karty-card__value">{{ filled($card->annual_fee) ? $card->annual_fee . ' ₽' : '—' }}</span></td>
                             <td class="card-product-specs__cell card-product-specs__cell--label"><span class="karty-card__label">Снятие в банкомате</span></td>
-                            <td class="card-product-specs__cell card-product-specs__cell--value"><span class="karty-card__value">{{ $card->atm_withdrawal !== null ? ($card->atm_withdrawal ? 'Да' : 'Нет') : '—' }}</span></td>
+                            <td class="card-product-specs__cell card-product-specs__cell--value"><span class="karty-card__value">{{ filled($card->atm_withdrawal_text) ? $card->atm_withdrawal_text : '—' }}</span></td>
+                            <td class="card-product-specs__cell card-product-specs__cell--label"><span class="karty-card__label">Срок рассмотрения</span></td>
+                            <td class="card-product-specs__cell card-product-specs__cell--value"><span class="karty-card__value">{{ filled($card->decision_text) ? $card->decision_text : '—' }}</span></td>
                         </tr>
                         <tr>
                             <td class="card-product-specs__cell card-product-specs__cell--label"><span class="karty-card__label">ПСК</span></td>
-                            <td class="card-product-specs__cell card-product-specs__cell--value"><span class="karty-card__value">{{ filled($card->psk) ? $card->psk . '%' : '—' }}</span></td>
+                            <td class="card-product-specs__cell card-product-specs__cell--value"><span class="karty-card__value">{{ filled($card->psk_text) ? $card->psk_text : '—' }}</span></td>
                             <td class="card-product-specs__cell card-product-specs__cell--label"><span class="karty-card__label">Тип карты</span></td>
                             <td class="card-product-specs__cell card-product-specs__cell--value"><span class="karty-card__value">{{ filled($card->card_type) ? $card->card_type : '—' }}</span></td>
-                        </tr>
-                        <tr>
-                            <td class="card-product-specs__cell card-product-specs__cell--label"><span class="karty-card__label">Ставка</span></td>
-                            <td class="card-product-specs__cell card-product-specs__cell--value"><span class="karty-card__value">{{ filled($card->rate) ? $card->rate . '%' : '—' }}</span></td>
-                            <td class="card-product-specs__cell card-product-specs__cell--label"></td>
-                            <td class="card-product-specs__cell card-product-specs__cell--value"></td>
                         </tr>
                     </tbody>
                 </table>
@@ -71,7 +76,7 @@
         'Максимальный лимит' => $card->max_limit !== null ? number_format((float)$card->max_limit, 0, '', ' ') . ' ₽' : null,
         'Минимальный лимит' => $card->min_limit !== null ? number_format((float)$card->min_limit, 0, '', ' ') . ' ₽' : null,
         'Диапазон ПСК' => $card->psk_range,
-        'Стоимость обслуживания' => $card->annual_fee !== null ? $card->annual_fee . ' ₽' : null,
+        'Стоимость обслуживания' => filled($card->annual_fee_text) ? $card->annual_fee_text : null,
         'Льготный период' => $card->grace_period !== null ? $card->grace_period . ' дн.' : null,
         'Комиссия за снятие' => $card->cash_withdrawal_fee,
         'Кэшбэк' => $card->cashback,
@@ -81,10 +86,9 @@
         'Возраст' => $card->age_requirement,
         'Подтверждение дохода' => $card->income_proof,
         'Кредитный лимит' => $card->credit_limit !== null ? number_format((float)$card->credit_limit, 0, '', ' ') . ' ₽' : null,
-        'ПСК' => $card->psk !== null ? $card->psk . '%' : null,
-        'Ставка' => $card->rate !== null ? $card->rate . '%' : null,
-        'Стоимость выпуска' => $card->issue_cost !== null ? $card->issue_cost . ' ₽' : null,
-        'Снятие в банкомате' => $card->atm_withdrawal !== null ? ($card->atm_withdrawal ? 'Да' : 'Нет') : null,
+        'ПСК' => filled($card->psk_text) ? $card->psk_text : null,
+        'Снятие в банкомате' => filled($card->atm_withdrawal_text) ? $card->atm_withdrawal_text : null,
+        'Срок рассмотрения' => filled($card->decision_text) ? $card->decision_text : null,
     ];
     $tariffRows = array_filter($tariffLabels, fn($v) => $v !== null && $v !== '');
     $visibleCount = 6;
@@ -118,6 +122,36 @@
         @endif
     </div>
 </div>
+
+@foreach($detailSections as $title => $items)
+    @if($items !== [])
+        <div class="section tf-spacing-9">
+            <div class="tf-container">
+                <h2 class="heading-section mb_24">{{ $title }}</h2>
+                <div class="credit-offer-card__table">
+                    @foreach(array_chunk($items, (int) ceil(count($items) / 2)) as $detailColumn)
+                        <div class="credit-offer-card__column">
+                            @foreach($detailColumn as $item)
+                                <div class="credit-offer-card__row">
+                                    <div class="credit-offer-card__cell credit-offer-card__cell--label">
+                                        <span class="credit-offer-card__icon" aria-hidden="true">
+                                            <svg viewBox="0 0 20 20" fill="none">
+                                                <path d="M10 2.5L17 6.1V13.9L10 17.5L3 13.9V6.1L10 2.5Z" stroke="currentColor" stroke-width="1.4"></path>
+                                                <path d="M7.2 10L9 11.8L12.8 8" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"></path>
+                                            </svg>
+                                        </span>
+                                        <span>{{ $item['parameter'] }}</span>
+                                    </div>
+                                    <div class="credit-offer-card__cell credit-offer-card__cell--value">{{ $item['value'] }}</div>
+                                </div>
+                            @endforeach
+                        </div>
+                    @endforeach
+                </div>
+            </div>
+        </div>
+    @endif
+@endforeach
 
 @if(filled($card->description))
     <div class="tf-container tf-spacing-9">

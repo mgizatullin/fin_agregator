@@ -41,6 +41,7 @@
     }
 
     var lastOpenedCityBtn = null;
+    var lastAllowedCitySlugs = null;
 
     function getSectionBase() {
         if (lastOpenedCityBtn) {
@@ -49,6 +50,53 @@
         }
         var btn = document.getElementById('header-city-btn');
         return (btn && btn.getAttribute('data-section-base')) || '';
+    }
+
+    function getAllowedCitySlugs() {
+        if (!lastOpenedCityBtn) return null;
+        var raw = lastOpenedCityBtn.getAttribute('data-allowed-city-slugs');
+        if (!raw) return null;
+        try {
+            var parsed = JSON.parse(raw);
+            if (!Array.isArray(parsed)) return null;
+            var set = {};
+            parsed.forEach(function (s) {
+                if (typeof s === 'string' && s.trim()) set[s.trim()] = true;
+            });
+            return set;
+        } catch (e) {
+            return null;
+        }
+    }
+
+    function filterModalCities(root) {
+        if (!root || !lastAllowedCitySlugs) return;
+
+        // Links list + quick links
+        root.querySelectorAll('a[data-city-slug]').forEach(function (a) {
+            var slug = (a.getAttribute('data-city-slug') || '').trim();
+            if (slug === '') return; // "Вся Россия" always allowed
+            if (!lastAllowedCitySlugs[slug]) {
+                var li = a.closest('li');
+                if (li) li.remove();
+            }
+        });
+
+        // Remove empty groups
+        root.querySelectorAll('.city-modal__group').forEach(function (g) {
+            var has = g.querySelector('a[data-city-slug]');
+            if (!has) g.remove();
+        });
+
+        // Hide quick section if empty (only "Вся Россия" left)
+        var quickList = root.querySelector('.city-modal__quick-list');
+        if (quickList) {
+            var quickLinks = quickList.querySelectorAll('a[data-city-slug]');
+            if (!quickLinks || quickLinks.length <= 1) {
+                var quick = root.querySelector('.city-modal__quick');
+                if (quick) quick.style.display = 'none';
+            }
+        }
     }
 
     function applyCityChoice(slug, name) {
@@ -89,6 +137,7 @@
             resultsEl.innerHTML = '';
         }
 
+        filterModalCities(root);
         bindModalEvents(root);
     }
 
@@ -179,6 +228,11 @@
                         .then(function (res) { return res.json(); })
                         .then(function (data) {
                             var cities = data.cities || [];
+                            if (lastAllowedCitySlugs) {
+                                cities = cities.filter(function (c) {
+                                    return c && c.slug && lastAllowedCitySlugs[c.slug];
+                                });
+                            }
                             if (cities.length === 0) {
                                 searchResultsEl.innerHTML = '<div class="city-modal__search-results-empty">Ничего не найдено</div>';
                                 return;
@@ -222,6 +276,7 @@
         if (btn) {
             e.preventDefault();
             lastOpenedCityBtn = btn;
+            lastAllowedCitySlugs = getAllowedCitySlugs();
             loadAndOpen();
         }
     });

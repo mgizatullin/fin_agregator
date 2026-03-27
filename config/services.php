@@ -40,4 +40,8 @@ return [
         'token' => env('LEADGID_API_TOKEN'),
     ],
 
+    'yandex_maps' => [
+        'key' => env('YANDEX_MAPS_API_KEY'),
+    ],
+
 ];

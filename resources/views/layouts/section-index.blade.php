@@ -19,6 +19,7 @@
     <link rel="stylesheet" type="text/css" href="{{ asset('assets/css/swiper-bundle.min.css') }}">
     <link rel="stylesheet" type="text/css" href="{{ asset('assets/css/styles.css') }}">
     <link rel="stylesheet" type="text/css" href="{{ asset('assets/css/city-dialog.css') }}">
+    @stack('styles')
 
     <link rel="stylesheet" href="{{ asset('assets/fonts/fonts.css') }}">
     <link rel="stylesheet" type="text/css" href="{{ asset('assets/fonts/icons/icomoon/style.css') }}">
@@ -70,6 +71,7 @@
     <script src="{{ asset('assets/js/carousel.js') }}"></script>
     <script src="{{ asset('assets/js/ScrollSmooth.js') }}"></script>
     <script src="{{ asset('assets/js/main.js') }}"></script>
+    @stack('scripts')
     @stack('redirect-city')
     <script>
     (function(){ if (typeof window.__REDIRECT_TO_CITY === 'undefined') window.__REDIRECT_TO_CITY = { enabled: false }; })();
@@ -81,4 +83,3 @@
 </body>
 
 </html>
-

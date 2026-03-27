@@ -81,7 +81,7 @@
 @if($currencies->isNotEmpty())
 <script id="deposit-conditions" type="application/json">{!! json_encode($depositConditionsJson) !!}</script>
 
-<div class="deposit-calculator" id="deposit-calculator">
+<div class="deposit-calculator credit-calculator" id="deposit-calculator">
     <h3 class="deposit-calculator__title">Калькулятор доходности</h3>
 
     <div class="deposit-calculator__currency">
@@ -424,4 +424,14 @@
     recalc();
 })();
 </script>
+
+@once
+    @push('styles')
+        <style>
+            #deposit-calculator .deposit-calculator__field {
+                margin-bottom: 3rem;
+            }
+        </style>
+    @endpush
+@endonce
 @endif

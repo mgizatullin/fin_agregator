@@ -130,6 +130,7 @@ class SiteSettingsPage extends Page
             $exception->shouldRollbackDatabaseTransaction()
                 ? $this->rollBackDatabaseTransaction()
                 : $this->commitDatabaseTransaction();
+
             return;
         } catch (Throwable $exception) {
             $this->rollBackDatabaseTransaction();
@@ -185,6 +186,7 @@ class SiteSettingsPage extends Page
                                         RichEditor::make('footer_under_logo')
                                             ->label('Подпись под логотипом')
                                             ->helperText('Текст под логотипом в подвале (контакты, адрес).')
+                                            ->json(false)
                                             ->toolbarButtons([
                                                 ['bold', 'italic', 'link'],
                                                 ['bulletList', 'orderedList'],
@@ -267,6 +269,7 @@ class SiteSettingsPage extends Page
                                                     ->defaultItems(0)
                                                     ->addActionLabel('Добавить дочерний пункт')
                                                     ->reorderable()
+                                                    ->reorderableWithDragAndDrop(false)
                                                     ->reorderableWithButtons()
                                                     ->collapsible()
                                                     ->itemLabel(fn (array $state): ?string => $state['title'] ?? null)
@@ -275,6 +278,7 @@ class SiteSettingsPage extends Page
                                             ->defaultItems(0)
                                             ->addActionLabel('Добавить пункт меню')
                                             ->reorderable()
+                                            ->reorderableWithDragAndDrop(false)
                                             ->reorderableWithButtons()
                                             ->collapsible()
                                             ->itemLabel(fn (array $state): ?string => $state['title'] ?? null)
@@ -302,6 +306,7 @@ class SiteSettingsPage extends Page
                                             ->defaultItems(0)
                                             ->addActionLabel('Добавить ссылку')
                                             ->reorderable()
+                                            ->reorderableWithDragAndDrop(false)
                                             ->reorderableWithButtons()
                                             ->collapsible()
                                             ->itemLabel(fn (array $state): ?string => $state['label'] ?? null)
@@ -329,6 +334,7 @@ class SiteSettingsPage extends Page
                                             ->defaultItems(0)
                                             ->addActionLabel('Добавить ссылку')
                                             ->reorderable()
+                                            ->reorderableWithDragAndDrop(false)
                                             ->reorderableWithButtons()
                                             ->collapsible()
                                             ->itemLabel(fn (array $state): ?string => $state['label'] ?? null)

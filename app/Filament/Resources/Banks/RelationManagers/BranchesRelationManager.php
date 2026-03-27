@@ -32,6 +32,11 @@ class BranchesRelationManager extends RelationManager
     {
         return $schema
             ->components([
+                TextInput::make('region')
+                    ->label('Регион')
+                    ->required()
+                    ->maxLength(255),
+
                 Select::make('city_id')
                     ->label('Город')
                     ->relationship('city', 'name')
@@ -53,6 +58,20 @@ class BranchesRelationManager extends RelationManager
                     ->label('Время работы')
                     ->maxLength(255),
 
+                TextInput::make('latitude')
+                    ->label('Широта')
+                    ->numeric()
+                    ->required(false)
+                    ->placeholder('55.7558')
+                    ->step('0.000001'),
+
+                TextInput::make('longitude')
+                    ->label('Долгота')
+                    ->numeric()
+                    ->required(false)
+                    ->placeholder('37.6173')
+                    ->step('0.000001'),
+
                 Toggle::make('is_active')
                     ->label('Активно')
                     ->default(true)
@@ -64,6 +83,11 @@ class BranchesRelationManager extends RelationManager
     {
         return $table
             ->columns([
+                TextColumn::make('region')
+                    ->label('Регион')
+                    ->searchable()
+                    ->sortable(),
+
                 TextColumn::make('city.name')
                     ->label('Город')
                     ->searchable()
@@ -82,6 +106,16 @@ class BranchesRelationManager extends RelationManager
                 TextColumn::make('working_hours')
                     ->label('Время работы')
                     ->toggleable(),
+
+                TextColumn::make('latitude')
+                    ->label('Широта')
+                    ->searchable()
+                    ->sortable(),
+
+                TextColumn::make('longitude')
+                    ->label('Долгота')
+                    ->searchable()
+                    ->sortable(),
 
                 IconColumn::make('is_active')
                     ->label('Активно')

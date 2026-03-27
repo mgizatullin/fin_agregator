@@ -15,9 +15,10 @@ use App\Http\Controllers\LoanCategoryController;
 use App\Http\Controllers\LoanController;
 use App\Http\Controllers\PageController;
 use App\Http\Controllers\ReviewController;
+use App\Http\Controllers\ServiceController;
+use App\Models\Article;
 use App\Models\City;
 use App\Models\HomePageSetting;
-use App\Models\Article;
 use App\Models\SiteSettings;
 use Illuminate\Support\Facades\Route;
 
@@ -34,6 +35,7 @@ Route::get('/', function () {
     } catch (\Throwable $e) {
         $currencyRatesWithChange = ['date' => null, 'date_label' => '', 'rates' => []];
     }
+
     return view('home_new', [
         'settings' => $settings,
         'posts' => $posts,
@@ -97,8 +99,8 @@ Route::get('/api/cities/search', function (\Illuminate\Http\Request $request) {
     $candidates = \App\Models\City::query()
         ->where('is_active', true)
         ->where(function ($query) use ($firstUpper, $firstLower, $escape) {
-            $query->where('name', 'like', $escape($firstUpper) . '%')
-                ->orWhere('name', 'like', $escape($firstLower) . '%');
+            $query->where('name', 'like', $escape($firstUpper).'%')
+                ->orWhere('name', 'like', $escape($firstLower).'%');
         })
         ->orderBy('name')
         ->limit(300)
@@ -106,6 +108,7 @@ Route::get('/api/cities/search', function (\Illuminate\Http\Request $request) {
     $cities = $candidates->filter(function ($city) use ($qLower) {
         return mb_stripos($city->name, $qLower, 0, 'UTF-8') === 0;
     })->take(50)->values();
+
     return response()->json(['cities' => $cities->toArray()]);
 })->name('api.cities.search');
 
@@ -114,9 +117,10 @@ Route::get('/karty', [CardController::class, 'index'])->name('cards.index');
 Route::get('/karty/category/{slug}', [CardCategoryController::class, 'show'])->name('cards.category.show');
 Route::get('/karty/category/{slug}/{citySlug}', function (string $slug, string $citySlug) {
     $city = City::where('slug', $citySlug)->where('is_active', true)->first();
-    if (!$city) {
+    if (! $city) {
         abort(404);
     }
+
     return app(CardCategoryController::class)->show(request(), $slug, $citySlug);
 })->name('cards.category.city');
 Route::get('/karty/{first}', function (string $first) {
@@ -215,13 +219,19 @@ Route::get('/banki', [BankController::class, 'index'])->name('banks.index');
 // Bank detail pages (reviews, branches, deposits, cards, credits) - MUST be before {first}/{second}
 Route::get('/banki/{slug}/otzyvy', [BankController::class, 'reviews'])->name('banks.reviews');
 Route::get('/banki/{slug}/otdeleniya', [BankController::class, 'branches'])->name('banks.branches');
+Route::get('/banki/{slug}/otdeleniya/{citySlug}', [BankController::class, 'branchesCity'])->name('banks.branches.city');
 Route::get('/banki/{slug}/vklady', [BankController::class, 'deposits'])->name('banks.deposits');
 Route::get('/banki/{slug}/karty', [BankController::class, 'cards'])->name('banks.cards');
 Route::get('/banki/{slug}/kredity', [BankController::class, 'credits'])->name('banks.credits');
 
 Route::get('/banki/{first}/{second}', function (string $first, string $second) {
-    $category = \App\Models\BankCategory::where('slug', $first)->first();
+    $bank = \App\Models\Bank::where('slug', $first)->where('is_active', true)->first();
     $city = City::where('slug', $second)->where('is_active', true)->first();
+    if ($bank && $city) {
+        return app(BankController::class)->showCity(request(), $first, $second);
+    }
+
+    $category = \App\Models\BankCategory::where('slug', $first)->first();
     if ($category && $city) {
         return app(BankCategoryController::class)->show(request(), $first, $second);
     }
@@ -257,6 +267,10 @@ Route::get('/blog/category/{slug}', [BlogController::class, 'category'])->name('
 Route::get('/blog/{slug}', [BlogController::class, 'show'])->name('blog.show');
 
 Route::get('/api/deposits/{deposit}/conditions', [DepositController::class, 'conditions'])->name('api.deposits.conditions');
+
+Route::get('/services/{slug}', [ServiceController::class, 'show'])
+    ->where('slug', '[A-Za-z0-9\\-]+')
+    ->name('services.show');
 
 // Static pages: /{slug} (must be last)
 Route::get('/{slug}', [PageController::class, 'show'])

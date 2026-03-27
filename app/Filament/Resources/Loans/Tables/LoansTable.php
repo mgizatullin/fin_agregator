@@ -16,6 +16,10 @@ class LoansTable
     {
         return $table
             ->columns([
+                TextColumn::make('id')
+                    ->label('ID')
+                    ->sortable(),
+
                 TextColumn::make('name')
                     ->label('Название')
                     ->searchable()
@@ -78,6 +82,6 @@ class LoansTable
                     DeleteBulkAction::make(),
                 ]),
             ])
-            ->defaultSort('name');
+            ->defaultSort('id', 'desc');
     }
 }

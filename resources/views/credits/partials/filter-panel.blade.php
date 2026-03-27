@@ -1,4 +1,5 @@
 @php
+    $request = request();
     $creditsItems = isset($items) && method_exists($items, 'getCollection')
         ? $items->getCollection()
         : collect($items ?? []);
@@ -18,6 +19,15 @@
             return $credit->relationLoaded('receiveMethods') && $credit->receiveMethods->contains('id', $method->id);
         })->count();
     }
+    $selectedReceiveMethods = collect((array) $request->input('receive_methods', []))
+        ->map(fn ($value) => (string) $value)
+        ->filter()
+        ->values()
+        ->all();
+    $amountValue = max(0, (int) $request->integer('amount', 0));
+    $termValue = max(0, (int) $request->integer('term', 0));
+    $rateValue = max(0, (float) $request->input('rate', 0));
+    $pskValue = max(0, (float) $request->input('psk', 0));
 @endphp
 
 <div
@@ -30,44 +40,44 @@
         <div class="credit-filters__field">
             <label class="credit-filters__label" for="credit-filter-amount">Сумма кредита</label>
             <div class="credit-filters__pair">
-                <input id="credit-filter-amount" type="text" inputmode="numeric" data-filter-number="amount" data-min="0" data-max="{{ max(0, $maxAmountFilter) }}" value="0" class="credit-filters__input" placeholder="0">
+                <input id="credit-filter-amount" type="text" inputmode="numeric" data-filter-number="amount" data-min="0" data-max="{{ max(0, $maxAmountFilter) }}" value="{{ $amountValue }}" class="credit-filters__input" placeholder="0">
                 <span class="credit-filters__suffix">₽</span>
             </div>
-            <input type="range" min="0" max="{{ max(0, $maxAmountFilter) }}" step="{{ $amountRangeStep }}" value="0" data-filter-range="amount" class="credit-filters__range">
+            <input type="range" min="0" max="{{ max(0, $maxAmountFilter) }}" step="{{ $amountRangeStep }}" value="{{ $amountValue }}" data-filter-range="amount" class="credit-filters__range">
         </div>
 
         <div class="credit-filters__field">
             <label class="credit-filters__label" for="credit-filter-term">Срок кредита</label>
             <div class="credit-filters__pair">
-                <input id="credit-filter-term" type="text" inputmode="numeric" data-filter-number="term" data-min="0" data-max="{{ max(0, $maxTermFilter) }}" value="0" class="credit-filters__input" placeholder="0">
+                <input id="credit-filter-term" type="text" inputmode="numeric" data-filter-number="term" data-min="0" data-max="{{ max(0, $maxTermFilter) }}" value="{{ $termValue }}" class="credit-filters__input" placeholder="0">
                 <span class="credit-filters__suffix">мес.</span>
             </div>
-            <input type="range" min="0" max="{{ max(0, $maxTermFilter) }}" step="1" value="0" data-filter-range="term" class="credit-filters__range">
+            <input type="range" min="0" max="{{ max(0, $maxTermFilter) }}" step="1" value="{{ $termValue }}" data-filter-range="term" class="credit-filters__range">
         </div>
 
         <div class="credit-filters__field">
             <label class="credit-filters__label" for="credit-filter-rate">Ставка до</label>
             <div class="credit-filters__pair">
-                <input id="credit-filter-rate" type="number" min="0" max="{{ max(0, $maxRateFilter) }}" step="0.01" value="0" data-filter-number="rate" class="credit-filters__input credit-filters__input--no-spinner">
+                <input id="credit-filter-rate" type="number" min="0" max="{{ max(0, $maxRateFilter) }}" step="0.01" value="{{ $rateValue }}" data-filter-number="rate" class="credit-filters__input credit-filters__input--no-spinner">
                 <span class="credit-filters__suffix">%</span>
             </div>
-            <input type="range" min="0" max="{{ max(0, $maxRateFilter) }}" step="0.01" value="0" data-filter-range="rate" class="credit-filters__range">
+            <input type="range" min="0" max="{{ max(0, $maxRateFilter) }}" step="0.01" value="{{ $rateValue }}" data-filter-range="rate" class="credit-filters__range">
         </div>
 
         <div class="credit-filters__field">
             <label class="credit-filters__label" for="credit-filter-psk">ПСК до</label>
             <div class="credit-filters__pair">
-                <input id="credit-filter-psk" type="number" min="0" max="{{ max(0, $maxPskFilter) }}" step="0.01" value="0" data-filter-number="psk" class="credit-filters__input credit-filters__input--no-spinner">
+                <input id="credit-filter-psk" type="number" min="0" max="{{ max(0, $maxPskFilter) }}" step="0.01" value="{{ $pskValue }}" data-filter-number="psk" class="credit-filters__input credit-filters__input--no-spinner">
                 <span class="credit-filters__suffix">%</span>
             </div>
-            <input type="range" min="0" max="{{ max(0, $maxPskFilter) }}" step="0.01" value="0" data-filter-range="psk" class="credit-filters__range">
+            <input type="range" min="0" max="{{ max(0, $maxPskFilter) }}" step="0.01" value="{{ $pskValue }}" data-filter-range="psk" class="credit-filters__range">
         </div>
 
         <div class="credit-filters__field credit-filters__field--dropdown">
             <label class="credit-filters__label">Способ получения</label>
             <select id="credit-filter-receive-methods" multiple data-filter-select="receive-methods" class="credit-filters__select-hidden" aria-hidden="true" tabindex="-1">
                 @foreach($receiveMethodOptions as $method)
-                    <option value="{{ $method->id }}">{{ $method->name }}</option>
+                    <option value="{{ $method->id }}" @selected(in_array((string) $method->id, $selectedReceiveMethods, true))>{{ $method->name }}</option>
                 @endforeach
             </select>
             <div class="credit-filters__dropdown" data-receive-dropdown>
@@ -313,15 +323,6 @@
         <script>
             document.addEventListener('DOMContentLoaded', function () {
                 document.querySelectorAll('[data-credit-filters]').forEach(function (filtersRoot) {
-                    const container = filtersRoot.closest('.tf-container');
-                    if (!container) {
-                        return;
-                    }
-
-                    const summary = container.querySelector('[data-credits-summary]');
-                    const empty = container.querySelector('[data-credits-empty]');
-                    let hasAppliedFilters = false;
-
                     const controls = {
                         amountNumber: filtersRoot.querySelector('[data-filter-number="amount"]'),
                         amountRange: filtersRoot.querySelector('[data-filter-range="amount"]'),
@@ -372,25 +373,6 @@
                             : Math.round(clamped * 100) / 100;
                     };
 
-                    const inflectCredits = (count) => {
-                        const mod100 = count % 100;
-                        const mod10 = count % 10;
-                        if (mod100 >= 11 && mod100 <= 14) return { verb: 'Найдено', noun: 'кредитов' };
-                        if (mod10 === 1) return { verb: 'Найден', noun: 'кредит' };
-                        if (mod10 >= 2 && mod10 <= 4) return { verb: 'Найдено', noun: 'кредита' };
-                        return { verb: 'Найдено', noun: 'кредитов' };
-                    };
-
-                    const updateSummary = (visibleCount) => {
-                        if (!summary) return;
-                        const words = inflectCredits(visibleCount);
-                        const mode = filtersRoot.dataset.summaryMode || 'index';
-                        const categoryLabel = (filtersRoot.dataset.categoryLabel || '').trim();
-                        summary.textContent = mode === 'category' && categoryLabel !== ''
-                            ? `${words.verb} ${visibleCount} ${words.noun} ${categoryLabel}`
-                            : `${words.verb} ${visibleCount} ${words.noun}`;
-                    };
-
                     const syncPair = (numberInput, rangeInput, isInteger, formatDisplay = true, source = 'input') => {
                         const max = normalizeNumber(rangeInput?.max ?? numberInput?.dataset?.max ?? 0);
                         const current = getInputNumeric(numberInput, rangeInput, source);
@@ -413,41 +395,6 @@
                         }
 
                         return clamped;
-                    };
-
-                    const applyFilters = () => {
-                        const cards = Array.from(container.querySelectorAll('[data-credit-card]'));
-                        const amount = syncPair(controls.amountNumber, controls.amountRange, true);
-                        const term = syncPair(controls.termNumber, controls.termRange, true);
-                        const rate = syncPair(controls.rateNumber, controls.rateRange, false);
-                        const psk = syncPair(controls.pskNumber, controls.pskRange, false);
-                        const selectedReceiveMethods = controls.receiveMethods
-                            ? Array.from(controls.receiveMethods.selectedOptions).map((opt) => opt.value)
-                            : [];
-
-                        let visibleCount = 0;
-                        cards.forEach((card) => {
-                            const cardAmount = normalizeNumber(card.dataset.amount);
-                            const cardTerm = normalizeNumber(card.dataset.term);
-                            const cardRate = normalizeNumber(card.dataset.rate);
-                            const cardPsk = normalizeNumber(card.dataset.psk);
-                            const cardReceiveMethods = (card.dataset.receiveMethodIds || '').split(',').map((v) => v.trim()).filter(Boolean);
-
-                            const amountOk = amount <= 0 || cardAmount >= amount;
-                            const termOk = term <= 0 || cardTerm >= term;
-                            const rateOk = rate <= 0 || (cardRate > 0 && cardRate <= rate);
-                            const pskOk = psk <= 0 || (cardPsk > 0 && cardPsk <= psk);
-                            const receiveMethodsOk = selectedReceiveMethods.length === 0 || selectedReceiveMethods.some((v) => cardReceiveMethods.includes(v));
-
-                            const visible = amountOk && termOk && rateOk && pskOk && receiveMethodsOk;
-                            card.style.display = visible ? '' : 'none';
-                            if (visible) visibleCount++;
-                        });
-
-                        if (empty) {
-                            empty.style.display = visibleCount === 0 ? '' : 'none';
-                        }
-                        updateSummary(visibleCount);
                     };
 
                     const pairs = [
@@ -478,47 +425,52 @@
 
                     if (controls.applyBtn) {
                         controls.applyBtn.addEventListener('click', function () {
-                            hasAppliedFilters = true;
-                            applyFilters();
+                            const amount = syncPair(controls.amountNumber, controls.amountRange, true);
+                            const term = syncPair(controls.termNumber, controls.termRange, true);
+                            const rate = syncPair(controls.rateNumber, controls.rateRange, false);
+                            const psk = syncPair(controls.pskNumber, controls.pskRange, false);
+                            const selectedReceiveMethods = controls.receiveMethods
+                                ? Array.from(controls.receiveMethods.selectedOptions).map((opt) => opt.value).filter(Boolean)
+                                : [];
+                            const url = new URL(window.location.href);
+
+                            ['amount', 'term', 'rate', 'psk'].forEach(function (key) {
+                                url.searchParams.delete(key);
+                            });
+                            url.searchParams.delete('receive_methods');
+                            url.searchParams.delete('receive_methods[]');
+                            url.searchParams.delete('page');
+
+                            if (amount > 0) {
+                                url.searchParams.set('amount', String(amount));
+                            }
+                            if (term > 0) {
+                                url.searchParams.set('term', String(term));
+                            }
+                            if (rate > 0) {
+                                url.searchParams.set('rate', String(rate));
+                            }
+                            if (psk > 0) {
+                                url.searchParams.set('psk', String(psk));
+                            }
+
+                            selectedReceiveMethods.forEach(function (value) {
+                                url.searchParams.append('receive_methods[]', value);
+                            });
+
+                            window.location.href = url.toString();
                         });
                     }
 
                     if (controls.reset) {
                         controls.reset.addEventListener('click', function () {
-                            const setToZero = (el) => {
-                                if (!el) return;
-                                el.value = 0;
-                                if (el.hasAttribute('data-step')) {
-                                    el.value = '0';
-                                }
-                            };
-                            setToZero(controls.amountNumber);
-                            setToZero(controls.amountRange);
-                            setToZero(controls.termNumber);
-                            setToZero(controls.termRange);
-                            setToZero(controls.rateNumber);
-                            setToZero(controls.rateRange);
-                            setToZero(controls.pskNumber);
-                            setToZero(controls.pskRange);
-
-                            if (controls.amountNumber && controls.amountNumber.hasAttribute('data-step')) {
-                                controls.amountNumber.value = '0';
-                            }
-                            if (controls.termNumber && controls.termNumber.hasAttribute('data-step')) {
-                                controls.termNumber.value = '0';
-                            }
-
-                            if (controls.receiveMethods) {
-                                Array.from(controls.receiveMethods.options).forEach((opt) => {
-                                    opt.selected = false;
-                                });
-                            }
-
-                            checkboxes.forEach((ch) => ch.classList.remove('checked'));
-                            if (dropdownLabel) dropdownLabel.textContent = 'Выберите способы';
-
-                            hasAppliedFilters = true;
-                            applyFilters();
+                            const url = new URL(window.location.href);
+                            ['amount', 'term', 'rate', 'psk', 'page'].forEach(function (key) {
+                                url.searchParams.delete(key);
+                            });
+                            url.searchParams.delete('receive_methods');
+                            url.searchParams.delete('receive_methods[]');
+                            window.location.href = url.pathname + (url.searchParams.toString() ? '?' + url.searchParams.toString() : '');
                         });
                     }
 
@@ -560,12 +512,6 @@
                         };
                         updateLabel();
                     }
-
-                    container.addEventListener('catalog:items-appended', function () {
-                        if (hasAppliedFilters) {
-                            applyFilters();
-                        }
-                    });
                 });
             });
         </script>

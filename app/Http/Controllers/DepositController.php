@@ -7,7 +7,9 @@ use App\Http\Helpers\SectionRouteResolver;
 use App\Models\Bank;
 use App\Models\Deposit;
 use App\Models\DepositCategory;
+use App\Models\DepositCondition;
 use App\Models\SectionSetting;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -21,9 +23,16 @@ class DepositController extends Controller
     {
         $city = SectionRouteResolver::resolveCity($citySlug);
 
-        $items = Deposit::with(['bank', 'currencies.conditions'])
-            ->where('is_active', true)
-            ->orderBy('name')
+        $baseQuery = Deposit::query()
+            ->with(['bank', 'currencies.conditions'])
+            ->where('is_active', true);
+
+        $filterMeta = $this->buildFilterMeta(clone $baseQuery);
+
+        $query = clone $baseQuery;
+        $this->applyFilters($query, $request);
+
+        $items = $query->orderBy('name')
             ->paginate(20)
             ->withQueryString();
 
@@ -45,7 +54,7 @@ class DepositController extends Controller
         if ($city) {
             $seo_title = filled($setting?->seo_title_template)
                 ? SectionRouteResolver::parseTemplate($setting->seo_title_template, $section, $city)
-                : ($setting?->seo_title ? $setting->seo_title . ' в ' . ($city->name_prepositional ?? $city->name) : null);
+                : ($setting?->seo_title ? $setting->seo_title.' в '.($city->name_prepositional ?? $city->name) : null);
             $seo_description = filled($setting?->seo_description_template)
                 ? SectionRouteResolver::parseTemplate($setting->seo_description_template, $section, $city)
                 : SectionRouteResolver::sectionDescription($setting?->seo_description, $city);
@@ -74,6 +83,7 @@ class DepositController extends Controller
             'title' => $title,
             'page_h1' => $page_h1,
             'page_content' => $page_content,
+            'filterMeta' => $filterMeta,
         ]);
     }
 
@@ -88,7 +98,7 @@ class DepositController extends Controller
             ->firstOrFail();
 
         $section = (object) [
-            'title' => $deposit->name . ($deposit->bank ? ' — ' . $deposit->bank->name : ''),
+            'title' => $deposit->name.($deposit->bank ? ' — '.$deposit->bank->name : ''),
             'subtitle' => $deposit->bank ? $deposit->bank->name : '',
         ];
 
@@ -124,5 +134,102 @@ class DepositController extends Controller
         })->values()->all();
 
         return response()->json(['currencies' => $currencies]);
+    }
+
+    protected function applyFilters(Builder $query, Request $request): void
+    {
+        $amount = (float) $request->input('amount', 0);
+        $term = (int) $request->integer('term', 0);
+        $rate = (float) $request->input('rate', 0);
+        $depositType = trim((string) $request->input('deposit_type', ''));
+
+        if ($depositType !== '') {
+            $query->where('deposit_type', $depositType);
+        }
+
+        if ($amount <= 0 && $term <= 0 && $rate <= 0) {
+            return;
+        }
+
+        $query->whereHas('currencies.conditions', function (Builder $conditionsQuery) use ($amount, $term, $rate): void {
+            $conditionsQuery->where('is_active', true);
+
+            if ($rate > 0) {
+                // Ищем вклад, где в любой ячейке условий ставка не ниже выбранной.
+                $conditionsQuery->where('rate', '>=', $rate);
+            }
+
+            if ($term > 0) {
+                // Ищем вклад, где есть срок не меньше выбранного.
+                $conditionsQuery->where(function (Builder $termQuery) use ($term): void {
+                    $termQuery->where(function (Builder $q) use ($term): void {
+                        $q->whereNotNull('term_days_max')
+                            ->where('term_days_max', '>=', $term);
+                    })->orWhere(function (Builder $q) use ($term): void {
+                        $q->whereNull('term_days_max')
+                            ->whereNotNull('term_days_min')
+                            ->where('term_days_min', '>=', $term);
+                    })->orWhere(function (Builder $q): void {
+                        $q->whereNull('term_days_min')
+                            ->whereNull('term_days_max');
+                    });
+                });
+            }
+
+            if ($amount > 0) {
+                $conditionsQuery
+                    ->where(function (Builder $amountQuery) use ($amount): void {
+                        $amountQuery->whereNull('amount_min')
+                            ->orWhere('amount_min', '<=', $amount);
+                    })
+                    ->where(function (Builder $amountQuery) use ($amount): void {
+                        $amountQuery->whereNull('amount_max')
+                            ->orWhere('amount_max', '>=', $amount);
+                    });
+            }
+        });
+    }
+
+    protected function buildFilterMeta(Builder $query): array
+    {
+        $depositIds = (clone $query)->pluck('deposits.id');
+
+        $conditions = DepositCondition::query()
+            ->where('is_active', true)
+            ->whereHas('depositCurrency', fn (Builder $currencyQuery): Builder => $currencyQuery->whereIn('deposit_id', $depositIds))
+            ->get(['term_days_min', 'term_days_max', 'amount_min', 'amount_max', 'rate']);
+
+        $maxAmount = (float) $conditions
+            ->flatMap(fn (DepositCondition $condition): array => [
+                $condition->amount_min !== null ? (float) $condition->amount_min : 0.0,
+                $condition->amount_max !== null ? (float) $condition->amount_max : 0.0,
+            ])
+            ->max();
+
+        $maxTerm = (int) $conditions
+            ->flatMap(fn (DepositCondition $condition): array => [
+                $condition->term_days_min !== null ? (int) $condition->term_days_min : 0,
+                $condition->term_days_max !== null ? (int) $condition->term_days_max : 0,
+            ])
+            ->max();
+
+        $maxRate = (float) $conditions->max(fn (DepositCondition $condition): float => $condition->rate !== null ? (float) $condition->rate : 0.0);
+
+        $depositTypes = (clone $query)
+            ->whereNotNull('deposit_type')
+            ->where('deposit_type', '!=', '')
+            ->orderBy('deposit_type')
+            ->pluck('deposit_type')
+            ->unique()
+            ->values();
+
+        $amountFilterMax = $maxAmount > 30_000_000 ? (int) ceil($maxAmount) : 30_000_000;
+
+        return [
+            'max_amount' => $amountFilterMax,
+            'max_term' => max(0, $maxTerm),
+            'max_rate' => round($maxRate, 2),
+            'deposit_types' => $depositTypes,
+        ];
     }
 }

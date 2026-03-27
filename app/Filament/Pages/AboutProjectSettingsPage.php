@@ -3,9 +3,10 @@
 namespace App\Filament\Pages;
 
 use App\Models\SiteSettings;
+use Filament\Actions\Action;
 use Filament\Forms\Components\FileUpload;
-use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Repeater;
+use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Notifications\Notification;
@@ -21,8 +22,6 @@ use Filament\Schemas\Schema;
 use Filament\Support\Enums\Alignment;
 use Filament\Support\Exceptions\Halt;
 use Throwable;
-use Illuminate\Support\Arr;
-use Filament\Actions\Action;
 
 class AboutProjectSettingsPage extends Page
 {
@@ -146,6 +145,7 @@ class AboutProjectSettingsPage extends Page
             $exception->shouldRollbackDatabaseTransaction()
                 ? $this->rollBackDatabaseTransaction()
                 : $this->commitDatabaseTransaction();
+
             return;
         } catch (Throwable $exception) {
             $this->rollBackDatabaseTransaction();
@@ -194,6 +194,7 @@ class AboutProjectSettingsPage extends Page
                                     ->schema([
                                         RichEditor::make('about_project_description_1')
                                             ->label('Описание (1)')
+                                            ->json(false)
                                             ->toolbarButtons([
                                                 ['bold', 'italic', 'link'],
                                                 ['bulletList', 'orderedList'],
@@ -201,6 +202,7 @@ class AboutProjectSettingsPage extends Page
                                             ->columnSpanFull(),
                                         RichEditor::make('about_project_description_2')
                                             ->label('Описание (2)')
+                                            ->json(false)
                                             ->toolbarButtons([
                                                 ['bold', 'italic', 'link'],
                                                 ['bulletList', 'orderedList'],
@@ -400,4 +402,3 @@ class AboutProjectSettingsPage extends Page
             ]);
     }
 }
-

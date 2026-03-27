@@ -5,10 +5,8 @@ namespace App\Filament\Resources\Cards\Tables;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
-use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
-use Filament\Tables\Filters\TernaryFilter;
 use Filament\Tables\Table;
 
 class CardsTable
@@ -43,44 +41,33 @@ class CardsTable
                     ->sortable()
                     ->toggleable(),
 
-                TextColumn::make('annual_fee')
-                    ->label('Годовое обслуживание')
-                    ->numeric()
-                    ->sortable()
+                TextColumn::make('annual_fee_text')
+                    ->label('Стоимость обслуживания')
                     ->toggleable(),
 
-                TextColumn::make('psk')
+                TextColumn::make('psk_text')
                     ->label('ПСК')
-                    ->numeric()
-                    ->suffix('%')
-                    ->sortable()
                     ->toggleable(),
 
-                TextColumn::make('rate')
-                    ->label('Ставка')
-                    ->numeric()
-                    ->suffix('%')
-                    ->sortable()
-                    ->toggleable(),
-
-                IconColumn::make('atm_withdrawal')
+                TextColumn::make('atm_withdrawal_text')
                     ->label('Снятие в банкомате')
-                    ->boolean()
                     ->toggleable(),
 
-                IconColumn::make('is_active')
+                TextColumn::make('card_type')
+                    ->label('Тип карты')
+                    ->toggleable(),
+
+                TextColumn::make('is_active')
                     ->label('Активен')
-                    ->boolean()
+                    ->badge()
+                    ->formatStateUsing(fn (bool $state): string => $state ? 'Да' : 'Нет')
+                    ->color(fn (bool $state): string => $state ? 'success' : 'gray')
                     ->sortable(),
             ])
             ->filters([
                 SelectFilter::make('bank_id')
                     ->label('Банк')
                     ->relationship('bank', 'name'),
-                TernaryFilter::make('atm_withdrawal')
-                    ->label('Снятие в банкомате'),
-                TernaryFilter::make('is_active')
-                    ->label('Активен'),
             ])
             ->recordActions([
                 EditAction::make(),

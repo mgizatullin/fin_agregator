@@ -40,6 +40,12 @@
                     ? mb_strtolower(mb_substr($categoryTitle, 0, 1)) . mb_substr($categoryTitle, 1)
                     : '';
             @endphp
+
+            @include('deposits.partials.filter-panel', [
+                'items' => $items ?? collect(),
+                'filterMeta' => $filterMeta ?? [],
+            ])
+
             @if($categories->count())
             <div class="category-nav overflow-x-auto mb_40">
                 <div class="category-item {{ !$currentCategory ? 'active' : '' }}">

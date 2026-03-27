@@ -26,19 +26,28 @@
     <div class="deposit-calculator__field">
         <label class="deposit-calculator__label" for="credit-calc-amount">Сумма кредита, ₽</label>
         <input type="text" id="credit-calc-amount" inputmode="numeric" class="deposit-calculator__input deposit-calculator__input--no-spinner" data-min="{{ (int) $creditCalcData['minAmount'] }}" data-max="{{ (int) $creditCalcData['maxAmount'] }}" value="{{ number_format((int) $defaultAmount, 0, '', ' ') }}" autocomplete="off">
-    </div>
-
-    <div class="deposit-calculator__field">
-        <label class="deposit-calculator__label" for="credit-calc-rate">Ставка, % годовых</label>
-        <input type="text" id="credit-calc-rate" inputmode="decimal" class="deposit-calculator__input deposit-calculator__input--no-spinner" value="{{ rtrim(rtrim(number_format($defaultRate, 2, '.', ''), '0'), '.') }}" autocomplete="off">
+        @php
+            $minA = (int) $creditCalcData['minAmount'];
+            $maxA = (int) $creditCalcData['maxAmount'];
+            $stepA = $maxA > $minA ? max(1, (int) (($maxA - $minA) / 500)) : 1;
+        @endphp
+        <input type="range" class="deposit-calculator__range" id="credit-calc-amount-range" min="{{ $minA }}" max="{{ $maxA }}" step="{{ $stepA }}" value="{{ (int) $defaultAmount }}">
     </div>
 
     <div class="deposit-calculator__field">
         <label class="deposit-calculator__label" for="credit-calc-term">Срок, мес.</label>
-        <input type="number" id="credit-calc-term" min="{{ $creditCalcData['minTerm'] }}" max="{{ $creditCalcData['maxTerm'] }}" class="deposit-calculator__input deposit-calculator__input--no-spinner" value="{{ $defaultTerm }}" autocomplete="off">
+        <div class="deposit-calculator__pair">
+            <input type="text" id="credit-calc-term" inputmode="numeric" min="{{ $creditCalcData['minTerm'] }}" max="{{ $creditCalcData['maxTerm'] }}" class="deposit-calculator__input deposit-calculator__input--no-spinner" value="{{ $defaultTerm }}" autocomplete="off">
+            <span class="deposit-calculator__suffix">мес.</span>
+        </div>
+        <input type="range" class="deposit-calculator__range" id="credit-calc-term-range" min="{{ $creditCalcData['minTerm'] }}" max="{{ $creditCalcData['maxTerm'] }}" step="1" value="{{ $defaultTerm }}">
     </div>
 
     <div class="deposit-calculator__results">
+        <div class="deposit-calculator__result-row">
+            <span class="deposit-calculator__result-label">Ставка, % годовых</span>
+            <span class="deposit-calculator__result-value" id="credit-calc-rate-display">{{ rtrim(rtrim(number_format($defaultRate, 2, '.', ''), '0'), '.') }}%</span>
+        </div>
         <div class="deposit-calculator__result-row">
             <span class="deposit-calculator__result-label">Ежемесячный платёж</span>
             <span class="deposit-calculator__result-value" id="credit-calc-monthly">—</span>
@@ -57,12 +66,14 @@
 <script>
 (function() {
     var amountEl = document.getElementById('credit-calc-amount');
-    var rateEl = document.getElementById('credit-calc-rate');
+    var amountRange = document.getElementById('credit-calc-amount-range');
     var termEl = document.getElementById('credit-calc-term');
+    var termRange = document.getElementById('credit-calc-term-range');
     var monthlyEl = document.getElementById('credit-calc-monthly');
     var totalEl = document.getElementById('credit-calc-total');
     var overpayEl = document.getElementById('credit-calc-overpay');
-    if (!amountEl || !rateEl || !termEl || !monthlyEl || !totalEl || !overpayEl) return;
+    var fixedRate = {{ json_encode((float) $defaultRate) }};
+    if (!amountEl || !termEl || !monthlyEl || !totalEl || !overpayEl) return;
 
     function parseNum(val) {
         if (val === '' || val === null || val === undefined) return 0;
@@ -82,15 +93,30 @@
     }
 
     function update() {
+        var minAmount = parseInt(amountEl.getAttribute('data-min') || '0', 10) || 0;
+        var maxAmount = parseInt(amountEl.getAttribute('data-max') || '0', 10) || 0;
         var amount = parseNum(amountEl.value);
-        var rate = parseNum(rateEl.value);
-        var term = parseInt(termEl.value, 10) || 12;
+        if (amount < minAmount) amount = minAmount;
+        if (maxAmount > 0 && amount > maxAmount) amount = maxAmount;
+
+        var minTerm = parseInt(termEl.getAttribute('min') || '1', 10) || 1;
+        var maxTerm = parseInt(termEl.getAttribute('max') || '12', 10) || 12;
+        var term = parseInt(termEl.value, 10) || minTerm;
+        if (term < minTerm) term = minTerm;
+        if (term > maxTerm) term = maxTerm;
+
+        var rate = fixedRate;
         if (amount <= 0 || term <= 0) {
             monthlyEl.textContent = '—';
             totalEl.textContent = '—';
             overpayEl.textContent = '—';
             return;
         }
+        amountEl.value = new Intl.NumberFormat('ru-RU').format(Math.round(amount));
+        termEl.value = String(term);
+        if (amountRange) amountRange.value = String(Math.round(amount));
+        if (termRange) termRange.value = String(term);
+
         var monthly = annuityPayment(amount, rate, term);
         var total = monthly * term;
         var overpay = total - amount;
@@ -108,10 +134,30 @@
 
     amountEl.addEventListener('input', function() { formatAmountInput(); update(); });
     amountEl.addEventListener('blur', formatAmountInput);
-    rateEl.addEventListener('input', update);
-    rateEl.addEventListener('change', update);
+    if (amountRange) {
+        amountRange.addEventListener('input', function() {
+            amountEl.value = new Intl.NumberFormat('ru-RU').format(parseInt(amountRange.value, 10) || 0);
+            update();
+        });
+    }
     termEl.addEventListener('input', update);
     termEl.addEventListener('change', update);
+    if (termRange) {
+        termRange.addEventListener('input', function() {
+            termEl.value = String(parseInt(termRange.value, 10) || 0);
+            update();
+        });
+    }
     update();
 })();
 </script>
+
+@once
+    @push('styles')
+        <style>
+            #credit-calculator .deposit-calculator__field {
+                margin-bottom: 3rem;
+            }
+        </style>
+    @endpush
+@endonce

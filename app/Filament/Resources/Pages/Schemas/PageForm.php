@@ -3,10 +3,11 @@
 namespace App\Filament\Resources\Pages\Schemas;
 
 use Filament\Forms\Components\RichEditor;
-use Filament\Forms\Components\Tabs;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\Toggle;
+use Filament\Schemas\Components\Tabs;
+use Filament\Schemas\Components\Tabs\Tab;
 use Filament\Schemas\Schema;
 
 class PageForm
@@ -18,7 +19,7 @@ class PageForm
                 Tabs::make('PageTabs')
                     ->columnSpanFull()
                     ->tabs([
-                        Tabs\Tab::make('Основное')
+                        Tab::make('Основное')
                             ->schema([
                                 TextInput::make('title')
                                     ->label('Заголовок')
@@ -38,7 +39,7 @@ class PageForm
                                     ->label('Активна')
                                     ->default(true),
                             ]),
-                        Tabs\Tab::make('SEO настройки')
+                        Tab::make('SEO настройки')
                             ->schema([
                                 TextInput::make('seo_title')
                                     ->label('SEO Title')
