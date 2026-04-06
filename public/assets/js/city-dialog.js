@@ -291,6 +291,15 @@
         if (!cfg || !cfg.enabled || !cfg.base) return;
         var stored = getStoredCity();
         if (!stored || !stored.slug) return;
+        var cityBtn = document.querySelector('.city-select-btn[data-allowed-city-slugs]');
+        if (cityBtn) {
+            try {
+                var allowed = JSON.parse(cityBtn.getAttribute('data-allowed-city-slugs') || '[]');
+                if (Array.isArray(allowed) && allowed.length > 0 && allowed.indexOf(stored.slug) === -1) {
+                    return;
+                }
+            } catch (e) {}
+        }
         var path = '/' + String(cfg.base).replace(/^\/+/, '') + '/' + stored.slug;
         window.location.replace(path);
     })();

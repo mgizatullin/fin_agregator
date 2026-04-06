@@ -7,6 +7,7 @@ use App\Http\Helpers\SectionRouteResolver;
 use App\Models\Bank;
 use App\Models\Branch;
 use App\Models\City;
+use App\Models\Review;
 use App\Models\SectionSetting;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -61,6 +62,13 @@ class BankController extends Controller
         }
 
         $title = $page_h1;
+        $latestSectionReviews = Review::query()
+            ->with(['bank', 'reviewable'])
+            ->where('reviewable_type', Bank::class)
+            ->where('is_published', true)
+            ->latest()
+            ->limit(4)
+            ->get();
 
         return view('banks.index', array_merge([
             'items' => $items,
@@ -71,6 +79,11 @@ class BankController extends Controller
             'title' => $title,
             'page_h1' => $page_h1,
             'page_content' => $page_content,
+            'faq_title' => $setting?->faq_title,
+            'faq_description' => $setting?->faq_description,
+            'faq_items' => $setting?->faq_items ?? [],
+            'reviews_block_title' => $setting?->reviews_block_title,
+            'latestSectionReviews' => $latestSectionReviews,
         ], $city ? [] : ['redirectToCityIfStored' => true, 'sectionBaseForRedirect' => 'banki']));
     }
 
@@ -110,6 +123,9 @@ class BankController extends Controller
             'branchesCount' => $branchesCountAll,
             'branchesCountAll' => $branchesCountAll,
             'branchesCountCity' => null,
+        ], [
+            'redirectToCityIfStored' => true,
+            'sectionBaseForRedirect' => 'banki/'.$bank->slug,
         ]));
     }
 
@@ -278,6 +294,8 @@ class BankController extends Controller
             'seo_title' => 'Отделения '.$bank->name,
             'currentCity' => null,
             'availableCities' => $this->getBankAvailableCities($bank->id),
+            'redirectToCityIfStored' => true,
+            'sectionBaseForRedirect' => 'banki/'.$bank->slug.'/otdeleniya',
         ]);
     }
 

@@ -1,4 +1,5 @@
 @extends('layouts.main')
+@include('layouts.partials.redirect-city-push')
 
 @section('page-header')
 @php
@@ -160,10 +161,14 @@
 			
 			<!-- /.about -->
 			<div class="tf-container">
-			<div class="content mb-0 text-body">
+			<div class="content mb-0 article-body">
                 {!! filled($page_content ?? null) ? $page_content : description_to_html($section->description ?? '') !!}
             </div>
 				</div>
+            @if (empty($city))
+                @include('partials.section-faq')
+            @endif
+            @include('partials.section-latest-reviews')
 			<!-- /.about -->
         </div>
 

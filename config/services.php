@@ -44,4 +44,13 @@ return [
         'key' => env('YANDEX_MAPS_API_KEY'),
     ],
 
+    'deposit_calculator' => [
+        'cb_key_rate_percent' => (float) env('DEPOSIT_CB_KEY_RATE', 18),
+    ],
+
+    'banki' => [
+        'login' => env('BANKI_LOGIN', ''),
+        'password' => env('BANKI_PASSWORD', ''),
+    ],
+
 ];

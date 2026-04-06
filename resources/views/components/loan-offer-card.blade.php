@@ -38,8 +38,6 @@
         ? 'до ' . number_format((int) $maxTermValue, 0, '', ' ') . ' дней'
         : '—';
 
-    $fullTitle = 'Займ ' . $loan->name . (filled($companyName) ? ' — ' . $companyName : '');
-
     $summaryItems = [
         'Сумма' => $amountRange,
         'Срок' => $termRange,
@@ -63,7 +61,7 @@
 <section class="credit-offer-card loan-offer-card">
     <div class="credit-offer-card__top">
         <div class="credit-offer-card__headline">
-            <h2 class="credit-offer-card__title">{{ $fullTitle }}</h2>
+            <h2 class="credit-offer-card__title">{{ $loan->name }}</h2>
             <div class="credit-offer-card__rating" aria-label="Рейтинг предложения">
                 <div class="credit-offer-card__stars" aria-hidden="true">
                     @for ($star = 1; $star <= 5; $star++)

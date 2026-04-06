@@ -33,8 +33,9 @@ class ArticlesTable
                     ->label('Категория')
                     ->sortable(),
 
-                TextColumn::make('author')
+                TextColumn::make('author_display')
                     ->label('Автор')
+                    ->getStateUsing(fn ($record) => $record->specialist?->name ?: ($record->author ?? ''))
                     ->searchable()
                     ->toggleable(),
 

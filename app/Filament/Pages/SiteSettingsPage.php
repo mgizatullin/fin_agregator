@@ -7,6 +7,7 @@ use Filament\Actions\Action;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\RichEditor;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Notifications\Notification;
@@ -68,6 +69,17 @@ class SiteSettingsPage extends Page
             'copyright' => $setting->copyright ?? '',
             'custom_scripts' => $setting->custom_scripts ?? '',
             'logo' => $setting->logo ? [$setting->logo] : [],
+            'site_display_name' => $setting->site_display_name ?? '',
+            'email' => $setting->email ?? '',
+            'applications_email' => $setting->applications_email ?? '',
+            'mail_transport_mode' => $setting->mail_transport_mode ?? 'default',
+            'smtp_host' => $setting->smtp_host ?? '',
+            'smtp_port' => $setting->smtp_port ? (string) $setting->smtp_port : '',
+            'smtp_encryption' => $setting->smtp_encryption ?? 'tls',
+            'smtp_username' => $setting->smtp_username ?? '',
+            'smtp_password' => $setting->smtp_password ?? '',
+            'smtp_from_address' => $setting->smtp_from_address ?? '',
+            'smtp_from_name' => $setting->smtp_from_name ?? '',
             'footer_under_logo' => $setting->footer_under_logo ?? '',
             'social_twitter' => $setting->social_twitter ?? '',
             'social_facebook' => $setting->social_facebook ?? '',
@@ -104,12 +116,35 @@ class SiteSettingsPage extends Page
                 $logoPath = null;
             }
 
+            $siteDisplayName = isset($data['site_display_name']) ? trim((string) $data['site_display_name']) : '';
+            $email = isset($data['email']) ? trim((string) $data['email']) : '';
+            $applicationsEmail = isset($data['applications_email']) ? trim((string) $data['applications_email']) : '';
+            $mailTransportMode = isset($data['mail_transport_mode']) ? trim((string) $data['mail_transport_mode']) : 'default';
+            $smtpHost = isset($data['smtp_host']) ? trim((string) $data['smtp_host']) : '';
+            $smtpPort = isset($data['smtp_port']) ? (int) $data['smtp_port'] : null;
+            $smtpEncryption = isset($data['smtp_encryption']) ? trim((string) $data['smtp_encryption']) : '';
+            $smtpUsername = isset($data['smtp_username']) ? trim((string) $data['smtp_username']) : '';
+            $smtpPassword = isset($data['smtp_password']) ? (string) $data['smtp_password'] : '';
+            $smtpFromAddress = isset($data['smtp_from_address']) ? trim((string) $data['smtp_from_address']) : '';
+            $smtpFromName = isset($data['smtp_from_name']) ? trim((string) $data['smtp_from_name']) : '';
+
             $this->getSetting()->update([
                 'navigation' => $navigation,
                 'footer_menu_1' => $footer1,
                 'footer_menu_2' => $footer2,
                 'footer_heading_1' => $footerHeading1 !== '' ? $footerHeading1 : null,
                 'footer_heading_2' => $footerHeading2 !== '' ? $footerHeading2 : null,
+                'site_display_name' => $siteDisplayName !== '' ? $siteDisplayName : null,
+                'email' => $email !== '' ? $email : null,
+                'applications_email' => $applicationsEmail !== '' ? $applicationsEmail : null,
+                'mail_transport_mode' => in_array($mailTransportMode, ['default', 'smtp'], true) ? $mailTransportMode : 'default',
+                'smtp_host' => $smtpHost !== '' ? $smtpHost : null,
+                'smtp_port' => $smtpPort ?: null,
+                'smtp_encryption' => in_array($smtpEncryption, ['tls', 'ssl', ''], true) ? ($smtpEncryption !== '' ? $smtpEncryption : null) : null,
+                'smtp_username' => $smtpUsername !== '' ? $smtpUsername : null,
+                'smtp_password' => $smtpPassword !== '' ? $smtpPassword : null,
+                'smtp_from_address' => $smtpFromAddress !== '' ? $smtpFromAddress : null,
+                'smtp_from_name' => $smtpFromName !== '' ? $smtpFromName : null,
                 'copyright' => isset($data['copyright']) && (string) $data['copyright'] !== '' ? (string) $data['copyright'] : null,
                 'custom_scripts' => isset($data['custom_scripts']) && (string) $data['custom_scripts'] !== '' ? (string) $data['custom_scripts'] : null,
                 'logo' => $logoPath,
@@ -171,6 +206,73 @@ class SiteSettingsPage extends Page
                                             ->rows(8)
                                             ->columnSpanFull(),
                                     ])
+                                    ->columnSpanFull(),
+                                Section::make('Название сайта')
+                                    ->description('Используется в конце заголовка вкладки браузера (например, на страницах кредитов). Если пусто — берётся значение из настройки APP_NAME в .env.')
+                                    ->schema([
+                                        TextInput::make('site_display_name')
+                                            ->label('Название для title')
+                                            ->maxLength(255)
+                                            ->columnSpanFull(),
+                                    ])
+                                    ->columnSpanFull(),
+                                Section::make('Контактные email')
+                                    ->schema([
+                                        TextInput::make('email')
+                                            ->label('Email')
+                                            ->email()
+                                            ->maxLength(255)
+                                            ->columnSpanFull(),
+                                        TextInput::make('applications_email')
+                                            ->label('Email для заявок')
+                                            ->email()
+                                            ->maxLength(255)
+                                            ->columnSpanFull(),
+                                    ])
+                                    ->columnSpanFull(),
+                                Section::make('Отправка писем')
+                                    ->description('Для отправки заявок можно использовать сервер по умолчанию или отдельный SMTP.')
+                                    ->schema([
+                                        Select::make('mail_transport_mode')
+                                            ->label('Режим отправки')
+                                            ->options([
+                                                'default' => 'Обычный (из .env)',
+                                                'smtp' => 'SMTP (из полей ниже)',
+                                            ])
+                                            ->default('default')
+                                            ->required()
+                                            ->native(false)
+                                            ->columnSpanFull(),
+                                        TextInput::make('smtp_host')
+                                            ->label('SMTP Host')
+                                            ->maxLength(255),
+                                        TextInput::make('smtp_port')
+                                            ->label('SMTP Port')
+                                            ->numeric(),
+                                        Select::make('smtp_encryption')
+                                            ->label('Шифрование')
+                                            ->options([
+                                                'tls' => 'TLS',
+                                                'ssl' => 'SSL',
+                                            ])
+                                            ->placeholder('Без шифрования')
+                                            ->native(false),
+                                        TextInput::make('smtp_username')
+                                            ->label('SMTP Username')
+                                            ->maxLength(255),
+                                        TextInput::make('smtp_password')
+                                            ->label('SMTP Password')
+                                            ->password()
+                                            ->revealable(),
+                                        TextInput::make('smtp_from_address')
+                                            ->label('From Email')
+                                            ->email()
+                                            ->maxLength(255),
+                                        TextInput::make('smtp_from_name')
+                                            ->label('From Name')
+                                            ->maxLength(255),
+                                    ])
+                                    ->columns(2)
                                     ->columnSpanFull(),
                                 Section::make('Логотип')
                                     ->description('Отображается в шапке сайта и в подвале. Если не задан — используется логотип по умолчанию.')

@@ -1,5 +1,15 @@
 @extends('layouts.app')
 
+@push('styles')
+    <style>
+        @media (min-width: 992px) {
+            .section-team.style-1 .tf-grid-layout-2 {
+                gap: 89px 100px;
+            }
+        }
+    </style>
+@endpush
+
 @section('page-header')
     @include('layouts.partials.page-header', [
         'title' => $siteSettings->about_project_page_title ?: ($title ?? 'О проекте'),
@@ -131,34 +141,68 @@
                 </div>
 
                 <div class="tf-grid-layout-2 lg-col-4">
-                    @foreach($teamItems as $item)
-                        @php
-                            $name = (string) ($item['name'] ?? '');
-                            $role = (string) ($item['role'] ?? '');
-                        @endphp
-                        @if($name === '' && $role === '')
-                            @continue
-                        @endif
+                    @if(isset($specialists) && $specialists->isNotEmpty())
+                        @foreach($specialists as $item)
+                            @php
+                                $name = (string) ($item->name ?? '');
+                                $role = (string) ($item->position ?? '');
+                                $photo = filled($item->photo)
+                                    ? asset('storage/' . ltrim((string) $item->photo, '/'))
+                                    : asset('template/images/item/team-emty.png');
+                            @endphp
+                            @if($name === '' && $role === '')
+                                @continue
+                            @endif
 
-                        <div class="team-item style-default hover-border hover-image">
-                            <a href="#" class="img-style mb_19">
-                                <img
-                                    src="{{ asset('template/images/item/team-emty.png') }}"
-                                    alt="avatar"
-                                >
-                            </a>
-                            <div class="content">
-                                @if($name !== '')
-                                    <h3 class="name ">
-                                        <a href="#" class="link hover-line-text">{{ $name }}</a>
-                                    </h3>
-                                @endif
-                                @if($role !== '')
-                                    <p class="text-body-1">{{ $role }}</p>
-                                @endif
+                            <div class="team-item style-default hover-border hover-image">
+                                <a href="#" class="img-style mb_19">
+                                    <img src="{{ $photo }}" alt="{{ $name !== '' ? $name : 'avatar' }}">
+                                </a>
+                                <div class="content">
+                                    @if($name !== '')
+                                        <h3 class="name ">
+                                            <a href="#" class="link hover-line-text">{{ $name }}</a>
+                                        </h3>
+                                    @endif
+                                    @if($role !== '')
+                                        <p class="text-body-1">{{ $role }}</p>
+                                    @endif
+                                    @if(filled($item->short_description))
+                                        <p class="text-body-2 text_mono-gray-7 mt_8">{{ $item->short_description }}</p>
+                                    @endif
+                                </div>
                             </div>
-                        </div>
-                    @endforeach
+                        @endforeach
+                    @else
+                        @foreach($teamItems as $item)
+                            @php
+                                $name = (string) ($item['name'] ?? '');
+                                $role = (string) ($item['role'] ?? '');
+                            @endphp
+                            @if($name === '' && $role === '')
+                                @continue
+                            @endif
+
+                            <div class="team-item style-default hover-border hover-image">
+                                <a href="#" class="img-style mb_19">
+                                    <img
+                                        src="{{ asset('template/images/item/team-emty.png') }}"
+                                        alt="avatar"
+                                    >
+                                </a>
+                                <div class="content">
+                                    @if($name !== '')
+                                        <h3 class="name ">
+                                            <a href="#" class="link hover-line-text">{{ $name }}</a>
+                                        </h3>
+                                    @endif
+                                    @if($role !== '')
+                                        <p class="text-body-1">{{ $role }}</p>
+                                    @endif
+                                </div>
+                            </div>
+                        @endforeach
+                    @endif
                 </div>
             </div>
         </div>

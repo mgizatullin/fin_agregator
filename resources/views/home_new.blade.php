@@ -368,20 +368,23 @@
 
 
             <!-- .section-case-studie -->
+            @php
+                $caseServicesTitle = $settings->case_services_title ?? 'Our <span class="text-gradient">case</span> studies reveal';
+                $caseServicesDescription = $settings->case_services_description ?? 'Helping you streamline operations, reduce costs, and achieve measurable success with proven methodologies.';
+                $caseServicesItems = is_array($settings->case_services_items ?? null) ? $settings->case_services_items : [];
+            @endphp
+            @if(!empty($caseServicesItems))
             <div class="section-case-studies style-1 tf-spacing-36 pb-0">
                 <div class="tf-container-2">
                     <div class="heading-section d-flex gap_12 justify-content-between  flex-wrap-md mb_59">
                     <div class="left">
                         <h2 class="title text_mono-dark-9 fw-5">
-                            Our <span class="text-gradient">case</span> studies reveal
+                            {!! $caseServicesTitle !!}
                         </h2>
                         </div> 
                         <div class="right">
                         <p class="text-body-1 text_mono-gray-7 mt_28  wow animate__fadeInUp animate__animated"
-                            data-wow-delay="0s">Helping you streamline operations, reduce
-                            costs, and
-                            achieve
-                            measurable <br> success with proven methodologies.</p>
+                            data-wow-delay="0s">{!! nl2br(e($caseServicesDescription)) !!}</p>
                    </div></div>
                 </div>
                 <div class="wrap">
@@ -389,200 +392,39 @@
                         data-tablet="2.5" data-mobile="1.3" data-space-lg="48" data-space-md="20" data-space="15"
                         data-slide-center="true" data-loop="true">
                         <div class="swiper-wrapper">
-                            <div class="swiper-slide">
-                                <div class="case-studies-item style-3 hover-image">
-                                    <div class="img-style">
-                                        <img class="lazyload " data-src="{{ asset('assets/images/section/case-studies-10.jpg') }}"
-                                            src="{{ asset('assets/images/section/case-studies-10.jpg') }}" alt="case-studies">
+                            @foreach($caseServicesItems as $item)
+                                @php
+                                    $itemTitle = $item['title'] ?? '';
+                                    $itemLink = $item['link'] ?? '';
+                                    $itemImage = $item['image'] ?? '';
+                                    $itemImageUrl = $itemImage
+                                        ? (str_starts_with($itemImage, 'http') ? $itemImage : asset('storage/' . ltrim($itemImage, '/')))
+                                        : asset('assets/images/section/case-studies-10.jpg');
+                                @endphp
+                                <div class="swiper-slide">
+                                    <div class="case-studies-item style-3 hover-image">
+                                        <div class="img-style">
+                                            <img class="lazyload" data-src="{{ $itemImageUrl }}" src="{{ $itemImageUrl }}" alt="{{ $itemTitle ?: 'service' }}">
+                                        </div>
+                                        <h6 class="title text_white">
+                                            @if($itemLink)
+                                                <a href="{{ $itemLink }}" class="link">{{ $itemTitle }}</a>
+                                            @else
+                                                <span>{{ $itemTitle }}</span>
+                                            @endif
+                                        </h6>
+                                        @if($itemLink)
+                                            <a href="{{ $itemLink }}" class="tf-btn btn-white">
+                                                <span><svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                    <path d="M12.75 5.25009L4.5 13.5001" stroke="#121416" stroke-width="1.5" stroke-linecap="round" />
+                                                    <path d="M8.25 4.59864C8.25 4.59864 12.4752 4.24246 13.1164 4.88365C13.7575 5.52483 13.4013 9.75 13.4013 9.75" stroke="#121416" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                                                </svg></span>
+                                                <span class="bg-effect"></span>
+                                            </a>
+                                        @endif
                                     </div>
-                                    <h6 class="title text_white">
-                                        <a href="single-project.html" class="link">Boosting Leads Through Target
-                                            Campaign</a>
-                                    </h6>
-                                    <a href="single-project.html" class="tf-btn btn-white">
-                                        <span><svg width="18" height="18" viewBox="0 0 18 18" fill="none"
-                                                xmlns="http://www.w3.org/2000/svg">
-                                                <path d="M12.75 5.25009L4.5 13.5001" stroke="#121416" stroke-width="1.5"
-                                                    stroke-linecap="round" />
-                                                <path
-                                                    d="M8.25 4.59864C8.25 4.59864 12.4752 4.24246 13.1164 4.88365C13.7575 5.52483 13.4013 9.75 13.4013 9.75"
-                                                    stroke="#121416" stroke-width="1.5" stroke-linecap="round"
-                                                    stroke-linejoin="round" />
-                                            </svg>
-                                        </span>
-                                        <span class="bg-effect"></span>
-                                    </a>
                                 </div>
-                            </div>
-                            <div class="swiper-slide">
-                                <div class="case-studies-item style-3 hover-image">
-                                    <div class="img-style">
-                                        <img class="lazyload " data-src="{{ asset('assets/images/section/case-studies-11.jpg') }}"
-                                            src="{{ asset('assets/images/section/case-studies-11.jpg') }}" alt="case-studies">
-                                    </div>
-                                    <h6 class="title text_white">
-                                        <a href="single-project.html" class="link">Emails Маркетинг для Prudential</a>
-                                    </h6>
-                                    <a href="single-project.html" class="tf-btn btn-white">
-                                        <span><svg width="18" height="18" viewBox="0 0 18 18" fill="none"
-                                                xmlns="http://www.w3.org/2000/svg">
-                                                <path d="M12.75 5.25009L4.5 13.5001" stroke="#121416" stroke-width="1.5"
-                                                    stroke-linecap="round" />
-                                                <path
-                                                    d="M8.25 4.59864C8.25 4.59864 12.4752 4.24246 13.1164 4.88365C13.7575 5.52483 13.4013 9.75 13.4013 9.75"
-                                                    stroke="#121416" stroke-width="1.5" stroke-linecap="round"
-                                                    stroke-linejoin="round" />
-                                            </svg>
-                                        </span>
-                                        <span class="bg-effect"></span>
-                                    </a>
-                                </div>
-                            </div>
-                            <div class="swiper-slide">
-                                <div class="case-studies-item style-3 hover-image">
-                                    <div class="img-style">
-                                        <img class="lazyload " data-src="{{ asset('assets/images/section/case-studies-12.jpg') }}"
-                                            src="{{ asset('assets/images/section/case-studies-12.jpg') }}" alt="case-studies">
-                                    </div>
-                                    <h6 class="title text_white">
-                                        <a href="single-project.html" class="link">KFC Brand Promo Strategy</a>
-                                    </h6>
-                                    <a href="single-project.html" class="tf-btn btn-white">
-                                        <span><svg width="18" height="18" viewBox="0 0 18 18" fill="none"
-                                                xmlns="http://www.w3.org/2000/svg">
-                                                <path d="M12.75 5.25009L4.5 13.5001" stroke="#121416" stroke-width="1.5"
-                                                    stroke-linecap="round" />
-                                                <path
-                                                    d="M8.25 4.59864C8.25 4.59864 12.4752 4.24246 13.1164 4.88365C13.7575 5.52483 13.4013 9.75 13.4013 9.75"
-                                                    stroke="#121416" stroke-width="1.5" stroke-linecap="round"
-                                                    stroke-linejoin="round" />
-                                            </svg>
-                                        </span>
-                                        <span class="bg-effect"></span>
-                                    </a>
-                                </div>
-                            </div>
-                            <div class="swiper-slide">
-                                <div class="case-studies-item style-3 hover-image">
-                                    <div class="img-style">
-                                        <img class="lazyload " data-src="{{ asset('assets/images/section/case-studies-13.jpg') }}"
-                                            src="{{ asset('assets/images/section/case-studies-13.jpg') }}" alt="case-studies">
-                                    </div>
-                                    <h6 class="title text_white">
-                                        <a href="single-project.html" class="link">Udemy Website SEO Optimized </a>
-                                    </h6>
-                                    <a href="single-project.html" class="tf-btn btn-white">
-                                        <span><svg width="18" height="18" viewBox="0 0 18 18" fill="none"
-                                                xmlns="http://www.w3.org/2000/svg">
-                                                <path d="M12.75 5.25009L4.5 13.5001" stroke="#121416" stroke-width="1.5"
-                                                    stroke-linecap="round" />
-                                                <path
-                                                    d="M8.25 4.59864C8.25 4.59864 12.4752 4.24246 13.1164 4.88365C13.7575 5.52483 13.4013 9.75 13.4013 9.75"
-                                                    stroke="#121416" stroke-width="1.5" stroke-linecap="round"
-                                                    stroke-linejoin="round" />
-                                            </svg>
-                                        </span>
-                                        <span class="bg-effect"></span>
-                                    </a>
-                                </div>
-                            </div>
-                            <div class="swiper-slide">
-                                <div class="case-studies-item style-3 hover-image">
-                                    <div class="img-style">
-                                        <img class="lazyload " data-src="{{ asset('assets/images/section/case-studies-14.jpg') }}"
-                                            src="{{ asset('assets/images/section/case-studies-14.jpg') }}" alt="case-studies">
-                                    </div>
-                                    <h6 class="title text_white">
-                                        <a href="single-project.html" class="link">Digital Advertisement для Coca
-                                            Cola</a>
-                                    </h6>
-                                    <a href="single-project.html" class="tf-btn btn-white">
-                                        <span><svg width="18" height="18" viewBox="0 0 18 18" fill="none"
-                                                xmlns="http://www.w3.org/2000/svg">
-                                                <path d="M12.75 5.25009L4.5 13.5001" stroke="#121416" stroke-width="1.5"
-                                                    stroke-linecap="round" />
-                                                <path
-                                                    d="M8.25 4.59864C8.25 4.59864 12.4752 4.24246 13.1164 4.88365C13.7575 5.52483 13.4013 9.75 13.4013 9.75"
-                                                    stroke="#121416" stroke-width="1.5" stroke-linecap="round"
-                                                    stroke-linejoin="round" />
-                                            </svg>
-                                        </span>
-                                        <span class="bg-effect"></span>
-                                    </a>
-                                </div>
-                            </div>
-                            <div class="swiper-slide">
-                                <div class="case-studies-item style-3 hover-image">
-                                    <div class="img-style">
-                                        <img class="lazyload " data-src="{{ asset('assets/images/section/case-studies-7.jpg') }}"
-                                            src="{{ asset('assets/images/section/case-studies-7.jpg') }}" alt="case-studies">
-                                    </div>
-                                    <h6 class="title text_white">
-                                        <a href="single-project.html" class="link">Преемственность бизнеса</a>
-                                    </h6>
-                                    <a href="single-project.html" class="tf-btn btn-white">
-                                        <span><svg width="18" height="18" viewBox="0 0 18 18" fill="none"
-                                                xmlns="http://www.w3.org/2000/svg">
-                                                <path d="M12.75 5.25009L4.5 13.5001" stroke="#121416" stroke-width="1.5"
-                                                    stroke-linecap="round" />
-                                                <path
-                                                    d="M8.25 4.59864C8.25 4.59864 12.4752 4.24246 13.1164 4.88365C13.7575 5.52483 13.4013 9.75 13.4013 9.75"
-                                                    stroke="#121416" stroke-width="1.5" stroke-linecap="round"
-                                                    stroke-linejoin="round" />
-                                            </svg>
-                                        </span>
-                                        <span class="bg-effect"></span>
-                                    </a>
-                                </div>
-                            </div>
-                            <div class="swiper-slide">
-                                <div class="case-studies-item style-3 hover-image">
-                                    <div class="img-style">
-                                        <img class="lazyload " data-src="{{ asset('assets/images/section/case-studies-6.jpg') }}"
-                                            src="{{ asset('assets/images/section/case-studies-6.jpg') }}" alt="case-studies">
-                                    </div>
-                                    <h6 class="title text_white">
-                                        <a href="single-project.html" class="link">Управление капиталом</a>
-                                    </h6>
-                                    <a href="single-project.html" class="tf-btn btn-white">
-                                        <span><svg width="18" height="18" viewBox="0 0 18 18" fill="none"
-                                                xmlns="http://www.w3.org/2000/svg">
-                                                <path d="M12.75 5.25009L4.5 13.5001" stroke="#121416" stroke-width="1.5"
-                                                    stroke-linecap="round" />
-                                                <path
-                                                    d="M8.25 4.59864C8.25 4.59864 12.4752 4.24246 13.1164 4.88365C13.7575 5.52483 13.4013 9.75 13.4013 9.75"
-                                                    stroke="#121416" stroke-width="1.5" stroke-linecap="round"
-                                                    stroke-linejoin="round" />
-                                            </svg>
-                                        </span>
-                                        <span class="bg-effect"></span>
-                                    </a>
-                                </div>
-                            </div>
-                            <div class="swiper-slide">
-                                <div class="case-studies-item style-3 hover-image">
-                                    <div class="img-style">
-                                        <img class="lazyload " data-src="{{ asset('assets/images/section/case-studies-8.jpg') }}"
-                                            src="{{ asset('assets/images/section/case-studies-8.jpg') }}" alt="case-studies">
-                                    </div>
-                                    <h6 class="title text_white">
-                                        <a href="single-project.html" class="link">Планирование наследства</a>
-                                    </h6>
-                                    <a href="single-project.html" class="tf-btn btn-white">
-                                        <span><svg width="18" height="18" viewBox="0 0 18 18" fill="none"
-                                                xmlns="http://www.w3.org/2000/svg">
-                                                <path d="M12.75 5.25009L4.5 13.5001" stroke="#121416" stroke-width="1.5"
-                                                    stroke-linecap="round" />
-                                                <path
-                                                    d="M8.25 4.59864C8.25 4.59864 12.4752 4.24246 13.1164 4.88365C13.7575 5.52483 13.4013 9.75 13.4013 9.75"
-                                                    stroke="#121416" stroke-width="1.5" stroke-linecap="round"
-                                                    stroke-linejoin="round" />
-                                            </svg>
-                                        </span>
-                                        <span class="bg-effect"></span>
-                                    </a>
-                                </div>
-                            </div>
+                            @endforeach
                         </div>
                         <div class="wrap-sw-button d-flex gap_16 justify-content-center">
                             <div class="sw-button style-default has-bg nav-prev-layout ">
@@ -597,6 +439,7 @@
                     </div>
              
             </div><!-- /.section-case-studie -->
+            @endif
 
             @php
                 $faqItems = is_array($settings->faq_items ?? null) ? $settings->faq_items : [];

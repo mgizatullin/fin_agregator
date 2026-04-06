@@ -6,6 +6,14 @@
     $seo_description = 'Запрошенная страница не найдена. Вернитесь на главную страницу сайта.';
 @endphp
 
+@push('styles')
+    <style>
+        .wrap-page-header {
+            margin-bottom: 90px;
+        }
+    </style>
+@endpush
+
 @section('page-header')
     <div class="page-title style-default">
         <div class="error-404">

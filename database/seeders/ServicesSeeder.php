@@ -30,5 +30,16 @@ class ServicesSeeder extends Seeder
                 'is_active' => true,
             ],
         );
+
+        Service::updateOrCreate(
+            ['type' => Service::TYPE_CURRENCY_RATES],
+            [
+                'slug' => 'kurs-valut-cbr',
+                'title' => 'Курсы валют ЦБ РФ',
+                'seo_title' => 'Курс валют ЦБ РФ на сегодня — калькулятор',
+                'seo_description' => 'Официальные курсы валют Центробанка России. Пересчёт любой суммы в рубли по курсу ЦБ.',
+                'is_active' => true,
+            ],
+        );
     }
 }

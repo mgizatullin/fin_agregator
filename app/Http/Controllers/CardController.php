@@ -6,7 +6,9 @@ use App\Http\Controllers\Concerns\HandlesLoadMorePagination;
 use App\Http\Helpers\SectionRouteResolver;
 use App\Models\Card;
 use App\Models\CardCategory;
+use App\Models\Review;
 use App\Models\SectionSetting;
+use App\Models\SiteSettings;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -66,8 +68,15 @@ class CardController extends Controller
         }
 
         $title = $page_h1;
+        $latestSectionReviews = Review::query()
+            ->with(['bank', 'reviewable'])
+            ->where('reviewable_type', Card::class)
+            ->where('is_published', true)
+            ->latest()
+            ->limit(4)
+            ->get();
 
-        return view('cards.index', [
+        return view('cards.index', array_merge([
             'cards' => $cards,
             'categories' => $categories,
             'section' => $section,
@@ -77,8 +86,13 @@ class CardController extends Controller
             'title' => $title,
             'page_h1' => $page_h1,
             'page_content' => $page_content,
+            'faq_title' => $setting?->faq_title,
+            'faq_description' => $setting?->faq_description,
+            'faq_items' => $setting?->faq_items ?? [],
+            'reviews_block_title' => $setting?->reviews_block_title,
+            'latestSectionReviews' => $latestSectionReviews,
             'filterMeta' => $filterMeta,
-        ]);
+        ], $city ? [] : ['redirectToCityIfStored' => true, 'sectionBaseForRedirect' => 'karty']));
     }
 
     /**
@@ -88,12 +102,19 @@ class CardController extends Controller
     {
         $card = Card::with(['bank', 'reviews.bank'])->where('slug', $slug)->where('is_active', true)->firstOrFail();
 
-        return view('cards.show', [
-            'card' => $card,
-            'seo_title' => null,
+        $pageHeadline = $card->pageHeadline();
+        $siteDisplayName = SiteSettings::getInstance()->displayNameForTitle();
+
+        $section = (object) [
+            'title' => $pageHeadline,
+            'subtitle' => null,
+        ];
+
+        return view('cards.show', array_merge(compact('card', 'section'), [
+            'seo_title' => $pageHeadline.' — '.$siteDisplayName,
             'seo_description' => null,
-            'title' => $card->name,
-        ]);
+            'title' => $pageHeadline,
+        ]));
     }
 
     protected function applyFilters(Builder $query, Request $request): void

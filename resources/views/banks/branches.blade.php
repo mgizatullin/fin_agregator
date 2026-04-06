@@ -1,4 +1,102 @@
 @extends('layouts.app')
+@include('layouts.partials.redirect-city-push')
+
+@push('styles')
+    <style>
+        .branches-list {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 16px;
+        }
+
+        .branch-card {
+            border: 1px solid var(--Mono-gray-2);
+            border-radius: 12px;
+            background: #fafaff;
+            overflow: hidden;
+        }
+
+        .branch-card .bank-department__row {
+            display: grid;
+            grid-template-columns: minmax(0, 120px) minmax(0, 1fr);
+            border-bottom: 1px solid var(--Mono-gray-2);
+            padding: 14px 16px;
+        }
+
+        .branch-card .bank-department__cell {
+            padding: 0;
+            font-size: 15px;
+            line-height: 1.5;
+        }
+
+        .branch-card .bank-department__cell--value {
+            color: #101828;
+            font-weight: 600;
+        }
+
+        .branch-card .bank-department__cell--label {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: #475467;
+        }
+
+        .branch-card .bank-department__icon {
+            width: 18px;
+            height: 18px;
+            flex: 0 0 18px;
+            color: #f5b301;
+        }
+
+        .branch-card .bank-department__icon svg {
+            width: 100%;
+            height: 100%;
+        }
+
+        .branch-card .bank-department__row:last-child {
+            border-bottom: 0;
+        }
+
+        .branch-phone {
+            display: block;
+        }
+
+        .branch-phone-line {
+            display: block;
+            line-height: 1.35;
+        }
+
+        @media (max-width: 1199px) {
+            .branches-list {
+                grid-template-columns: repeat(3, minmax(0, 1fr));
+            }
+        }
+
+        @media (max-width: 991px) {
+            .branches-list {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+        }
+
+        @media (max-width: 575px) {
+            .branches-list {
+                grid-template-columns: 1fr;
+            }
+
+            .branch-card .bank-department__row {
+                grid-template-columns: 1fr;
+            }
+
+            .branch-card .bank-department__cell--label {
+                padding-bottom: 6px;
+            }
+
+            .branch-card .bank-department__cell--value {
+                padding: 0;
+            }
+        }
+    </style>
+@endpush
 
 @section('page-header')
 @include('layouts.partials.page-header', [
@@ -49,16 +147,52 @@
                     <div class="branches-list grid-layout gap_16">
                         @foreach($bank->branches as $branch)
                         <div class="branch-card">
-                            <h3 class="branch-name text-body-1">{{ $branch->name ?? 'Отделение' }}</h3>
                             @if($branch->address)
-                            <p class="branch-address text-body-2 text_mono-gray-7">
-                                <i class="icon-map-marker"></i> {{ $branch->address }}
-                            </p>
+                                <div class="bank-department__row">
+                                    <div class="bank-department__cell bank-department__cell--label">
+                                        <span class="bank-department__icon" aria-hidden="true">
+                                            <svg viewBox="0 0 20 20" fill="none">
+                                                <path d="M10 2.5L17 6.1V13.9L10 17.5L3 13.9V6.1L10 2.5Z" stroke="currentColor" stroke-width="1.4"></path>
+                                                <path d="M7.2 10L9 11.8L12.8 8" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"></path>
+                                            </svg>
+                                        </span>
+                                        <span>Адрес:</span>
+                                    </div>
+                                    <div class="bank-department__cell bank-department__cell--value branch-address text-body-2 text_mono-gray-7">
+                                        {{ $branch->address }}
+                                    </div>
+                                </div>
                             @endif
                             @if($branch->phone)
-                            <a href="tel:{{ preg_replace('/[^\d+]/', '', $branch->phone) }}" class="branch-phone text-body-2 link">
-                                {{ $branch->phone }}
-                            </a>
+                                @php
+                                    $phoneParts = collect(explode(',', (string) $branch->phone))
+                                        ->map(fn ($part) => trim($part))
+                                        ->filter(fn ($part) => $part !== '')
+                                        ->values();
+                                @endphp
+                                <div class="bank-department__row">
+                                    <div class="bank-department__cell bank-department__cell--label">
+                                        <span class="bank-department__icon" aria-hidden="true">
+                                            <svg viewBox="0 0 20 20" fill="none">
+                                                <path d="M10 2.5L17 6.1V13.9L10 17.5L3 13.9V6.1L10 2.5Z" stroke="currentColor" stroke-width="1.4"></path>
+                                                <path d="M7.2 10L9 11.8L12.8 8" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"></path>
+                                            </svg>
+                                        </span>
+                                        <span>Телефон:</span>
+                                    </div>
+                                    <div class="bank-department__cell bank-department__cell--value text-body-2 text_mono-gray-7">
+                                        @foreach($phoneParts as $phonePart)
+                                            @php
+                                                $phoneHref = preg_replace('/[^\d+]/', '', (string) $phonePart);
+                                            @endphp
+                                            @if(filled($phoneHref))
+                                                <a href="tel:{{ $phoneHref }}" class="branch-phone branch-phone-line text-body-2 link">{{ $phonePart }}</a>
+                                            @else
+                                                <span class="branch-phone-line">{{ $phonePart }}</span>
+                                            @endif
+                                        @endforeach
+                                    </div>
+                                </div>
                             @endif
                         </div>
                         @endforeach
@@ -102,8 +236,6 @@
             };
 
             const initMap = () => {
-                const bounds = [];
-
                 const map = new ymaps.Map('branches-yandex-map', {
                     center: moscowCenter,
                     zoom: hasPoints ? 10 : 10,
@@ -133,7 +265,6 @@
                         preset: 'islands#blueIcon',
                     });
 
-                    bounds.push([p.lat, p.lng]);
                     return pm;
                 });
 
@@ -143,10 +274,17 @@
                 const isCitySelected = @json(!empty($currentCity));
 
                 if (isCitySelected) {
-                    if (bounds.length > 1) {
-                        map.setBounds(bounds, { checkZoomRange: true, zoomMargin: 60 });
+                    const clusterBounds = clusterer.getBounds();
+
+                    if (clusterBounds && clusterBounds.length === 2) {
+                        map.setBounds(clusterBounds, { checkZoomRange: true, zoomMargin: 60 });
+
+                        // Guard against excessive zoom-out from malformed/edge bounds.
+                        if (map.getZoom() < 10) {
+                            map.setZoom(10, { duration: 200 });
+                        }
                     } else {
-                        map.setCenter(bounds[0], 15, { duration: 200 });
+                        map.setCenter([points[0].lat, points[0].lng], 15, { duration: 200 });
                     }
                 } else {
                     // Без выбранного города — центр на Москву, более крупный масштаб.

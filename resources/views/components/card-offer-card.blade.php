@@ -35,8 +35,6 @@
     $atmWithdrawal = filled($card->atm_withdrawal_text) ? $card->atm_withdrawal_text : '—';
     $decisionText = filled($card->decision_text) ? $card->decision_text : '—';
 
-    $fullTitle = ($card->name ?: 'Кредитная карта') . (filled($bankName) ? ' от ' . $bankName : '');
-
     $summaryItems = [
         'Кредитный лимит' => $limit,
         'Льготный период' => $gracePeriod,
@@ -64,7 +62,7 @@
 <section class="credit-offer-card card-offer-card">
     <div class="credit-offer-card__top">
         <div class="credit-offer-card__headline">
-            <h2 class="credit-offer-card__title">{{ $fullTitle }}</h2>
+            <h2 class="credit-offer-card__title">{{ $card->name }}</h2>
             <div class="credit-offer-card__rating" aria-label="Рейтинг предложения">
                 <div class="credit-offer-card__stars" aria-hidden="true">
                     @for ($star = 1; $star <= 5; $star++)

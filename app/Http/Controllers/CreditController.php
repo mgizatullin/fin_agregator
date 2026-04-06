@@ -6,7 +6,9 @@ use App\Http\Controllers\Concerns\HandlesLoadMorePagination;
 use App\Http\Helpers\SectionRouteResolver;
 use App\Models\Credit;
 use App\Models\CreditCategory;
+use App\Models\Review;
 use App\Models\SectionSetting;
+use App\Models\SiteSettings;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -66,8 +68,15 @@ class CreditController extends Controller
         }
 
         $title = $page_h1;
+        $latestSectionReviews = Review::query()
+            ->with(['bank', 'reviewable'])
+            ->where('reviewable_type', Credit::class)
+            ->where('is_published', true)
+            ->latest()
+            ->limit(4)
+            ->get();
 
-        return view('credits.index', [
+        return view('credits.index', array_merge([
             'items' => $items,
             'section' => $section,
             'categories' => $categories,
@@ -77,7 +86,12 @@ class CreditController extends Controller
             'title' => $title,
             'page_h1' => $page_h1,
             'page_content' => $page_content,
-        ]);
+            'faq_title' => $setting?->faq_title,
+            'faq_description' => $setting?->faq_description,
+            'faq_items' => $setting?->faq_items ?? [],
+            'reviews_block_title' => $setting?->reviews_block_title,
+            'latestSectionReviews' => $latestSectionReviews,
+        ], $city ? [] : ['redirectToCityIfStored' => true, 'sectionBaseForRedirect' => 'kredity']));
     }
 
     /**
@@ -90,17 +104,20 @@ class CreditController extends Controller
             ->where('is_active', true)
             ->firstOrFail();
 
+        $pageHeadline = $credit->pageHeadline();
+        $siteDisplayName = SiteSettings::getInstance()->displayNameForTitle();
+
         $section = (object) [
-            'title' => $credit->name.($credit->bank ? ' — '.$credit->bank->name : ''),
-            'subtitle' => $credit->bank ? $credit->bank->name : '',
+            'title' => $pageHeadline,
+            'subtitle' => null,
         ];
 
         return view('credits.show', array_merge(compact('credit', 'section'), [
             'sectionIndexUrl' => url_canonical(route('credits.index')),
             'sectionIndexTitle' => 'Кредиты',
-            'seo_title' => null,
+            'seo_title' => $pageHeadline.' — '.$siteDisplayName,
             'seo_description' => null,
-            'title' => $section->title,
+            'title' => $pageHeadline,
         ]));
     }
 
@@ -121,6 +138,13 @@ class CreditController extends Controller
 
         if ($term > 0) {
             $query->where('term_months', '>=', $term);
+        }
+
+        $categorySlug = trim((string) $request->input('category', ''));
+        if ($categorySlug !== '' && CreditCategory::where('slug', $categorySlug)->exists()) {
+            $query->whereHas('categories', function (Builder $categoryQuery) use ($categorySlug): void {
+                $categoryQuery->where('credit_categories.slug', $categorySlug);
+            });
         }
 
         if ($rate > 0) {

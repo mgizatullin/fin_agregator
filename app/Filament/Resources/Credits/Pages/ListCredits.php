@@ -6,7 +6,6 @@ use App\Filament\Components\SectionCategoriesManager;
 use App\Filament\Resources\Credits\CreditResource;
 use Filament\Actions\CreateAction;
 use Filament\Resources\Pages\ListRecords;
-use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Textarea;
@@ -55,14 +54,13 @@ class ListCredits extends ListRecords
     {
         $setting = $this->getSetting();
         $data = $setting->attributesToArray();
-        $data['advantages'] = collect($setting->advantages ?? [])->map(function ($item) {
-            $img = is_array($item) ? ($item['image'] ?? null) : null;
-            return [
-                'title' => is_array($item) ? ($item['title'] ?? '') : (string) $item,
-                'description' => is_array($item) ? ($item['description'] ?? '') : '',
-                'image' => $img ? (is_array($img) ? $img : [$img]) : [],
-            ];
-        })->values()->toArray();
+        $data['faq_title'] = $setting->faq_title ?? '';
+        $data['faq_description'] = $setting->faq_description ?? '';
+        $data['faq_items'] = collect($setting->faq_items ?? [])
+            ->map(fn ($item) => Arr::only(is_array($item) ? $item : [], ['question', 'answer']))
+            ->filter(fn ($item) => filled($item['question'] ?? null) || filled($item['answer'] ?? null))
+            ->values()
+            ->toArray();
 
         if (isset($data['description']) && is_string($data['description'])) {
             $data['description'] = description_to_html($data['description']);
@@ -78,16 +76,12 @@ class ListCredits extends ListRecords
     {
         $data = $this->sectionData ?? [];
 
-        $advantages = Arr::pull($data, 'advantages', []);
-        $data['advantages'] = collect($advantages)->map(function ($a) {
-            $img = $a['image'] ?? [];
-            $path = is_array($img) ? (Arr::first($img) ?: null) : $img;
-            return [
-                'title' => $a['title'] ?? '',
-                'description' => $a['description'] ?? '',
-                'image' => $path,
-            ];
-        })->values()->toArray();
+        $faqItems = Arr::pull($data, 'faq_items', []);
+        $data['faq_items'] = collect($faqItems)
+            ->map(fn ($item) => Arr::only(is_array($item) ? $item : [], ['question', 'answer']))
+            ->filter(fn ($item) => filled($item['question'] ?? null) || filled($item['answer'] ?? null))
+            ->values()
+            ->toArray();
 
         if (array_key_exists('description', $data)) {
             $data['description'] = description_ensure_html($data['description'] ?? '');
@@ -155,31 +149,38 @@ class ListCredits extends ListRecords
 
                         $component->state($decoded);
                     }),
-                Repeater::make('advantages')
-                    ->label('Преимущества')
+                TextInput::make('faq_title')
+                    ->label('Заголовок FAQ')
+                    ->maxLength(255)
+                    ->columnSpanFull(),
+                Textarea::make('faq_description')
+                    ->label('Описание FAQ')
+                    ->rows(3)
+                    ->columnSpanFull(),
+                TextInput::make('reviews_block_title')
+                    ->label('Заголовок блока отзывов')
+                    ->maxLength(255)
+                    ->columnSpanFull(),
+                Repeater::make('faq_items')
+                    ->label('Частые вопросы')
                     ->schema([
-                        TextInput::make('title')
-                            ->label('Заголовок')
-                            ->maxLength(255)
+                        TextInput::make('question')
+                            ->label('Вопрос')
+                            ->maxLength(500)
+                            ->required()
                             ->columnSpanFull(),
-                        Textarea::make('description')
-                            ->label('Описание')
-                            ->rows(2)
-                            ->columnSpanFull(),
-                        FileUpload::make('image')
-                            ->label('Картинка')
-                            ->image()
-                            ->directory('section-advantages/credits')
-                            ->disk('public')
-                            ->maxSize(2048)
+                        Textarea::make('answer')
+                            ->label('Ответ')
+                            ->rows(4)
+                            ->required()
                             ->columnSpanFull(),
                     ])
                     ->defaultItems(0)
-                    ->addActionLabel('Добавить преимущество')
+                    ->addActionLabel('Добавить вопрос')
                     ->reorderable()
                     ->reorderableWithButtons()
                     ->collapsible()
-                    ->itemLabel(fn (array $state): ?string => $state['title'] ?? null)
+                    ->itemLabel(fn (array $state): ?string => $state['question'] ?? null)
                     ->columnSpanFull(),
             ]);
     }

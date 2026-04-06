@@ -19,12 +19,17 @@ class SectionSetting extends Model
         'seo_description_template',
         'h1_template',
         'content_template',
+        'faq_title',
+        'faq_description',
+        'faq_items',
+        'reviews_block_title',
     ];
 
     protected function casts(): array
     {
         return [
             'advantages' => 'array',
+            'faq_items' => 'array',
         ];
     }
 
@@ -53,6 +58,10 @@ class SectionSetting extends Model
                 'seo_description_template' => null,
                 'h1_template' => null,
                 'content_template' => null,
+                'faq_title' => null,
+                'faq_description' => null,
+                'faq_items' => [],
+                'reviews_block_title' => null,
             ]
         );
     }

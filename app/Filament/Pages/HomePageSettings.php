@@ -127,6 +127,12 @@ class HomePageSettings extends Page
             'icon' => ! empty($item['icon']) ? [$item['icon']] : [],
         ]))->values()->toArray();
 
+        $data['case_services_title'] = $setting->case_services_title ?? '';
+        $data['case_services_description'] = $setting->case_services_description ?? '';
+        $data['case_services_items'] = collect($setting->case_services_items ?? [])->map(fn ($item) => array_merge($item, [
+            'image' => ! empty($item['image']) ? [$item['image']] : [],
+        ]))->values()->toArray();
+
         $this->form->fill($data);
     }
 
@@ -189,6 +195,18 @@ class HomePageSettings extends Page
 
             return Arr::only($item, ['title', 'description', 'url', 'icon']);
         })->take(6)->values()->toArray();
+
+        $data['case_services_title'] = Arr::pull($data, 'case_services_title', '');
+        $data['case_services_description'] = Arr::pull($data, 'case_services_description', '');
+        $caseServicesItems = Arr::pull($data, 'case_services_items', []);
+        $data['case_services_items'] = collect($caseServicesItems)->map(function ($item) {
+            $image = $item['image'] ?? [];
+            $item['image'] = is_array($image) ? (Arr::first($image) ?: null) : $image;
+
+            return Arr::only($item, ['title', 'link', 'image']);
+        })->filter(fn ($item) => filled($item['title'] ?? null) || filled($item['image'] ?? null) || filled($item['link'] ?? null))
+            ->values()
+            ->toArray();
 
         return $data;
     }
@@ -423,6 +441,47 @@ class HomePageSettings extends Page
                                             ])
                                             ->defaultItems(0)
                                             ->addActionLabel('Добавить услугу')
+                                            ->reorderable()
+                                            ->reorderableWithButtons()
+                                            ->collapsible()
+                                            ->itemLabel(fn (array $state): ?string => $state['title'] ?? null)
+                                            ->columnSpanFull(),
+                                    ])
+                                    ->columns(1),
+                                Section::make('Сервисы (блок "Our case studies reveal")')
+                                    ->description('Контент блока с карточками сервисов ниже по главной странице.')
+                                    ->schema([
+                                        TextInput::make('case_services_title')
+                                            ->label('Заголовок')
+                                            ->maxLength(255)
+                                            ->columnSpanFull(),
+                                        Textarea::make('case_services_description')
+                                            ->label('Описание')
+                                            ->rows(4)
+                                            ->columnSpanFull(),
+                                        Repeater::make('case_services_items')
+                                            ->label('Позиции')
+                                            ->schema([
+                                                FileUpload::make('image')
+                                                    ->label('Картинка')
+                                                    ->image()
+                                                    ->directory('home/case-services')
+                                                    ->disk('public')
+                                                    ->maxSize(2048)
+                                                    ->columnSpanFull(),
+                                                TextInput::make('title')
+                                                    ->label('Заголовок')
+                                                    ->maxLength(255)
+                                                    ->columnSpanFull(),
+                                                TextInput::make('link')
+                                                    ->label('Ссылка')
+                                                    ->maxLength(500)
+                                                    ->rules(['nullable', 'string', 'max:500', 'regex:/^(\/.*|https?:\/\/.+)$/'])
+                                                    ->helperText('Относительный путь (например /kredity) или полный URL')
+                                                    ->columnSpanFull(),
+                                            ])
+                                            ->defaultItems(0)
+                                            ->addActionLabel('Добавить позицию')
                                             ->reorderable()
                                             ->reorderableWithButtons()
                                             ->collapsible()

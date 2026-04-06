@@ -26,6 +26,9 @@ class HomePageSetting extends Model
         'faq_items',
         'main_value_block',
         'values_grid',
+        'case_services_title',
+        'case_services_description',
+        'case_services_items',
     ];
 
     protected function casts(): array
@@ -36,6 +39,7 @@ class HomePageSetting extends Model
             'faq_items' => 'array',
             'main_value_block' => 'array',
             'values_grid' => 'array',
+            'case_services_items' => 'array',
         ];
     }
 
@@ -65,6 +69,9 @@ class HomePageSetting extends Model
             'faq_items' => null,
             'main_value_block' => null,
             'values_grid' => null,
+            'case_services_title' => null,
+            'case_services_description' => null,
+            'case_services_items' => null,
         ]);
     }
 }

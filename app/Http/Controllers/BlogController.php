@@ -66,6 +66,7 @@ class BlogController extends Controller
             'articles' => $articles,
             'categories' => $categories,
             'latestArticles' => $latestArticles,
+            'category' => $category,
             'section' => (object) [
                 'title' => $category->name,
                 'subtitle' => $category->description,
@@ -79,7 +80,7 @@ class BlogController extends Controller
 
     public function show(string $slug): View
     {
-        $article = Article::with('category')
+        $article = Article::with(['category', 'specialist'])
             ->where('slug', $slug)
             ->where('is_published', true)
             ->firstOrFail();

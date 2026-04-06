@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Articles\Schemas;
 
+use App\Models\Specialist;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\RichEditor;
@@ -48,9 +49,44 @@ class ArticleForm
                                     ->nullable()
                                     ->columnSpan(12),
 
-                                TextInput::make('author')
+                                Select::make('specialist_id')
                                     ->label('Автор')
-                                    ->maxLength(255)
+                                    ->relationship('specialist', 'name')
+                                    ->searchable()
+                                    ->preload()
+                                    ->nullable()
+                                    ->allowHtml()
+                                    ->getOptionLabelFromRecordUsing(function (Specialist $record): string {
+                                        $name = e($record->name ?? '');
+                                        $position = e($record->position ?? '');
+                                        $photo = (string) ($record->photo ?? '');
+                                        $photoUrl = $photo !== ''
+                                            ? (str_starts_with($photo, 'http') ? $photo : asset('storage/'.$photo))
+                                            : null;
+
+                                        $img = $photoUrl
+                                            ? '<img src="'.$photoUrl.'" alt="" style="width:28px;height:28px;border-radius:999px;object-fit:cover;flex:0 0 28px;" />'
+                                            : '<span aria-hidden="true" style="width:28px;height:28px;border-radius:999px;background:#e9ecef;display:inline-flex;align-items:center;justify-content:center;flex:0 0 28px;font-weight:700;color:#6c757d;">'.mb_substr($name, 0, 1).'</span>';
+
+                                        $posHtml = $position !== '' ? '<div style="font-size:12px;color:#6c757d;line-height:1.1;">'.$position.'</div>' : '';
+
+                                        return '<div style="display:flex;gap:10px;align-items:center;">'
+                                            .$img
+                                            .'<div style="min-width:0;">'
+                                            .'<div style="font-weight:600;line-height:1.1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">'.$name.'</div>'
+                                            .$posHtml
+                                            .'</div>'
+                                            .'</div>';
+                                    })
+                                    ->afterStateUpdated(function (Set $set, $state): void {
+                                        if (! $state) {
+                                            $set('author', null);
+
+                                            return;
+                                        }
+                                        $name = Specialist::query()->whereKey($state)->value('name');
+                                        $set('author', $name ? (string) $name : null);
+                                    })
                                     ->columnSpan(12),
 
                                 FileUpload::make('image')
@@ -74,7 +110,7 @@ class ArticleForm
                                     ->displayFormat('d.m.Y')
                                     ->format('Y-m-d')
                                     ->nullable()
-                                    ->dehydrateStateUsing(fn ($state) => $state ? \Carbon\Carbon::parse($state)->format('Y-m-d') . ' 00:00:00' : null)
+                                    ->dehydrateStateUsing(fn ($state) => $state ? \Carbon\Carbon::parse($state)->format('Y-m-d').' 00:00:00' : null)
                                     ->columnSpan(3),
                             ])
                             ->columns(12),
@@ -87,9 +123,24 @@ class ArticleForm
                                     ->columnSpanFull(),
 
                                 RichEditor::make('content')
-                                    ->label('Текст статьи')
+                                    ->label('Текст статьи (редактор)')
                                     ->columnSpanFull()
-                                    ->extraInputAttributes(['style' => 'min-height: 300px']),
+                                    ->extraInputAttributes(['style' => 'min-height: 300px'])
+                                    ->toolbarButtons([
+                                        ['source-code'],
+                                        ['bold', 'italic', 'underline', 'strike', 'subscript', 'superscript', 'link', 'textColor', 'highlight', 'code'],
+                                        ['h1', 'h2', 'h3', 'alignStart', 'alignCenter', 'alignEnd', 'alignJustify'],
+                                        ['blockquote', 'codeBlock', 'bulletList', 'orderedList', 'details', 'small', 'lead'],
+                                        ['table', 'attachFiles', 'customBlocks'],
+                                        ['grid', 'gridDelete', 'horizontalRule', 'clearFormatting'],
+                                        ['undo', 'redo'],
+                                    ]),
+
+                                Textarea::make('content_html')
+                                    ->label('HTML целиком (опционально)')
+                                    ->helperText('Если заполнено, на сайте показывается этот HTML вместо текста из редактора. Нужен для разметки, которую TipTap не поддерживает (например dl/dt/dd, свои class/style). Доверяйте только доверенным редакторам.')
+                                    ->rows(16)
+                                    ->columnSpanFull(),
                             ])
                             ->columns(1),
 

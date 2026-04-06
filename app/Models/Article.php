@@ -14,8 +14,10 @@ class Article extends Model
         'slug',
         'excerpt',
         'content',
+        'content_html',
         'image',
         'author',
+        'specialist_id',
         'published_at',
         'is_published',
         'seo_title',
@@ -45,6 +47,11 @@ class Article extends Model
     public function category(): BelongsTo
     {
         return $this->belongsTo(Category::class);
+    }
+
+    public function specialist(): BelongsTo
+    {
+        return $this->belongsTo(Specialist::class);
     }
 
     protected static function generateUniqueSlug(string $title, ?int $ignoreId = null): string

@@ -2,7 +2,7 @@
 
 @section('page-header')
 @include('layouts.partials.page-header', [
-    'title' => $loan->name ?? $section->title ?? 'Займ',
+    'title' => $section->title ?? $loan->name ?? 'Займ',
     'subtitle' => $section->subtitle ?? null,
     'breadcrumbs' => [
         ['url' => url('/'), 'label' => 'Главная'],

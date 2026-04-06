@@ -35,6 +35,7 @@ class CbrRatesService
                         return ['USD' => $usd, 'EUR' => $eur, 'CNY' => $cny];
                     }
                 }
+
                 return $this->fallbackRates();
             });
         } catch (\Throwable $e) {
@@ -73,7 +74,7 @@ class CbrRatesService
 
         $date = $latest?->rate_date;
         $dateLabel = $date
-            ? 'НА ' . strtoupper(Carbon::parse($date)->locale('ru')->translatedFormat('j F'))
+            ? 'НА '.strtoupper(Carbon::parse($date)->locale('ru')->translatedFormat('j F'))
             : '';
 
         return [
@@ -84,13 +85,63 @@ class CbrRatesService
     }
 
     /**
+     * Данные для страницы курсов ЦБ: топ валют из БД, с изменением к предыдущему торговому дню.
+     *
+     * @return array{
+     *     date: ?string,
+     *     date_label: string,
+     *     rows: array<int, array{code: string, name: string, rate: ?float, change: ?float, change_positive: ?bool}>
+     * }
+     */
+    public function getPopularRatesForPage(): array
+    {
+        $codes = array_slice(
+            array_values(array_filter(config('currency_rates_page.codes', []))),
+            0,
+            (int) config('currency_rates_page.limit', 20)
+        );
+        $names = config('currency_rates_page.names', []);
+
+        $latest = CbrRate::query()->orderByDesc('rate_date')->first();
+        $previous = $latest
+            ? CbrRate::query()->where('rate_date', '<', $latest->rate_date)->orderByDesc('rate_date')->first()
+            : null;
+
+        $rows = [];
+        foreach ($codes as $code) {
+            $code = strtoupper($code);
+            $rate = $latest?->getRate($code);
+            $prevRate = $previous?->getRate($code);
+            $change = $rate !== null && $prevRate !== null ? round($rate - $prevRate, 4) : null;
+
+            $rows[] = [
+                'code' => $code,
+                'name' => $names[$code] ?? $code,
+                'rate' => $rate,
+                'change' => $change,
+                'change_positive' => $change === null ? null : $change > 0,
+            ];
+        }
+
+        $date = $latest?->rate_date;
+        $dateLabel = $date
+            ? 'на '.Carbon::parse($date)->locale('ru')->translatedFormat('j F Y')
+            : '';
+
+        return [
+            'date' => $date?->format('Y-m-d'),
+            'date_label' => $dateLabel,
+            'rows' => $rows,
+        ];
+    }
+
+    /**
      * Загружает курсы с сайта ЦБ и сохраняет/обновляет запись в БД за указанную дату.
      * Все курсы хранятся как цена за 1 единицу валюты (для JPY: Value/Nominal, т.к. ЦБ отдаёт за 100 йен).
      * Вызывать только из крона или вручную: php artisan cbr:fetch-rates
      *
      * @param  string|null  $forDate  Дата в формате Y-m-d (по умолчанию — сегодня)
      * @param  bool  $force  При true — перезаписать даже если запись за дату уже есть (пересчёт по Nominal)
-     * @return bool
      */
     public function fetchAndStoreRates(?string $forDate = null, bool $force = false): bool
     {
@@ -106,7 +157,7 @@ class CbrRatesService
                 ->get(self::CBR_JSON_URL);
 
             if (! $response->successful()) {
-                Log::warning('CbrRatesService: ЦБ вернул HTTP ' . $response->status(), ['body' => mb_substr($response->body(), 0, 300)]);
+                Log::warning('CbrRatesService: ЦБ вернул HTTP '.$response->status(), ['body' => mb_substr($response->body(), 0, 300)]);
 
                 return false;
             }
@@ -151,6 +202,8 @@ class CbrRatesService
                     'rates_json' => $ratesJson,
                 ]);
             }
+
+            Cache::forget(self::CACHE_KEY);
 
             return true;
         } catch (\Throwable $e) {

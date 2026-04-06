@@ -2,12 +2,12 @@
 
 @section('page-header')
 @include('layouts.partials.page-header', [
-    'title' => $credit->name ?? $credit->title ?? $section->title ?? 'Кредит',
+    'title' => $section->title ?? $credit->name ?? 'Кредит',
     'subtitle' => $section->subtitle ?? null,
     'breadcrumbs' => [
         ['url' => url('/'), 'label' => 'Главная'],
         ['url' => url_section('kredity'), 'label' => 'Кредиты'],
-        ['label' => $credit->name ?? $credit->title ?? 'Кредит'],
+        ['label' => $credit->name ?? 'Кредит'],
     ],
 ])
 @endsection

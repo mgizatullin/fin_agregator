@@ -72,6 +72,22 @@ class Loan extends Model
         return $this->belongsToMany(LoanCategory::class, 'loan_loan_category');
     }
 
+    /**
+     * Заголовок страницы займа: «Займ {название} от {МФО}», без дублирующего «Займ »,
+     * если в названии уже есть слово «займ» (без учёта регистра).
+     */
+    public function pageHeadline(): string
+    {
+        $name = trim((string) ($this->name ?? ''));
+        $mfoName = trim((string) ($this->company_name ?? ''));
+
+        $prefix = ($name !== '' && mb_stripos($name, 'займ') === false) ? 'Займ ' : '';
+        $core = $name !== '' ? $prefix.$name : 'Займ';
+        $suffix = $mfoName !== '' ? ' от '.$mfoName : '';
+
+        return trim($core.$suffix);
+    }
+
     protected static function generateUniqueSlug(string $name, ?int $ignoreId = null): string
     {
         $baseSlug = Str::slug($name);

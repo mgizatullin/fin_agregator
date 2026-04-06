@@ -25,6 +25,7 @@ class ServicesTable
                     ->formatStateUsing(fn (string $state): string => match ($state) {
                         Service::TYPE_CREDIT_CALCULATOR => 'Калькулятор кредитов',
                         Service::TYPE_DEPOSIT_CALCULATOR => 'Калькулятор вкладов',
+                        Service::TYPE_CURRENCY_RATES => 'Курс валют',
                         default => $state,
                     }),
                 TextColumn::make('seo_title')

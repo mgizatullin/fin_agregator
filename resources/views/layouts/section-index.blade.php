@@ -11,6 +11,44 @@
 
     <meta name="description" content="{{ $section->subtitle ?? config('app.name') }}">
     <meta name="keywords" content="">
+    @php
+        $metaTitle = trim((string) ($seo_title ?? $title ?? ($section->title ?? config('app.name'))));
+        $metaDescription = trim((string) ($seo_description ?? $section->subtitle ?? config('app.name')));
+        $canonicalUrl = $canonical_url ?? url()->current();
+
+        $fallbackOgImage = !empty($siteSettings->logo ?? null)
+            ? (str_starts_with($siteSettings->logo, 'http') ? $siteSettings->logo : asset('storage/' . ltrim((string) $siteSettings->logo, '/')))
+            : asset('assets/images/logo/favicon.svg');
+
+        $rawOgImage = $og_image ?? $seo_image ?? null;
+        $resolvedOgImage = null;
+
+        if (is_string($rawOgImage) && trim($rawOgImage) !== '') {
+            $rawOgImage = trim($rawOgImage);
+            if (str_starts_with($rawOgImage, 'http')) {
+                $resolvedOgImage = $rawOgImage;
+            } elseif (str_starts_with($rawOgImage, 'storage/')) {
+                $resolvedOgImage = asset($rawOgImage);
+            } else {
+                $resolvedOgImage = asset('storage/' . ltrim($rawOgImage, '/'));
+            }
+        }
+
+        $metaOgImage = $resolvedOgImage ?: $fallbackOgImage;
+    @endphp
+    <link rel="canonical" href="{{ $canonicalUrl }}">
+    <meta property="og:locale" content="ru_RU">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="{{ config('app.name') }}">
+    <meta property="og:title" content="{{ $metaTitle }}">
+    <meta property="og:description" content="{{ $metaDescription }}">
+    <meta property="og:url" content="{{ $canonicalUrl }}">
+    <meta property="og:image" content="{{ $metaOgImage }}">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="{{ $metaTitle }}">
+    <meta name="twitter:description" content="{{ $metaDescription }}">
+    <meta name="twitter:image" content="{{ $metaOgImage }}">
+    @include('layouts.partials.schema-jsonld')
 
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 

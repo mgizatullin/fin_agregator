@@ -2540,6 +2540,9 @@ a:focus, a:hover {
   background: linear-gradient(103.01deg, #eff4ff 0%, #c9d9ff 100.23%);
   box-shadow: 0px 1px 3px 0px rgba(0, 0, 0, 0.1);
 }
+.header.style-default .header-left {
+  gap: 40px;
+}
 .header.header-sticky.style-2 {
   background-color: var(--Primary);
 }
@@ -10856,15 +10859,68 @@ form.style-line-bot.style-2 button {
 .wrap-logo-carousel {
   padding-top: 80px;
 }
-.section-currency-rates .currency-rates-widget {
-  width: 35%;
-  min-width: 280px;
+.section-home-financial-widgets .home-financial-widgets__grid {
+  display: grid;
+  gap: 24px;
+  grid-template-columns: 1fr;
+  align-items: stretch;
+}
+@media (min-width: 992px) {
+  .section-home-financial-widgets .home-financial-widgets__grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+  .section-home-financial-widgets .home-financial-widgets__grid--no-rates {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+.section-home-financial-widgets .home-financial-widgets__col {
+  min-width: 0;
+}
+.section-home-financial-widgets .currency-rates-widget {
+  width: 100%;
+  min-width: 0;
+}
+.home-quick-pick-card {
+  height: 100%;
+}
+.home-quick-pick-field .home-quick-pick-select {
+  width: 100%;
+  border-radius: 12px;
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  padding: 10px 14px;
+  font-size: 15px;
+  background-color: #fff;
+}
+.home-quick-pick-input-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+.home-quick-pick-input-wrap .home-quick-pick-input {
+  width: 100%;
+  border-radius: 12px;
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  padding: 10px 42px 10px 14px;
+  font-size: 15px;
+  background-color: #fff;
+}
+.home-quick-pick-suffix {
+  position: absolute;
+  right: 14px;
+  font-size: 0.875rem;
+  color: var(--Mono-gray-6, #6c757d);
+  pointer-events: none;
+  white-space: nowrap;
 }
 .section-currency-rates .currency-calc-box {
   background: transparent;
   border-radius: 0;
   padding: 0;
   border: none;
+}
+
+.section-currency-rates .currency-calc-amount {
+  max-width: 130px !important;
 }
 .section-currency-rates .cbr-rates-box {
   border: none;
@@ -10954,8 +11010,9 @@ form.style-line-bot.style-2 button {
 }
 @media (min-width: 992px) {
   .section-about.style-1 .left .content {
-    margin-right: 50px;
-    max-width: none;
+    max-width: 700px;
+    padding-top: 40px;
+    margin-top: 40px;
   }
   .section-faqs.style-2 .heading-section .right {
     padding-top: 24px;
@@ -10973,7 +11030,7 @@ form.style-line-bot.style-2 button {
   }
 }
 @media (max-width: 991px) {
-  .section-currency-rates .currency-rates-widget {
+  .section-home-financial-widgets .currency-rates-widget {
     width: 100%;
   }
 }
@@ -13565,6 +13622,96 @@ form.style-line-bot.style-2 button {
 .deposit-calculator__result-row { display: flex; justify-content: space-between; align-items: baseline; gap: 0.5rem; margin-bottom: 15px; }
 .deposit-calculator__result-label { font-size: 16px; color: rgba(25,20,0,0.7); }
 .deposit-calculator__result-value { font-weight: 600; }
+
+/* --------- Калькулятор вкладов (сервис) --------- */
+.deposit-service-calc { background: #fafaff; border: 1px solid var(--credit-offer-border, rgba(25, 20, 0, 0.12)); border-radius: 14px; padding: 24px; max-width: 960px; }
+.deposit-service-calc__grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px 20px; }
+@media (max-width: 700px) { .deposit-service-calc__grid { grid-template-columns: 1fr; } }
+.deposit-service-calc__field--term { grid-column: 1 / -1; }
+.deposit-service-calc__term-row { display: flex; gap: 10px; align-items: stretch; flex-wrap: wrap; }
+.deposit-service-calc__term-row .deposit-calculator__input { flex: 1; min-width: 120px; margin: 0; }
+.deposit-service-calc__select { padding: 15px; font-size: 16px; border: 1px solid rgba(25,20,0,0.2); border-radius: 4px; background: #fff; min-width: 140px; }
+.deposit-service-calc__select--wide { width: 100%; box-sizing: border-box; }
+.deposit-service-calc__date-wrap { position: relative; height: 52px; overflow: hidden; border-radius: 4px; }
+.deposit-service-calc__date-display {
+  display: block; width: 100%; text-align: left; padding: 15px; font-size: 16px; border: 1px solid rgba(25,20,0,0.2); border-radius: 4px;
+  background: #fff; color: #101828; box-sizing: border-box; pointer-events: none;
+}
+.deposit-service-calc__date-wrap:hover .deposit-service-calc__date-display { border-color: rgba(25,20,0,0.35); }
+.deposit-service-calc__date-input {
+  position: absolute; left: 0; top: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer; z-index: 2;
+  margin: 0; padding: 0; border: 0;
+}
+.deposit-service-calc__flows { margin-top: 20px; padding-top: 16px; border-top: 1px solid rgba(25,20,0,0.08); }
+.deposit-service-calc__flow-btns { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 12px; }
+.deposit-service-calc__btn-secondary {
+  padding: 10px 16px; font-size: 15px; border-radius: 8px; border: 1px solid rgba(25,20,0,0.2);
+  background: #fff; cursor: pointer; color: #101828;
+}
+.deposit-service-calc__btn-secondary:hover { background: rgba(25,20,0,0.04); }
+.deposit-service-calc__flow-panel { margin-bottom: 12px; padding: 14px; border-radius: 10px; border: 1px solid rgba(25,20,0,0.12); background: #fff; }
+.deposit-service-calc__flow-panel-title { font-weight: 600; margin-bottom: 10px; }
+.deposit-service-calc__flow-panel-grid { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+.deposit-service-calc__input { padding: 10px 12px; font-size: 15px; border: 1px solid rgba(25,20,0,0.2); border-radius: 6px; min-width: 140px; }
+.deposit-service-calc__btn-primary { padding: 10px 18px; font-size: 15px; border-radius: 8px; border: none; background: #f97316; color: #fff; cursor: pointer; font-weight: 600; }
+.deposit-service-calc__btn-primary:hover { filter: brightness(1.05); }
+.deposit-service-calc__btn-link { background: none; border: none; color: #6b7280; cursor: pointer; font-size: 14px; text-decoration: underline; padding: 0 4px; }
+.deposit-service-calc__flow-row { display: flex; justify-content: space-between; align-items: center; gap: 8px; padding: 8px 0; border-bottom: 1px solid rgba(25,20,0,0.06); font-size: 14px; }
+.deposit-service-calc__flow-remove { border: none; background: rgba(25,20,0,0.06); width: 28px; height: 28px; border-radius: 6px; cursor: pointer; font-size: 18px; line-height: 1; }
+.deposit-service-calc__actions { margin-top: 20px; position: relative; z-index: 5; }
+.deposit-service-calc__btn-calc {
+  padding: 14px 28px; font-size: 17px; font-weight: 600; border-radius: 10px; border: none; background: #101828; color: #fff; cursor: pointer;
+}
+.deposit-service-calc__btn-calc:hover { opacity: 0.92; }
+.deposit-service-calc__result { margin-top: 28px; padding-top: 20px; border-top: 1px solid rgba(25,20,0,0.1); }
+.deposit-service-calc__result-title, .deposit-service-calc__table-title { font-size: 20px; font-weight: 600; margin: 0 0 12px 0; }
+.deposit-service-calc__table-title { margin-top: 24px; }
+.deposit-service-calc__tax-note { font-size: 13px; color: #6b7280; margin: 12px 0 0 0; line-height: 1.45; }
+.deposit-service-calc__table-wrap { overflow-x: auto; border-radius: 10px; border: 1px solid rgba(25,20,0,0.1); }
+.deposit-service-calc__table { width: 100%; border-collapse: collapse; font-size: 14px; min-width: 520px; }
+.deposit-service-calc__table th, .deposit-service-calc__table td { padding: 10px 12px; text-align: left; border-bottom: 1px solid rgba(25,20,0,0.06); }
+.deposit-service-calc__table th { background: rgba(25,20,0,0.04); font-weight: 600; white-space: nowrap; }
+.deposit-service-calc__table tr:last-child td { border-bottom: none; }
+
+/* --------- Калькулятор кредитов (сервис) --------- */
+.credit-service-calc { background: #fafaff; border: 1px solid var(--credit-offer-border, rgba(25, 20, 0, 0.12)); border-radius: 14px; padding: 24px; max-width: 960px; }
+.credit-service-calc__grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px 20px; }
+@media (max-width: 700px) { .credit-service-calc__grid { grid-template-columns: 1fr; } }
+
+/* --------- Страница курсов ЦБ --------- */
+.cbr-page { display: grid; grid-template-columns: 260px minmax(0, 1fr); gap: 40px; align-items: start; }
+@media (max-width: 991px) { .cbr-page { grid-template-columns: 1fr; } }
+.cbr-page__aside-inner { position: sticky; top: 1.25rem; }
+.cbr-page__aside-lead { font-size: 14px; line-height: 1.5; margin: 0 0 20px 0; }
+.cbr-page__nav { display: flex; flex-direction: column; gap: 8px; max-height: 70vh; overflow-y: auto; padding-right: 6px; }
+.cbr-page__nav-link {
+  font-size: 14px; color: #2563eb; text-decoration: none; line-height: 1.35;
+  border-bottom: 1px solid transparent;
+}
+.cbr-page__nav-link:hover { text-decoration: underline; border-bottom-color: rgba(37, 99, 235, 0.3); }
+.cbr-page__main { display: flex; flex-direction: column; gap: 20px; min-width: 0; }
+.cbr-page__card {
+  border: 1px solid rgba(25, 20, 0, 0.12); border-radius: 14px; padding: 20px 22px;
+  background: #fafaff;
+}
+.cbr-page__card-head { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 10px; margin-bottom: 10px; }
+.cbr-page__card-title { margin: 0; font-size: 20px; font-weight: 600; color: #101828; }
+.cbr-page__change { font-size: 15px; font-weight: 600; }
+.cbr-page__change.is-up { color: #16a34a; }
+.cbr-page__change.is-down { color: #dc2626; }
+.cbr-page__rate-line { margin: 0 0 16px 0; font-size: 15px; }
+.cbr-page__calc { margin-top: 4px; }
+.cbr-page__calc-label { display: block; font-size: 14px; font-weight: 500; color: rgba(25, 20, 0, 0.7); margin-bottom: 8px; }
+.cbr-page__calc-row { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; }
+.cbr-page__calc-input {
+  width: 160px; max-width: 100%; padding: 12px 14px; font-size: 17px; border: 1px solid rgba(25, 20, 0, 0.2);
+  border-radius: 8px; box-sizing: border-box;
+}
+.cbr-page__calc-eq { font-size: 18px; color: #6b7280; font-weight: 500; }
+.cbr-page__calc-result-wrap { display: inline-flex; align-items: baseline; gap: 6px; flex-wrap: wrap; }
+.cbr-page__calc-result { font-size: 22px; font-weight: 700; color: #101828; }
+.cbr-page__calc-rub { font-size: 18px; font-weight: 600; color: rgba(25, 20, 0, 0.55); }
+.cbr-page__code { font-size: 13px; padding: 2px 6px; background: rgba(25, 20, 0, 0.06); border-radius: 4px; }
 
 /* --------- Reviews (Вклады, Кредиты, Карты, Займы, Банки) --------- */
 .section-reviews .section-heading { display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap; margin-bottom: 24px; }

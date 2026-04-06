@@ -6,6 +6,7 @@ use App\Http\Controllers\BlogController;
 use App\Http\Controllers\CardCategoryController;
 use App\Http\Controllers\CardController;
 use App\Http\Controllers\CityDialogController;
+use App\Http\Controllers\ContactController;
 use App\Http\Controllers\CreditCategoryController;
 use App\Http\Controllers\CreditController;
 use App\Http\Controllers\DepositCategoryController;
@@ -16,10 +17,12 @@ use App\Http\Controllers\LoanController;
 use App\Http\Controllers\PageController;
 use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\ServiceController;
+use App\Http\Controllers\TeamController;
 use App\Models\Article;
 use App\Models\City;
 use App\Models\HomePageSetting;
 use App\Models\SiteSettings;
+use App\Models\Specialist;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -46,10 +49,6 @@ Route::get('/', function () {
     ]);
 })->name('home');
 
-Route::get('/currency-calculator', function () {
-    return view('currency-calculator-placeholder');
-})->name('currency.calculator');
-
 Route::get('/test-leadgid', function () {
     return app(\App\Services\LeadgidService::class)->testConnection();
 });
@@ -63,9 +62,11 @@ Route::get('/test-network', function () {
 
 Route::get('/about', function () {
     $siteSettings = SiteSettings::getInstance();
+    $specialists = Specialist::query()->latest('id')->get();
 
     return view('about-project', [
         'siteSettings' => $siteSettings,
+        'specialists' => $specialists,
         'seo_title' => $siteSettings->about_project_seo_title ?: ($siteSettings->about_project_team_title ?: 'О проекте'),
         'seo_description' => $siteSettings->about_project_seo_description ?: ($siteSettings->about_project_reviews_description ?: ($siteSettings->about_project_approach_description ?: '')),
         'title' => 'О проекте',
@@ -74,9 +75,11 @@ Route::get('/about', function () {
 
 Route::get('/about.html', function () {
     $siteSettings = SiteSettings::getInstance();
+    $specialists = Specialist::query()->latest('id')->get();
 
     return view('about-project', [
         'siteSettings' => $siteSettings,
+        'specialists' => $specialists,
         'seo_title' => $siteSettings->about_project_seo_title ?: ($siteSettings->about_project_team_title ?: 'О проекте'),
         'seo_description' => $siteSettings->about_project_seo_description ?: ($siteSettings->about_project_reviews_description ?: ($siteSettings->about_project_approach_description ?: '')),
         'title' => 'О проекте',
@@ -271,6 +274,13 @@ Route::get('/api/deposits/{deposit}/conditions', [DepositController::class, 'con
 Route::get('/services/{slug}', [ServiceController::class, 'show'])
     ->where('slug', '[A-Za-z0-9\\-]+')
     ->name('services.show');
+
+Route::get('/services/{slug}/', [ServiceController::class, 'show'])
+    ->where('slug', '[A-Za-z0-9\\-]+');
+
+Route::get('/team', [TeamController::class, 'index'])->name('team.index');
+Route::get('/contact-us', [ContactController::class, 'index'])->name('contact.index');
+Route::post('/contact-us', [ContactController::class, 'store'])->name('contact.store');
 
 // Static pages: /{slug} (must be last)
 Route::get('/{slug}', [PageController::class, 'show'])

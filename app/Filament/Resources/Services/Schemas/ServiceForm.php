@@ -28,6 +28,7 @@ class ServiceForm
                                     ->formatStateUsing(fn (?string $state) => match ($state) {
                                         Service::TYPE_CREDIT_CALCULATOR => 'Калькулятор кредитов',
                                         Service::TYPE_DEPOSIT_CALCULATOR => 'Калькулятор вкладов',
+                                        Service::TYPE_CURRENCY_RATES => 'Курс валют',
                                         default => $state ?? '',
                                     }),
                                 TextInput::make('title')

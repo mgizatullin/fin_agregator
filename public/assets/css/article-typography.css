@@ -1,0 +1,672 @@
+/* ============================================================
+   ТИПОГРАФИКА СТАТЕЙ — ФИНАНСОВЫЙ САЙТ
+   Палитра: #000000 · #f2f6ff · #0075ff
+   Область применения: .article-body
+   ============================================================ */
+
+/* ── Переменные ─────────────────────────────────────────── */
+:root {
+  --color-ink: #000000;
+  --color-surface: #f2f6ff;
+  --color-accent: #0075ff;
+  --color-accent-dim: #ccdeff; /* 20% accent на белом */
+  --color-accent-deep: #0057be; /* hover / активные состояния */
+  --color-muted: #5a6478; /* вспомогательный текст */
+  --color-border: #d3dff7; /* границы таблиц, делители */
+  --color-white: #ffffff;
+
+  --font-ui: "Inter", "Helvetica Neue", Arial, sans-serif;
+  --font-mono: "JetBrains Mono", "Fira Code", "Courier New", monospace;
+
+  --text-base: 1.0625rem; /* 17 px */
+  --line-body: 1.75;
+  --line-heading: 1.2;
+
+  --space-xs: 0.25rem;
+  --space-sm: 0.5rem;
+  --space-md: 1rem;
+  --space-lg: 2rem;
+  --space-xl: 2.25rem;
+  --space-2xl: 3rem;
+
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+
+}
+
+/* ── Обёртка статьи ─────────────────────────────────────── */
+.article-body {
+  line-height: var(--line-body);
+  color: var(--color-ink);
+  margin-inline: auto;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  hyphens: auto;
+  hanging-punctuation: first last;
+}
+
+/* ── Заголовки ──────────────────────────────────────────── */
+.article-body h1,
+.article-body h2,
+.article-body h3,
+.article-body h4,
+.article-body h5,
+.article-body h6 {
+  font-family: var(--font-ui);
+  font-weight: 700;
+  line-height: var(--line-heading);
+  color: var(--color-ink);
+  margin-block: var(--space-xl) var(--space-md);
+  letter-spacing: -0.02em;
+}
+
+.article-body h1 {
+  font-size: clamp(1.75rem, 4vw, 2.5rem);
+}
+.article-body h2 {
+  font-size: clamp(2.375rem, 3vw, 1.875rem);
+}
+.article-body h3 {
+  font-size: clamp(1.9rem, 2.5vw, 1.375rem);
+}
+.article-body h4 {
+  font-size: 1.125rem;
+  font-weight: 600;
+}
+.article-body h5 {
+  font-size: 1rem;
+  font-weight: 600;
+}
+.article-body h6 {
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: var(--color-muted);
+}
+
+/* Декоративная черта под h2 */
+.article-body h2 {
+  padding-bottom: var(--space-sm);
+  border-bottom: 2px solid var(--color-accent);
+  display: inline-block;
+}
+
+/* Первый заголовок без верхнего отступа */
+.article-body > h1:first-child,
+.article-body > h2:first-child {
+  margin-top: 0;
+}
+
+/* ── Абзацы ─────────────────────────────────────────────── */
+.article-body p {
+  margin-block: 0 var(--space-lg);
+  font-size: 17px;
+  color: var(--Mono-gray-6);
+  line-height: 27px;
+
+}
+
+/* Красная строка — альтернативный стиль (добавьте класс .indent на .article-body) */
+.article-body.indent p + p {
+  text-indent: 2em;
+  margin-top: 0;
+}
+
+/* ── Ссылки ─────────────────────────────────────────────── */
+.article-body a {
+  color: var(--color-accent);
+  text-decoration: underline;
+  text-decoration-color: var(--color-accent-dim);
+  text-underline-offset: 3px;
+  transition: color 0.15s, text-decoration-color 0.15s;
+}
+
+.article-body a:hover,
+.article-body a:focus-visible {
+  color: var(--color-accent-deep);
+  text-decoration-color: var(--color-accent-deep);
+}
+
+/* ── Акцентирование текста ──────────────────────────────── */
+.article-body strong,
+.article-body b {
+  font-weight: 700;
+  color: inherit;
+}
+
+.article-body em,
+.article-body i {
+  font-style: italic;
+}
+
+.article-body mark {
+  background: var(--color-accent-dim);
+  color: var(--color-ink);
+  border-radius: var(--radius-sm);
+  padding-inline: var(--space-xs);
+}
+
+.article-body small {
+  font-size: 12px;
+  color: var(--color-muted);
+}
+
+.article-body abbr[title] {
+  text-decoration: underline dotted;
+  cursor: help;
+}
+
+/* ── Нумерованный список (ol) ───────────────────────────── */
+.article-body ol {
+  list-style: none;
+  counter-reset: article-ol;
+  padding-left: 0;
+  margin-block: 0 var(--space-lg);
+}
+
+.article-body ol li {
+  counter-increment: article-ol;
+  display: flex;
+  gap: var(--space-md);
+  margin-bottom: var(--space-sm);
+  align-items: baseline;
+}
+
+.article-body ol li::before {
+  content: counter(article-ol);
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.625rem;
+  height: 1.625rem;
+  border-radius: 50%;
+  background: var(--color-accent);
+  color: var(--color-white);
+  font-family: var(--font-ui);
+  font-size: 0.75rem;
+  font-weight: 700;
+  line-height: 1;
+  margin-top: 0.2em; /* выравнивание с первой строкой текста */
+}
+
+/* Вложенный ol */
+.article-body ol ol {
+  margin-top: var(--space-sm);
+  padding-left: 2.5rem;
+}
+
+.article-body ol ol li::before {
+  background: var(--color-surface);
+  color: var(--color-accent);
+  border: 1.5px solid var(--color-accent);
+}
+
+/* ── Маркированный список (ul) ──────────────────────────── */
+.article-body ul {
+  list-style: none;
+  padding-left: 0;
+  margin-block: 0 var(--space-lg);
+}
+
+.article-body ul li {
+  display: flex;
+  gap: var(--space-md);
+  margin-bottom: var(--space-sm);
+  align-items: baseline;
+}
+
+.article-body ul li::before {
+  content: "";
+  flex-shrink: 0;
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 50%;
+  background: var(--color-accent);
+  margin-top: 0.55em; /* выравнивание по оптическому центру строки */
+}
+
+/* Вложенный ul */
+.article-body ul ul {
+  margin-top: var(--space-sm);
+  padding-left: 1.5rem;
+}
+
+.article-body ul ul li::before {
+  background: transparent;
+  border: 1.5px solid var(--color-accent);
+}
+
+/* ── Горизонтальная линия ───────────────────────────────── */
+.article-body hr {
+  border: none;
+  height: 1px;
+  background: var(--color-border);
+  margin-block: var(--space-2xl);
+}
+
+/* ── Цитата (blockquote) ────────────────────────────────── */
+.article-body blockquote {
+  position: relative;
+  margin: var(--space-xl) 0;
+  padding: var(--space-lg) var(--space-xl);
+  background: var(--color-surface);
+  border-left: 4px solid var(--color-accent);
+  border-radius: 0 var(--radius-md) var(--radius-md) 0;
+  font-style: italic;
+  font-size: 1.0625rem;
+  color: var(--color-ink);
+}
+
+/* Декоративная кавычка */
+.article-body blockquote::before {
+  content: "\201C";
+  position: absolute;
+  top: -0.25rem;
+  left: var(--space-lg);
+  font-size: 4rem;
+  font-family: var(--font-body);
+  color: var(--color-accent);
+  line-height: 1;
+  opacity: 0.4;
+  pointer-events: none;
+  user-select: none;
+}
+
+.article-body blockquote p {
+  margin: 0 0 var(--space-sm);
+}
+
+.article-body blockquote p:last-child {
+  margin-bottom: 0;
+}
+
+.article-body blockquote cite {
+  display: block;
+  margin-top: var(--space-sm);
+  font-size: 0.875rem;
+  font-style: normal;
+  color: var(--color-muted);
+  font-family: var(--font-ui);
+}
+
+.article-body blockquote cite::before {
+  content: "— ";
+}
+
+/* ── Код inline ─────────────────────────────────────────── */
+.article-body code {
+  font-family: var(--font-mono);
+  font-size: 0.875em;
+  background: var(--color-surface);
+  color: var(--color-accent-deep);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  padding: 0.1em 0.4em;
+  word-break: break-word;
+}
+
+/* ── Блок кода (pre → code) ─────────────────────────────── */
+.article-body pre {
+  margin-block: 0 var(--space-xl);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  background: #0d1117; /* очень тёмный — читаемость синтаксиса */
+  border: 1px solid #1e2a3a;
+  box-shadow: 0 4px 24px rgba(0, 117, 255, 0.07);
+}
+
+/* Заголовок блока (можно добавить через data-lang="js") */
+.article-body pre[data-lang]::before {
+  content: attr(data-lang);
+  display: block;
+  background: #0d1117;
+  border-bottom: 1px solid #1e2a3a;
+  padding: var(--space-sm) var(--space-lg);
+  font-family: var(--font-ui);
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--color-accent);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.article-body pre code {
+  display: block;
+  overflow-x: auto;
+  padding: var(--space-lg) var(--space-xl);
+  font-family: var(--font-mono);
+  font-size: 0.875rem;
+  line-height: 1.65;
+  color: #e2e8f0;
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  word-break: normal;
+  white-space: pre;
+  tab-size: 2;
+}
+
+/* ── Таблица ─────────────────────────────────────────────── */
+.article-body table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-block: 0 var(--space-xl);
+  font-family: var(--font-ui);
+  font-size: 0.9375rem;
+  line-height: 1.45;
+  overflow-x: auto;
+  display: block; /* горизонтальный скролл на мобильных */
+}
+
+.article-body table thead {
+  background: var(--color-accent);
+  color: var(--color-white);
+}
+
+.article-body table thead th {
+  padding: var(--space-sm) var(--space-md);
+  font-weight: 600;
+  text-align: left;
+  white-space: nowrap;
+  letter-spacing: 0.02em;
+  font-size: 0.8125rem;
+  text-transform: uppercase;
+}
+
+.article-body table tbody tr {
+  border-bottom: 1px solid var(--color-border);
+  transition: background 0.1s;
+}
+
+.article-body table tbody tr:nth-child(even) {
+  background: var(--color-surface);
+}
+
+.article-body table tbody tr:hover {
+  background: var(--color-accent-dim);
+}
+
+.article-body table td {
+  padding: var(--space-sm) var(--space-md);
+  vertical-align: top;
+}
+
+/* Числовые ячейки — выравнивание вправо */
+.article-body table td[data-type="number"],
+.article-body table th[data-type="number"] {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Положительные / отрицательные финансовые значения */
+.article-body .val-positive {
+  color: #0a8a4a;
+  font-weight: 600;
+}
+.article-body .val-negative {
+  color: #d63031;
+  font-weight: 600;
+}
+
+/* Подпись к таблице */
+.article-body table caption {
+  caption-side: bottom;
+  text-align: left;
+  font-size: 0.8125rem;
+  color: var(--color-muted);
+  padding-top: var(--space-sm);
+  font-family: var(--font-ui);
+}
+
+/* ── Изображения ─────────────────────────────────────────── */
+.article-body img {
+  display: block;
+  width: min(100%, 700px);
+  max-width: 700px;
+  height: auto !important;
+  margin-inline: auto;
+  border-radius: var(--radius-md);
+  margin-block: var(--space-xl);
+}
+
+/* figure + figcaption */
+.article-body figure {
+  margin: var(--space-xl) 0;
+}
+
+.article-body figure img {
+  margin: 0 auto;
+  width: min(100%, 700px);
+  max-width: 700px;
+  height: auto !important;
+  object-fit: contain;
+  border: 1px solid var(--color-border);
+}
+
+.article-body figcaption {
+  margin-top: var(--space-sm);
+  font-family: var(--font-ui);
+  font-size: 0.8125rem;
+  color: var(--color-muted);
+  line-height: 1.5;
+}
+
+/* Широкое изображение (вырывается за measure) */
+.article-body figure.wide {
+  margin-inline: calc(-1 * clamp(1rem, 5vw, 4rem));
+}
+
+/* ── Определения (dl / dt / dd) ─────────────────────────── */
+.article-body dl {
+  margin-block: 0 var(--space-xl);
+}
+
+.article-body dt {
+  font-family: var(--font-ui);
+  font-weight: 700;
+  font-size: 0.9375rem;
+  color: var(--color-ink);
+  margin-top: var(--space-md);
+}
+
+.article-body dd {
+  margin-left: 0;
+  padding-left: var(--space-xl);
+  border-left: 2px solid var(--color-border);
+  color: var(--color-muted);
+  margin-top: var(--space-xs);
+}
+
+/* ── Подробности (details / summary) ───────────────────── */
+.article-body details {
+  margin-block: 0 var(--space-md);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+}
+
+.article-body summary {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  padding: var(--space-md) var(--space-lg);
+  font-family: var(--font-ui);
+  font-weight: 600;
+  font-size: 0.9375rem;
+  cursor: pointer;
+  background: var(--color-surface);
+  user-select: none;
+  list-style: none;
+  transition: background 0.15s;
+}
+
+.article-body summary::-webkit-details-marker {
+  display: none;
+}
+
+.article-body summary::before {
+  content: "▶";
+  font-size: 0.625rem;
+  color: var(--color-accent);
+  transition: transform 0.2s;
+  flex-shrink: 0;
+}
+
+.article-body details[open] > summary::before {
+  transform: rotate(90deg);
+}
+
+.article-body details[open] > summary {
+  background: var(--color-accent-dim);
+}
+
+.article-body details > :not(summary) {
+  padding: var(--space-md) var(--space-lg);
+}
+
+/* ── Примечание / информационный блок ──────────────────── */
+
+/* Базовый класс */
+.article-body .callout {
+  display: flex;
+  gap: var(--space-md);
+  margin-block: 0 var(--space-xl);
+  padding: var(--space-md) var(--space-lg);
+  border-radius: var(--radius-md);
+  border-left: 4px solid transparent;
+  font-family: var(--font-ui);
+  font-size: 0.9375rem;
+  line-height: 1.6;
+}
+
+.article-body .callout p {
+  margin: 0;
+}
+.article-body .callout p:first-child {
+  margin: 0;
+  font-size: 24px;
+}
+
+.article-body .callout-icon {
+  flex-shrink: 0;
+  font-size: 1.25rem;
+  line-height: 1.4;
+}
+
+/* Информация */
+.article-body .callout--info {
+  background: var(--color-surface);
+  border-color: var(--color-accent);
+  color: var(--color-ink);
+}
+
+/* Предупреждение */
+.article-body .callout--warning {
+  background: #fff8e1;
+  border-color: #f59e0b;
+  color: #78350f;
+}
+
+/* Опасность */
+.article-body .callout--danger {
+  background: #fff1f2;
+  border-color: #e11d48;
+  color: #9f1239;
+}
+
+/* Успех */
+.article-body .callout--success {
+  background: #f0fdf4;
+  border-color: #16a34a;
+  color: #14532d;
+}
+
+/* ── Выноска с данными (финансовый виджет) ──────────────── */
+.article-body .data-card {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr));
+  gap: var(--space-md);
+  margin-block: 0 var(--space-xl);
+}
+
+.article-body .data-card__item {
+  padding: var(--space-md);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  font-family: var(--font-ui);
+}
+
+.article-body .data-card__label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--color-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-bottom: var(--space-xs);
+}
+
+.article-body .data-card__value {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--color-ink);
+  font-variant-numeric: tabular-nums;
+}
+
+/* ── Адаптивность ───────────────────────────────────────── */
+@media (max-width: 640px) {
+  :root {
+    --text-base: 1rem;
+    --space-lg: 1.25rem;
+    --space-xl: 1.75rem;
+    --space-2xl: 2.25rem;
+  }
+
+  .article-body pre code {
+    font-size: 0.8125rem;
+    padding: var(--space-md);
+  }
+
+  .article-body table {
+    font-size: 0.875rem;
+  }
+
+  .article-body blockquote {
+    padding: var(--space-md) var(--space-lg);
+  }
+}
+
+/* ── Печать ─────────────────────────────────────────────── */
+@media print {
+  .article-body {
+    font-size: 11pt;
+    color: #000;
+    max-width: none;
+  }
+
+  .article-body a {
+    color: #000;
+    text-decoration: underline;
+  }
+
+  .article-body a::after {
+    content: " (" attr(href) ")";
+    font-size: 0.75em;
+    color: #555;
+  }
+
+  .article-body pre,
+  .article-body blockquote {
+    page-break-inside: avoid;
+  }
+
+  .article-body h2,
+  .article-body h3 {
+    page-break-after: avoid;
+  }
+
+  .article-body img {
+    max-width: 100%;
+  }
+}

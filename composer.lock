@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "3723ab303406b021a4623cc3133b28bb",
+    "content-hash": "bfe778bcc9fa833643541f832cb002c7",
     "packages": [
         {
             "name": "anourvalar/eloquent-serialize",
@@ -509,6 +509,84 @@
                 }
             ],
             "time": "2024-07-16T11:13:48+00:00"
+        },
+        {
+            "name": "curder/filament-rich-editor-source-code",
+            "version": "v0.1.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/curder/filament-rich-editor-source-code.git",
+                "reference": "ddb1c0dd3d56f885923356cd1dfdb2d5da41b5a2"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/curder/filament-rich-editor-source-code/zipball/ddb1c0dd3d56f885923356cd1dfdb2d5da41b5a2",
+                "reference": "ddb1c0dd3d56f885923356cd1dfdb2d5da41b5a2",
+                "shasum": ""
+            },
+            "require": {
+                "filament/filament": "^4.0|^5.0",
+                "illuminate/contracts": "^11.0||^12.0",
+                "php": "^8.2",
+                "spatie/laravel-package-tools": "^1.16"
+            },
+            "require-dev": {
+                "larastan/larastan": "^3.0",
+                "laravel/pint": "^1.14",
+                "nunomaduro/collision": "^8.8",
+                "orchestra/testbench": "^10.0.0||^9.0.0",
+                "pestphp/pest": "^3.0|^4.0",
+                "pestphp/pest-plugin-arch": "^3.0|^4.0",
+                "pestphp/pest-plugin-laravel": "^3.0|^4.0",
+                "phpstan/extension-installer": "^1.4",
+                "phpstan/phpstan-deprecation-rules": "^2.0",
+                "phpstan/phpstan-phpunit": "^2.0"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "aliases": {
+                        "FilamentRichEditorSourceCode": "Curder\\FilamentRichEditorSourceCode\\Facades\\FilamentRichEditorSourceCode"
+                    },
+                    "providers": [
+                        "Curder\\FilamentRichEditorSourceCode\\FilamentRichEditorSourceCodeServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Curder\\FilamentRichEditorSourceCode\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "curder",
+                    "email": "q.curder@gmail.com",
+                    "role": "Developer"
+                }
+            ],
+            "description": "Allow Filament 4.x or 5.x View and edit the source code of the rich text editor in the form of a modal.",
+            "homepage": "https://github.com/curder/filament-rich-editor-source-code",
+            "keywords": [
+                "curder",
+                "filament-rich-editor-source-code",
+                "laravel"
+            ],
+            "support": {
+                "issues": "https://github.com/curder/filament-rich-editor-source-code/issues",
+                "source": "https://github.com/curder/filament-rich-editor-source-code/tree/v0.1.0"
+            },
+            "funding": [
+                {
+                    "url": "https://github.com/curder",
+                    "type": "github"
+                }
+            ],
+            "time": "2026-01-31T14:05:32+00:00"
         },
         {
             "name": "danharrin/date-format-converter",

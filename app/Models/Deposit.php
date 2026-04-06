@@ -77,6 +77,22 @@ class Deposit extends Model
         return $this->morphMany(Review::class, 'reviewable')->latest();
     }
 
+    /**
+     * Заголовок страницы вклада: «Вклад {название} от {банк}», без дублирующего «Вклад »,
+     * если в названии уже есть слово «вклад» (без учёта регистра).
+     */
+    public function pageHeadline(): string
+    {
+        $name = trim((string) ($this->name ?? ''));
+        $bankName = trim((string) ($this->bank?->name ?? ''));
+
+        $prefix = ($name !== '' && mb_stripos($name, 'вклад') === false) ? 'Вклад ' : '';
+        $core = $name !== '' ? $prefix.$name : 'Вклад';
+        $suffix = $bankName !== '' ? ' от '.$bankName : '';
+
+        return trim($core.$suffix);
+    }
+
     protected static function generateUniqueSlug(string $name, ?int $ignoreId = null): string
     {
         $baseSlug = Str::slug($name);

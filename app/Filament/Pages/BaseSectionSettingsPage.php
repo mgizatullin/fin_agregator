@@ -4,7 +4,6 @@ namespace App\Filament\Pages;
 
 use App\Models\SectionSetting;
 use Filament\Actions\Action;
-use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Textarea;
@@ -76,18 +75,13 @@ abstract class BaseSectionSettingsPage extends Page
     {
         $setting = $this->getSetting();
         $data = $setting->attributesToArray();
-        $data['advantages'] = collect($setting->advantages ?? [])->map(function ($item) {
-            if (! is_array($item)) {
-                return ['title' => $item, 'description' => '', 'image' => []];
-            }
-            $img = $item['image'] ?? null;
-
-            return [
-                'title' => $item['title'] ?? $item['text'] ?? '',
-                'description' => $item['description'] ?? '',
-                'image' => $img ? (is_array($img) ? $img : [$img]) : [],
-            ];
-        })->values()->toArray();
+        $data['faq_title'] = $setting->faq_title ?? '';
+        $data['faq_description'] = $setting->faq_description ?? '';
+        $data['faq_items'] = collect($setting->faq_items ?? [])
+            ->map(fn ($item) => Arr::only(is_array($item) ? $item : [], ['question', 'answer']))
+            ->filter(fn ($item) => filled($item['question'] ?? null) || filled($item['answer'] ?? null))
+            ->values()
+            ->toArray();
         $categoryClass = static::categoryClass();
         $categories = $categoryClass::orderBy('sort_order')->orderBy('id')->get();
         $data['categories'] = $categories->map(fn (Model $c) => [
@@ -114,20 +108,16 @@ abstract class BaseSectionSettingsPage extends Page
             $this->callHook('beforeSave');
 
             $setting = $this->getSetting();
-            $advantages = Arr::pull($data, 'advantages', []);
+            $faqItems = Arr::pull($data, 'faq_items', []);
+            $faqItems = collect($faqItems)
+                ->map(fn ($item) => Arr::only(is_array($item) ? $item : [], ['question', 'answer']))
+                ->filter(fn ($item) => filled($item['question'] ?? null) || filled($item['answer'] ?? null))
+                ->values()
+                ->toArray();
             $categoriesData = Arr::pull($data, 'categories', []);
 
             $setting->update(array_merge(Arr::except($data, ['id', 'created_at', 'updated_at']), [
-                'advantages' => collect($advantages)->map(function ($a) {
-                    $img = $a['image'] ?? null;
-                    $path = is_array($img) ? (Arr::first($img) ?: null) : $img;
-
-                    return [
-                        'title' => $a['title'] ?? '',
-                        'description' => $a['description'] ?? '',
-                        'image' => $path,
-                    ];
-                })->values()->toArray(),
+                'faq_items' => $faqItems,
             ]));
 
             $categoryClass = static::categoryClass();
@@ -227,31 +217,34 @@ abstract class BaseSectionSettingsPage extends Page
                                             ->label('Описание')
                                             ->rows(4)
                                             ->columnSpanFull(),
-                                        Repeater::make('advantages')
-                                            ->label('Преимущества')
+                                        TextInput::make('faq_title')
+                                            ->label('Заголовок FAQ')
+                                            ->maxLength(255)
+                                            ->columnSpanFull(),
+                                        Textarea::make('faq_description')
+                                            ->label('Описание FAQ')
+                                            ->rows(3)
+                                            ->columnSpanFull(),
+                                        Repeater::make('faq_items')
+                                            ->label('Частые вопросы')
                                             ->schema([
-                                                TextInput::make('title')
-                                                    ->label('Заголовок')
-                                                    ->maxLength(255)
+                                                TextInput::make('question')
+                                                    ->label('Вопрос')
+                                                    ->maxLength(500)
+                                                    ->required()
                                                     ->columnSpanFull(),
-                                                Textarea::make('description')
-                                                    ->label('Описание')
-                                                    ->rows(2)
-                                                    ->columnSpanFull(),
-                                                FileUpload::make('image')
-                                                    ->label('Картинка')
-                                                    ->image()
-                                                    ->directory('section-advantages/'.static::sectionType())
-                                                    ->disk('public')
-                                                    ->maxSize(2048)
+                                                Textarea::make('answer')
+                                                    ->label('Ответ')
+                                                    ->rows(4)
+                                                    ->required()
                                                     ->columnSpanFull(),
                                             ])
                                             ->defaultItems(0)
-                                            ->addActionLabel('Добавить преимущество')
+                                            ->addActionLabel('Добавить вопрос')
                                             ->reorderable()
                                             ->reorderableWithButtons()
                                             ->collapsible()
-                                            ->itemLabel(fn (array $state): ?string => $state['title'] ?? null)
+                                            ->itemLabel(fn (array $state): ?string => $state['question'] ?? null)
                                             ->columnSpanFull(),
                                     ])
                                     ->columns(1),

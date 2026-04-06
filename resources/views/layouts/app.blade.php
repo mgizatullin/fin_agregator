@@ -27,6 +27,54 @@
 @endif
 
     <link rel="canonical" href="{{ $canonical_url ?? url()->current() }}">
+    @php
+        $metaTitle = trim((string) (
+            $seo_title
+            ?? $pageTitle
+            ?? $title
+            ?? ($section->title ?? config('app.name'))
+        ));
+        $metaDescription = trim((string) ($seo_description ?? ''));
+        $canonicalUrl = $canonical_url ?? url()->current();
+
+        $fallbackOgImage = !empty($siteSettings->logo ?? null)
+            ? (str_starts_with($siteSettings->logo, 'http') ? $siteSettings->logo : asset('storage/' . ltrim((string) $siteSettings->logo, '/')))
+            : asset('assets/images/logo/favicon.svg');
+
+        $rawOgImage = $og_image
+            ?? $seo_image
+            ?? ($article->image ?? null)
+            ?? ($post->image ?? null)
+            ?? ($service->image ?? null)
+            ?? ($page->image ?? null)
+            ?? null;
+
+        $resolvedOgImage = null;
+        if (is_string($rawOgImage) && trim($rawOgImage) !== '') {
+            $rawOgImage = trim($rawOgImage);
+            if (str_starts_with($rawOgImage, 'http')) {
+                $resolvedOgImage = $rawOgImage;
+            } elseif (str_starts_with($rawOgImage, 'storage/')) {
+                $resolvedOgImage = asset($rawOgImage);
+            } else {
+                $resolvedOgImage = asset('storage/' . ltrim($rawOgImage, '/'));
+            }
+        }
+
+        $metaOgImage = $resolvedOgImage ?: $fallbackOgImage;
+    @endphp
+    <meta property="og:locale" content="ru_RU">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="{{ config('app.name') }}">
+    <meta property="og:title" content="{{ $metaTitle }}">
+    <meta property="og:description" content="{{ $metaDescription }}">
+    <meta property="og:url" content="{{ $canonicalUrl }}">
+    <meta property="og:image" content="{{ $metaOgImage }}">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="{{ $metaTitle }}">
+    <meta name="twitter:description" content="{{ $metaDescription }}">
+    <meta name="twitter:image" content="{{ $metaOgImage }}">
+    @include('layouts.partials.schema-jsonld')
 
     <!-- Mobile Specific Metas -->
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
@@ -37,6 +85,7 @@
     <link rel="stylesheet" type="text/css" href="{{ asset('assets/css/swiper-bundle.min.css') }}">
     <link rel="stylesheet" type="text/css" href="{{ asset('assets/css/styles.css') }}">
     <link rel="stylesheet" type="text/css" href="{{ asset('assets/css/city-dialog.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ asset('assets/css/article-typography.css') }}">
 
     @stack('styles')
     <!-- Font -->

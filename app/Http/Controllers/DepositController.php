@@ -8,7 +8,9 @@ use App\Models\Bank;
 use App\Models\Deposit;
 use App\Models\DepositCategory;
 use App\Models\DepositCondition;
+use App\Models\Review;
 use App\Models\SectionSetting;
+use App\Models\SiteSettings;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -72,8 +74,15 @@ class DepositController extends Controller
         }
 
         $title = $page_h1;
+        $latestSectionReviews = Review::query()
+            ->with(['bank', 'reviewable'])
+            ->where('reviewable_type', Deposit::class)
+            ->where('is_published', true)
+            ->latest()
+            ->limit(4)
+            ->get();
 
-        return view('deposits.index', [
+        return view('deposits.index', array_merge([
             'items' => $items,
             'section' => $section,
             'categories' => $categories,
@@ -83,8 +92,13 @@ class DepositController extends Controller
             'title' => $title,
             'page_h1' => $page_h1,
             'page_content' => $page_content,
+            'faq_title' => $setting?->faq_title,
+            'faq_description' => $setting?->faq_description,
+            'faq_items' => $setting?->faq_items ?? [],
+            'reviews_block_title' => $setting?->reviews_block_title,
+            'latestSectionReviews' => $latestSectionReviews,
             'filterMeta' => $filterMeta,
-        ]);
+        ], $city ? [] : ['redirectToCityIfStored' => true, 'sectionBaseForRedirect' => 'vklady']));
     }
 
     /**
@@ -97,9 +111,12 @@ class DepositController extends Controller
             ->where('is_active', true)
             ->firstOrFail();
 
+        $pageHeadline = $deposit->pageHeadline();
+        $siteDisplayName = SiteSettings::getInstance()->displayNameForTitle();
+
         $section = (object) [
-            'title' => $deposit->name.($deposit->bank ? ' — '.$deposit->bank->name : ''),
-            'subtitle' => $deposit->bank ? $deposit->bank->name : '',
+            'title' => $pageHeadline,
+            'subtitle' => null,
         ];
 
         $banks = Bank::where('is_active', true)->orderBy('name')->get();
@@ -107,9 +124,9 @@ class DepositController extends Controller
         return view('deposits.show', array_merge(compact('deposit', 'section', 'banks'), [
             'sectionIndexUrl' => url_canonical(route('deposits.index')),
             'sectionIndexTitle' => 'Вклады',
-            'seo_title' => null,
+            'seo_title' => $pageHeadline.' — '.$siteDisplayName,
             'seo_description' => null,
-            'title' => $section->title,
+            'title' => $pageHeadline,
         ]));
     }
 

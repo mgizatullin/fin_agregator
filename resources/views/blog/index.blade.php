@@ -4,6 +4,11 @@
 @include('layouts.partials.page-header', [
     'title' => $section->title ?? 'Блог',
     'subtitle' => $section->subtitle ?? null
+    ,'breadcrumbs' => array_filter([
+        ['url' => '/', 'label' => 'Главная'],
+        ['url' => url_section('blog'), 'label' => 'Журнал'],
+        isset($category) && $category ? ['label' => $category->name] : null,
+    ])
 ])
 @endsection
 
@@ -37,8 +42,8 @@
                                         </ul>
                                         <h5 class="title letter-spacing-2"> <a href="{{ url_section('blog/' . $article->slug) }}" class="link ">{{ $article->title }}</a>
                                         </h5>
-                                        @if($article->excerpt || $article->content)
-                                        <p class="text-body-2 text_mono-gray-6 mt_12">{{ $article->excerpt ?: \Illuminate\Support\Str::limit(strip_tags($article->content), 150) }}</p>
+                                        @if($article->excerpt || $article->content || $article->content_html)
+                                        <p class="text-body-2 text_mono-gray-6 mt_12">{{ $article->excerpt ?: \Illuminate\Support\Str::limit(strip_tags($article->content_html ?: $article->content), 150) }}</p>
                                         @endif
                                     </div>
                                 </div>

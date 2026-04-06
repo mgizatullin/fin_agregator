@@ -1,4 +1,5 @@
 @extends('layouts.app')
+@include('layouts.partials.redirect-city-push')
 
 @section('page-header')
 @include('layouts.partials.page-header', [

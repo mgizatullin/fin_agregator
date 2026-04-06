@@ -78,10 +78,13 @@
 
     @if(!empty($section->description))
     <div class="tf-container">
-        <div class="content mb-0">
+        <div class="content mb-0 article-body">
             {!! $section->description !!}
         </div>
     </div>
+    @endif
+    @if (empty($city))
+        @include('partials.section-faq')
     @endif
         </div>
 

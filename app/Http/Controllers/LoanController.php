@@ -6,7 +6,9 @@ use App\Http\Controllers\Concerns\HandlesLoadMorePagination;
 use App\Http\Helpers\SectionRouteResolver;
 use App\Models\Loan;
 use App\Models\LoanCategory;
+use App\Models\Review;
 use App\Models\SectionSetting;
+use App\Models\SiteSettings;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -67,6 +69,13 @@ class LoanController extends Controller
         }
 
         $title = $page_h1;
+        $latestSectionReviews = Review::query()
+            ->with(['bank', 'reviewable'])
+            ->where('reviewable_type', Loan::class)
+            ->where('is_published', true)
+            ->latest()
+            ->limit(4)
+            ->get();
 
         return view('loans.index', array_merge([
             'items' => $items,
@@ -78,6 +87,11 @@ class LoanController extends Controller
             'title' => $title,
             'page_h1' => $page_h1,
             'page_content' => $page_content,
+            'faq_title' => $setting?->faq_title,
+            'faq_description' => $setting?->faq_description,
+            'faq_items' => $setting?->faq_items ?? [],
+            'reviews_block_title' => $setting?->reviews_block_title,
+            'latestSectionReviews' => $latestSectionReviews,
             'filterMeta' => $filterMeta,
         ], $city ? [] : ['redirectToCityIfStored' => true, 'sectionBaseForRedirect' => 'zaimy']));
     }
@@ -93,17 +107,20 @@ class LoanController extends Controller
             ->where('is_active', true)
             ->firstOrFail();
 
+        $pageHeadline = $loan->pageHeadline();
+        $siteDisplayName = SiteSettings::getInstance()->displayNameForTitle();
+
         $section = (object) [
-            'title' => $loan->name.($loan->company_name ? ' — '.$loan->company_name : ''),
-            'subtitle' => $loan->company_name ?? '',
+            'title' => $pageHeadline,
+            'subtitle' => null,
         ];
 
         return view('loans.show', array_merge(compact('loan', 'section'), [
             'sectionIndexUrl' => url_canonical(route('loans.index')),
             'sectionIndexTitle' => 'Займы',
-            'seo_title' => null,
+            'seo_title' => $pageHeadline.' — '.$siteDisplayName,
             'seo_description' => null,
-            'title' => $section->title,
+            'title' => $pageHeadline,
         ]));
     }
 

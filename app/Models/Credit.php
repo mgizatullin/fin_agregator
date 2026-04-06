@@ -95,6 +95,22 @@ class Credit extends Model
         return $this->belongsToMany(CreditReceiveMethod::class, 'credit_credit_receive_method');
     }
 
+    /**
+     * Заголовок страницы кредита: «Кредит {название} от {банк}», без дублирующего «Кредит »,
+     * если в названии уже есть слово «кредит» (без учёта регистра).
+     */
+    public function pageHeadline(): string
+    {
+        $name = trim((string) ($this->name ?? ''));
+        $bankName = trim((string) ($this->bank?->name ?? ''));
+
+        $prefix = ($name !== '' && mb_stripos($name, 'кредит') === false) ? 'Кредит ' : '';
+        $core = $name !== '' ? $prefix.$name : 'Кредит';
+        $suffix = $bankName !== '' ? ' от '.$bankName : '';
+
+        return trim($core.$suffix);
+    }
+
     protected static function generateUniqueSlug(string $name, ?int $ignoreId = null): string
     {
         $baseSlug = Str::slug($name);

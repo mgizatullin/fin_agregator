@@ -17,6 +17,17 @@ class SiteSettings extends Model
         'copyright',
         'custom_scripts',
         'logo',
+        'site_display_name',
+        'email',
+        'applications_email',
+        'mail_transport_mode',
+        'smtp_host',
+        'smtp_port',
+        'smtp_encryption',
+        'smtp_username',
+        'smtp_password',
+        'smtp_from_address',
+        'smtp_from_name',
         'footer_under_logo',
         'social_twitter',
         'social_facebook',
@@ -59,5 +70,18 @@ class SiteSettings extends Model
     public static function getInstance(): self
     {
         return static::firstOrCreate([], ['navigation' => null]);
+    }
+
+    /** Название для title в браузере и подписей; если пусто — из config('app.name'). */
+    public function displayNameForTitle(): string
+    {
+        $custom = trim((string) ($this->site_display_name ?? ''));
+        if ($custom !== '') {
+            return $custom;
+        }
+
+        $fallback = trim((string) config('app.name', ''));
+
+        return $fallback !== '' ? $fallback : 'Финансовый маркетплейс';
     }
 }

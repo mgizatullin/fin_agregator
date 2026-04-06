@@ -21,6 +21,12 @@ class RedirectTrailingSlash
      */
     public function handle(Request $request, Closure $next): Response
     {
+        // Никогда не редиректим не-idempotent запросы (POST/PUT/PATCH/DELETE),
+        // иначе ломается отправка форм.
+        if (! $request->isMethod('GET') && ! $request->isMethod('HEAD')) {
+            return $next($request);
+        }
+
         $path = $request->path();
 
         // Только фронт: не трогать админку и Livewire

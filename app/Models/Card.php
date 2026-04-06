@@ -85,6 +85,22 @@ class Card extends Model
         return $this->belongsToMany(CardCategory::class, 'card_card_category');
     }
 
+    /**
+     * Заголовок страницы карты: «Карта {название} от {банк}», без дублирующего «Карта »,
+     * если в названии уже есть слово «карта» (без учёта регистра).
+     */
+    public function pageHeadline(): string
+    {
+        $name = trim((string) ($this->name ?? ''));
+        $bankName = trim((string) ($this->bank?->name ?? ''));
+
+        $prefix = ($name !== '' && mb_stripos($name, 'карта') === false) ? 'Карта ' : '';
+        $core = $name !== '' ? $prefix.$name : 'Карта';
+        $suffix = $bankName !== '' ? ' от '.$bankName : '';
+
+        return trim($core.$suffix);
+    }
+
     protected static function generateUniqueSlug(string $name, ?int $ignoreId = null): string
     {
         $baseSlug = Str::slug($name);

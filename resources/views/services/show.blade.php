@@ -17,13 +17,9 @@
         <div class="tf-container">
             <div class="content">
                 @if($service->type === \App\Models\Service::TYPE_CREDIT_CALCULATOR)
-                    <x-credit-calculator :credit="$credit" />
+                    <x-credit-service-calculator />
                 @elseif($service->type === \App\Models\Service::TYPE_DEPOSIT_CALCULATOR)
-                    @if($deposit)
-                        <x-deposit-calculator :deposit="$deposit" />
-                    @else
-                        <p class="text_mono-gray-7">Калькулятор будет доступен после появления активных вкладов с условиями в каталоге.</p>
-                    @endif
+                    <x-deposit-service-calculator :key-rate="$depositKeyRate" />
                 @endif
             </div>
         </div>

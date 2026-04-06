@@ -45,11 +45,15 @@
 
     @if(!empty($section->description) || filled($page_content ?? null))
     <div class="tf-container">
-        <div class="content mb-0">
+        <div class="content mb-0 article-body">
             {!! filled($page_content ?? null) ? $page_content : $section->description !!}
         </div>
     </div>
     @endif
+    @if (empty($city))
+        @include('partials.section-faq')
+    @endif
+    @include('partials.section-latest-reviews')
         </div>
 
 @endsection

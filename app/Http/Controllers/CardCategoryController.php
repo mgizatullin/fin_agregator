@@ -77,6 +77,9 @@ class CardCategoryController extends Controller
             'title' => $title,
             'showCitySelect' => true,
             'citySelectBase' => $base,
+            'faq_title' => $sectionSetting->faq_title,
+            'faq_description' => $sectionSetting->faq_description,
+            'faq_items' => $sectionSetting->faq_items ?? [],
         ], $city ? [] : ['redirectToCityIfStored' => true, 'sectionBaseForRedirect' => $base]));
     }
 }

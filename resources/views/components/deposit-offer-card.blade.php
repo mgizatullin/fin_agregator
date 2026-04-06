@@ -31,7 +31,6 @@
     $currencySymbols = ['RUB' => '₽', 'USD' => '$', 'EUR' => '€', 'CNY' => '¥'];
 
     $boolText = static fn (bool $value): string => $value ? 'Да' : 'Нет';
-    $fullTitle = 'Вклад ' . $deposit->name . (filled($bankName) ? ' от ' . $bankName : '');
 
     $rateLabel = function (array $d) {
         if (($d['min_rate'] ?? null) !== null && ($d['max_rate'] ?? null) !== null) {
@@ -83,7 +82,7 @@
 <section class="credit-offer-card">
     <div class="credit-offer-card__top">
         <div class="credit-offer-card__headline">
-            <h2 class="credit-offer-card__title">{{ $fullTitle }}</h2>
+            <h2 class="credit-offer-card__title">{{ $deposit->name }}</h2>
             <div class="credit-offer-card__rating" aria-label="Рейтинг предложения">
                 <div class="credit-offer-card__stars" aria-hidden="true">
                     @for ($star = 1; $star <= 5; $star++)

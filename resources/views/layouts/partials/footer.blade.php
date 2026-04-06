@@ -17,7 +17,8 @@
                                         @if(filled($siteSettings?->footer_under_logo))
                                             {!! $siteSettings->footer_under_logo !!}
                                         @else
-                                            <a href="mailto:themesflat@gmail.com" class="link text-body-2 text_black">themesflat@gmail.com</a>
+                                            @php($footerEmail = $siteSettings?->email ?: 'themesflat@gmail.com')
+                                            <a href="mailto:{{ $footerEmail }}" class="link text-body-2 text_black">{{ $footerEmail }}</a>
                                             <div class="text-body-2">152 Thatcher Road St, Manhattan, NY 10463, <br>США</div>
                                             <div class="text-body-2">(+068) 568 9696</div>
                                         @endif

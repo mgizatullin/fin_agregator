@@ -3,78 +3,119 @@
     $ratesList = $data['rates'] ?? [];
     $dateLabel = $data['date_label'] ?? '';
     $flagCodes = ['USD' => 'us', 'EUR' => 'eu', 'CNY' => 'cn', 'GBP' => 'gb', 'CHF' => 'ch', 'JPY' => 'jp'];
+    $currencyRatesPageUrl = \App\Models\Service::publicUrlForCurrencyRates();
+    $refinanceSlug = (string) (config('home_quick_picks.credit_category_slugs.refinance') ?? '');
+    $businessSlug = (string) (config('home_quick_picks.credit_category_slugs.business') ?? '');
 @endphp
-@if(!empty($ratesList))
-<section class="section-currency-rates" id="currency-rates-widget" aria-label="Курсы валют ЦБ РФ">
+<section class="section-currency-rates section-home-financial-widgets" id="currency-rates-widget" aria-label="Курсы валют и подбор продуктов">
     <div class="tf-container-2">
-        <div class="currency-rates-widget">
-            <div class="cbr-rates-box">
-                <h6 class="text_mono-dark-9 fw-6 mb-1">Курсы валют к рублю</h6>
-                @if($dateLabel)
-                <p class="text-body-3 text_mono-gray-6 mb_16">{{ $dateLabel }}</p>
-                @endif
-                <div class="cbr-rates-table">
-                    <div class="cbr-rates-grid">
-                    @foreach($ratesList as $r)
-                    <div class="d-flex align-items-center justify-content-between py-2 cbr-rate-row">
-                        <div class="d-flex align-items-center gap-2">
-                            <img src="https://flagcdn.com/w40/{{ $flagCodes[$r['code']] ?? 'us' }}.png" alt="" width="24" height="18" class="rounded" style="object-fit: cover;">
-                            <span class="text-body-2 fw-6 text_mono-dark-9">{{ $r['code'] }}</span>
+        <div class="home-financial-widgets__grid @if(empty($ratesList)) home-financial-widgets__grid--no-rates @endif">
+            @if(!empty($ratesList))
+            <div class="home-financial-widgets__col home-financial-widgets__col--currency">
+                <div class="currency-rates-widget">
+                    <div class="cbr-rates-box">
+                        <h6 class="text_mono-dark-9 fw-6 mb-1">Курсы валют к рублю</h6>
+                        @if($dateLabel)
+                        <p class="text-body-3 text_mono-gray-6 mb_16">{{ $dateLabel }}</p>
+                        @endif
+                        <div class="cbr-rates-table">
+                            <div class="cbr-rates-grid">
+                            @foreach($ratesList as $r)
+                            <div class="d-flex align-items-center justify-content-between py-2 cbr-rate-row">
+                                <div class="d-flex align-items-center gap-2">
+                                    <img src="https://flagcdn.com/w40/{{ $flagCodes[$r['code']] ?? 'us' }}.png" alt="" width="24" height="18" class="rounded" style="object-fit: cover;">
+                                    <span class="text-body-2 fw-6 text_mono-dark-9">{{ $r['code'] }}</span>
+                                </div>
+                                <div class="d-flex align-items-center gap-2">
+                                    <span class="cbr-rate-value text_mono-dark-9">{{ $r['rate'] !== null ? number_format((float)$r['rate'], 2, ',', ' ') : '—' }} ₽</span>
+                                    @if(isset($r['change']) && $r['change'] !== null)
+                                    <span class="currency-change {{ $r['change_positive'] ? 'text-success' : 'text-danger' }}" title="Изменение за 24 ч">
+                                        @if($r['change_positive'])<span aria-hidden="true">↗</span>@else<span aria-hidden="true">↘</span>@endif
+                                        {{ number_format((float)$r['change'], 2, ',', ' ') }}
+                                    </span>
+                                    @endif
+                                </div>
+                            </div>
+                            @endforeach
+                            </div>
                         </div>
-                        <div class="d-flex align-items-center gap-2">
-                            <span class="cbr-rate-value text_mono-dark-9">{{ $r['rate'] !== null ? number_format((float)$r['rate'], 2, ',', ' ') : '—' }} ₽</span>
-                            @if(isset($r['change']) && $r['change'] !== null)
-                            <span class="currency-change {{ $r['change_positive'] ? 'text-success' : 'text-danger' }}" title="Изменение за 24 ч">
-                                @if($r['change_positive'])<span aria-hidden="true">↗</span>@else<span aria-hidden="true">↘</span>@endif
-                                {{ number_format((float)$r['change'], 2, ',', ' ') }}
-                            </span>
-                            @endif
+                        @if($currencyRatesPageUrl)
+                        <a href="{{ url_canonical($currencyRatesPageUrl) }}" class="btn btn-link link-primary p-0 mt-2 text-body-3 d-block text-end">Все курсы валют</a>
+                        @endif
+
+                        <div class="currency-calc-box mt-4 pt-4" style="border-top: 1px solid rgba(0,0,0,.08);">
+                            <h6 class="text_mono-dark-9 fw-6 mb-1">Быстрый расчёт</h6>
+                            <div class="d-flex flex-wrap align-items-center gap_12 mt-3">
+                                <div class="currency-calc-source d-flex align-items-center border rounded-3 px-3 py-2 bg-white" id="currency-calc-source" role="combobox" aria-expanded="false" aria-haspopup="listbox" aria-label="Валюта">
+                                    <select id="currency-calc-from" class="d-none" aria-hidden="true" tabindex="-1" aria-label="Валюта">
+                                        @foreach($ratesList as $r)
+                                            @if($r['rate'] !== null)
+                                            <option value="{{ $r['code'] }}" data-rate="{{ $r['rate'] }}" {{ $loop->first ? 'selected' : '' }}>{{ $r['code'] }}</option>
+                                            @endif
+                                        @endforeach
+                                    </select>
+                                    <div class="currency-calc-trigger" id="currency-calc-trigger">
+                                        <span class="currency-calc-trigger-code" id="currency-calc-trigger-code">{{ $ratesList[0]['code'] ?? 'USD' }}</span>
+                                        <img id="currency-calc-flag" src="https://flagcdn.com/w40/{{ $flagCodes[$ratesList[0]['code'] ?? 'USD'] ?? 'us' }}.png" alt="" width="24" height="18" class="rounded" style="object-fit: cover;">
+                                        <svg class="currency-calc-arrow text_mono-gray-6" width="12" height="12" viewBox="0 0 12 12" fill="currentColor" aria-hidden="true"><path d="M6 8L2 4h8z"/></svg>
+                                    </div>
+                                    <div class="currency-calc-dropdown" id="currency-calc-dropdown" role="listbox">
+                                        @foreach($ratesList as $r)
+                                            @if($r['rate'] !== null)
+                                            <div class="currency-calc-option" role="option" tabindex="0" data-value="{{ $r['code'] }}" data-rate="{{ $r['rate'] }}" data-flag="{{ $flagCodes[$r['code']] ?? 'us' }}">
+                                                <img src="https://flagcdn.com/w40/{{ $flagCodes[$r['code']] ?? 'us' }}.png" alt="" width="24" height="18" class="rounded" style="object-fit: cover;">
+                                                <span>{{ $r['code'] }}</span>
+                                            </div>
+                                            @endif
+                                        @endforeach
+                                    </div>
+                                </div>
+                                <input type="number" id="currency-calc-amount" class="form-control flex-grow-1 currency-calc-amount" style="max-width: 160px;" placeholder="Сумма" min="0" step="any" value="100" aria-label="Сумма">
+                                <span class="text_mono-gray-6 align-self-center">→</span>
+                                <div class="currency-calc-result text_mono-dark-9 fw-5 d-flex align-items-center">
+                                    <span id="currency-calc-result-value">0</span>
+                                    <span class="ms-1">₽</span>
+                                </div>
+                            </div>
                         </div>
-                    </div>
-                    @endforeach
                     </div>
                 </div>
-                <a href="{{ url_canonical(route('currency.calculator')) }}" class="btn btn-link link-primary p-0 mt-2 text-body-3 d-block text-end">Все курсы валют</a>
+            </div>
+            @endif
 
-                <div class="currency-calc-box mt-4 pt-4" style="border-top: 1px solid rgba(0,0,0,.08);">
-                    <h6 class="text_mono-dark-9 fw-6 mb-1">Быстрый расчёт</h6>
-                    <div class="d-flex flex-wrap align-items-center gap_12 mt-3">
-                        <div class="currency-calc-source d-flex align-items-center border rounded-3 px-3 py-2 bg-white" id="currency-calc-source" role="combobox" aria-expanded="false" aria-haspopup="listbox" aria-label="Валюта">
-                            <select id="currency-calc-from" class="d-none" aria-hidden="true" tabindex="-1" aria-label="Валюта">
-                                @foreach($ratesList as $r)
-                                    @if($r['rate'] !== null)
-                                    <option value="{{ $r['code'] }}" data-rate="{{ $r['rate'] }}" {{ $loop->first ? 'selected' : '' }}>{{ $r['code'] }}</option>
-                                    @endif
-                                @endforeach
-                            </select>
-                            <div class="currency-calc-trigger" id="currency-calc-trigger">
-                                <span class="currency-calc-trigger-code" id="currency-calc-trigger-code">{{ $ratesList[0]['code'] ?? 'USD' }}</span>
-                                <img id="currency-calc-flag" src="https://flagcdn.com/w40/{{ $flagCodes[$ratesList[0]['code'] ?? 'USD'] ?? 'us' }}.png" alt="" width="24" height="18" class="rounded" style="object-fit: cover;">
-                                <svg class="currency-calc-arrow text_mono-gray-6" width="12" height="12" viewBox="0 0 12 12" fill="currentColor" aria-hidden="true"><path d="M6 8L2 4h8z"/></svg>
-                            </div>
-                            <div class="currency-calc-dropdown" id="currency-calc-dropdown" role="listbox">
-                                @foreach($ratesList as $r)
-                                    @if($r['rate'] !== null)
-                                    <div class="currency-calc-option" role="option" tabindex="0" data-value="{{ $r['code'] }}" data-rate="{{ $r['rate'] }}" data-flag="{{ $flagCodes[$r['code']] ?? 'us' }}">
-                                        <img src="https://flagcdn.com/w40/{{ $flagCodes[$r['code']] ?? 'us' }}.png" alt="" width="24" height="18" class="rounded" style="object-fit: cover;">
-                                        <span>{{ $r['code'] }}</span>
-                                    </div>
-                                    @endif
-                                @endforeach
+            <div class="home-financial-widgets__col">
+                @livewire('credit-lead-modal')
+            </div>
+
+            <div class="home-financial-widgets__col">
+                <div class="cbr-rates-box home-quick-pick-card">
+                    <h6 class="text_mono-dark-9 fw-6 mb_16">Подбор займа</h6>
+                    <form class="home-quick-pick-form" method="get" action="{{ url_canonical(route('loans.index')) }}" id="home-loan-pick-form">
+                        <div class="home-quick-pick-field mb_16">
+                            <label class="text-body-3 text_mono-gray-7 d-block mb_8" for="home-loan-amount">Сумма</label>
+                            <div class="home-quick-pick-input-wrap">
+                                <input type="number" id="home-loan-amount" name="amount" class="form-control home-quick-pick-input" min="1" max="1000000" step="1" value="30000" inputmode="numeric" required>
+                                <span class="home-quick-pick-suffix">₽</span>
                             </div>
                         </div>
-                        <input type="number" id="currency-calc-amount" class="form-control flex-grow-1 currency-calc-amount" style="max-width: 160px;" placeholder="Сумма" min="0" step="any" value="100" aria-label="Сумма">
-                        <span class="text_mono-gray-6 align-self-center">→</span>
-                        <div class="currency-calc-result text_mono-dark-9 fw-5 d-flex align-items-center">
-                            <span id="currency-calc-result-value">0</span>
-                            <span class="ms-1">₽</span>
+                        <div class="home-quick-pick-field mb_24">
+                            <label class="text-body-3 text_mono-gray-7 d-block mb_8" for="home-loan-term-days">Срок</label>
+                            <div class="home-quick-pick-input-wrap">
+                                <input type="number" id="home-loan-term-days" name="term" class="form-control home-quick-pick-input" min="1" max="30" step="1" value="14" inputmode="numeric" required>
+                                <span class="home-quick-pick-suffix">дн.</span>
+                            </div>
                         </div>
-                    </div>
+                        <button type="submit" class="tf-btn btn-primary2 btn-px-28 height-2 rounded-12 w-100">
+                            <span>Подобрать</span>
+                            <span class="bg-effect"></span>
+                        </button>
+                    </form>
                 </div>
             </div>
         </div>
     </div>
 </section>
+@if(!empty($ratesList))
 @push('scripts')
 <script>
 (function() {
@@ -136,3 +177,18 @@
 </script>
 @endpush
 @endif
+@push('scripts')
+<script>
+(function() {
+    var loanForm = document.getElementById('home-loan-pick-form');
+    var loanAmount = document.getElementById('home-loan-amount');
+    var loanTerm = document.getElementById('home-loan-term-days');
+    if (loanForm && loanAmount && loanTerm) {
+        loanForm.addEventListener('submit', function() {
+            loanAmount.value = String(Math.min(1000000, Math.max(1, parseInt(loanAmount.value, 10) || 0)));
+            loanTerm.value = String(Math.min(30, Math.max(1, parseInt(loanTerm.value, 10) || 0)));
+        });
+    }
+})();
+</script>
+@endpush
