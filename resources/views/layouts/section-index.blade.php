@@ -15,6 +15,12 @@
         $metaTitle = trim((string) ($seo_title ?? $title ?? ($section->title ?? config('app.name'))));
         $metaDescription = trim((string) ($seo_description ?? $section->subtitle ?? config('app.name')));
         $canonicalUrl = $canonical_url ?? url()->current();
+        if (is_string($canonicalUrl) && $canonicalUrl !== '') {
+            $path = (string) (parse_url($canonicalUrl, PHP_URL_PATH) ?? '');
+            if ($path !== '' && $path !== '/' && ! str_ends_with($canonicalUrl, '/')) {
+                $canonicalUrl .= '/';
+            }
+        }
 
         $fallbackOgImage = !empty($siteSettings->logo ?? null)
             ? (str_starts_with($siteSettings->logo, 'http') ? $siteSettings->logo : asset('storage/' . ltrim((string) $siteSettings->logo, '/')))

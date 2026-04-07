@@ -26,7 +26,6 @@
     <meta name="description" content="{{ $seo_description }}">
 @endif
 
-    <link rel="canonical" href="{{ $canonical_url ?? url()->current() }}">
     @php
         $metaTitle = trim((string) (
             $seo_title
@@ -36,6 +35,12 @@
         ));
         $metaDescription = trim((string) ($seo_description ?? ''));
         $canonicalUrl = $canonical_url ?? url()->current();
+        if (is_string($canonicalUrl) && $canonicalUrl !== '') {
+            $path = (string) (parse_url($canonicalUrl, PHP_URL_PATH) ?? '');
+            if ($path !== '' && $path !== '/' && ! str_ends_with($canonicalUrl, '/')) {
+                $canonicalUrl .= '/';
+            }
+        }
 
         $fallbackOgImage = !empty($siteSettings->logo ?? null)
             ? (str_starts_with($siteSettings->logo, 'http') ? $siteSettings->logo : asset('storage/' . ltrim((string) $siteSettings->logo, '/')))
@@ -63,6 +68,7 @@
 
         $metaOgImage = $resolvedOgImage ?: $fallbackOgImage;
     @endphp
+    <link rel="canonical" href="{{ $canonicalUrl }}">
     <meta property="og:locale" content="ru_RU">
     <meta property="og:type" content="website">
     <meta property="og:site_name" content="{{ config('app.name') }}">

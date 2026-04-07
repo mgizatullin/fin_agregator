@@ -1,2 +1,10 @@
 User-agent: *
-Disallow:
+
+Allow: /
+Disallow: /*?
+Disallow: /*&
+Disallow: /search
+Disallow: /admin
+
+Host: https://finvito.ru
+Sitemap: https://finvito.ru/sitemap.xml

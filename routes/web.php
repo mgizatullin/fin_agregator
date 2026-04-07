@@ -17,6 +17,7 @@ use App\Http\Controllers\LoanController;
 use App\Http\Controllers\PageController;
 use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\ServiceController;
+use App\Http\Controllers\SitemapController;
 use App\Http\Controllers\TeamController;
 use App\Models\Article;
 use App\Models\City;
@@ -59,6 +60,8 @@ Route::get('/test-network', function () {
         'curl' => shell_exec('curl -I https://api.leadgid.com 2>&1'),
     ];
 });
+
+Route::get('/sitemap.xml', [SitemapController::class, 'index'])->name('sitemap');
 
 Route::get('/about', function () {
     $siteSettings = SiteSettings::getInstance();
