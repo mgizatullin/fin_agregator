@@ -17,8 +17,7 @@ return Application::configure(basePath: dirname(__DIR__))
         ]);
     })
     ->withSchedule(function (Schedule $schedule): void {
-        $schedule->command('cbr:fetch-rates')->dailyAt('12:00');
-        $schedule->command('cbr:fetch-rates')->dailyAt('17:00');
+        $schedule->command('cbr:fetch-rates')->cron('0 */3 * * *');
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //
