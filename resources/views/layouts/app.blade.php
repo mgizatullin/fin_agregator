@@ -89,7 +89,7 @@
     <link rel="stylesheet" type="text/css" href="{{ asset('assets/css/bootstrap.css') }}">
     <link rel="stylesheet" type="text/css" href="{{ asset('assets/css/animate.min.css') }}">
     <link rel="stylesheet" type="text/css" href="{{ asset('assets/css/swiper-bundle.min.css') }}">
-    <link rel="stylesheet" type="text/css" href="{{ asset('assets/css/styles.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ asset('assets/css/styles.css') }}?v={{ @filemtime(public_path('assets/css/styles.css')) ?: time() }}">
     <link rel="stylesheet" type="text/css" href="{{ asset('assets/css/city-dialog.css') }}">
     <link rel="stylesheet" type="text/css" href="{{ asset('assets/css/article-typography.css') }}">
 

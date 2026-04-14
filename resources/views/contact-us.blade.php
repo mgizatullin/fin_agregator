@@ -16,8 +16,9 @@
                             </div>
                             <div class="bot">
                                 <div class="content mb-0">
-                                    <h6>{{ $contactSettings->phone ?: '+7 (800) 000-00-00' }}</h6>
-                                    <p class="text-body-2 text_mono-gray-6">Срочные вопросы по телефону</p>
+                                    @php($contactEmail = $siteSettings?->email ?: 'themesflat@gmail.com')
+                                    <h6>{{ $contactEmail }}</h6>
+                                    <p class="text-body-2 text_mono-gray-6">Срочные вопросы по почте</p>
                                 </div>
                             </div>
                         </div>
@@ -159,53 +160,5 @@
 
 @section('content')
     <div class="main-content style-1 ">
-        <div class="section-map tf-spacing-6 ">
-            <div class="tf-container">
-                <div class="heading-seciton mb_83">
-                    <h2 class="heading-title">Наши офисы</h2>
-                </div>
-                <div class="tf-grid-layout lg-col-3">
-                    <div class="map-item">
-                        <iframe class="map" src="https://www.google.com/maps/embed?pb=!1m14!1m12!1m3!1d135905.11693909427!2d-73.95165795400088!3d41.17584829642291!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!5e0!3m2!1sen!2s!4v1727094281524!5m2!1sen!2s" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
-                        <ul class="info d-grid gap_11">
-                            <li>
-                                <h6 class="text_primary">Локация</h6>
-                                <p class="text-body-2">152 Thatcher Road St, Mahattan, NY 10463</p>
-                            </li>
-                            <li>
-                                <h6 class="text_primary">Телефон</h6>
-                                <p class="text-body-1">(+068) 456 6868</p>
-                            </li>
-                        </ul>
-                    </div>
-                    <div class="map-item">
-                        <iframe class="map" src="https://www.google.com/maps/embed?pb=!1m14!1m12!1m3!1d135905.11693909427!2d-73.95165795400088!3d41.17584829642291!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!5e0!3m2!1sen!2s!4v1727094281524!5m2!1sen!2s" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
-                        <ul class="info d-grid gap_11">
-                            <li>
-                                <h6 class="text_primary">Локация</h6>
-                                <p class="text-body-2">1812 Sussex Dr, Ottawa, ON K1A 0G8, Canada</p>
-                            </li>
-                            <li>
-                                <h6 class="text_primary">Телефон</h6>
-                                <p class="text-body-1">(+054) 6789 38 83</p>
-                            </li>
-                        </ul>
-                    </div>
-                    <div class="map-item">
-                        <iframe class="map" src="https://www.google.com/maps/embed?pb=!1m14!1m12!1m3!1d135905.11693909427!2d-73.95165795400088!3d41.17584829642291!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!5e0!3m2!1sen!2s!4v1727094281524!5m2!1sen!2s" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
-                        <ul class="info d-grid gap_11">
-                            <li>
-                                <h6 class="text_primary">Локация</h6>
-                                <p class="text-body-2">Furstenwalder Str. 1, 10243 Berlin, Germany</p>
-                            </li>
-                            <li>
-                                <h6 class="text_primary">Телефон</h6>
-                                <p class="text-body-1">(+054) 1234 79 97</p>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        </div>
     </div>
 @endsection

@@ -22,9 +22,9 @@ class SpecialistResource extends Resource
 
     protected static ?string $navigationLabel = 'Специалисты';
 
-    protected static string|\UnitEnum|null $navigationGroup = 'Редакция';
+    protected static string|\UnitEnum|null $navigationGroup = null;
 
-    protected static ?int $navigationSort = 1;
+    protected static ?int $navigationSort = 11;
 
     public static function getModelLabel(): string
     {

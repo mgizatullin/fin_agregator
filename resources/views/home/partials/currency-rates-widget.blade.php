@@ -26,7 +26,7 @@
                                     <img src="https://flagcdn.com/w40/{{ $flagCodes[$r['code']] ?? 'us' }}.png" alt="" width="24" height="18" class="rounded" style="object-fit: cover;">
                                     <span class="text-body-2 fw-6 text_mono-dark-9">{{ $r['code'] }}</span>
                                 </div>
-                                <div class="d-flex align-items-center gap-2">
+                                <div class="d-flex align-items-center gap-2 currency-change-wrap">
                                     <span class="cbr-rate-value text_mono-dark-9">{{ $r['rate'] !== null ? number_format((float)$r['rate'], 2, ',', ' ') : '—' }} ₽</span>
                                     @if(isset($r['change']) && $r['change'] !== null)
                                     <span class="currency-change {{ $r['change_positive'] ? 'text-success' : 'text-danger' }}" title="Изменение за 24 ч">

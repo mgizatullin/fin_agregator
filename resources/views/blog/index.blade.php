@@ -37,7 +37,7 @@
                                             </li>
                                             @endif
                                             <li class="meta-item date text-body-1">
-                                                {{ ($article->published_at ?? $article->created_at)->format('j F Y') }}
+                                                {{ ($article->published_at ?? $article->created_at)->locale('ru')->translatedFormat('j F Y') }}
                                             </li>
                                         </ul>
                                         <h5 class="title letter-spacing-2"> <a href="{{ url_section('blog/' . $article->slug) }}" class="link ">{{ $article->title }}</a>

@@ -7,6 +7,7 @@ use App\Models\HomePageSetting;
 use Filament\Actions\Action;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Repeater;
+use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Notifications\Notification;
@@ -352,9 +353,8 @@ class HomePageSettings extends Page
                                             ->maxLength(255)
                                             ->columnSpanFull(),
 
-                                        Textarea::make('about_description')
+                                        RichEditor::make('about_description')
                                             ->label('Описание блока о сервисе')
-                                            ->rows(5)
                                             ->columnSpanFull(),
 
                                         FileUpload::make('about_image')

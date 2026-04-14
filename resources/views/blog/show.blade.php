@@ -50,7 +50,7 @@
                                         </div>
                                     </div>
                                     <div class="right">
-                                        {{ ($article->published_at ?? $article->created_at)->translatedFormat('d F Y') }}
+                                        {{ ($article->published_at ?? $article->created_at)->locale('ru')->translatedFormat('d F Y') }}
                                     </div>
                                 </div>
                                 </div>

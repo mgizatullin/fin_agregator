@@ -74,7 +74,7 @@ class CbrRatesService
 
         $date = $latest?->rate_date;
         $dateLabel = $date
-            ? 'НА '.strtoupper(Carbon::parse($date)->locale('ru')->translatedFormat('j F'))
+            ? 'на '.Carbon::parse($date)->locale('ru')->translatedFormat('j F')
             : '';
 
         return [

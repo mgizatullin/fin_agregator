@@ -124,9 +124,13 @@ class CreditForm
                     ->json(false)
                     ->extraInputAttributes(['style' => 'min-height: 300px'])
                     ->toolbarButtons([
-                        ['bold', 'italic', 'link'],
-                        ['h2', 'h3'],
-                        ['bulletList', 'orderedList'],
+                        ['source-code'],
+                        ['bold', 'italic', 'underline', 'strike', 'subscript', 'superscript', 'link', 'textColor', 'highlight', 'code'],
+                        ['h1', 'h2', 'h3', 'alignStart', 'alignCenter', 'alignEnd', 'alignJustify'],
+                        ['blockquote', 'codeBlock', 'bulletList', 'orderedList', 'details', 'small', 'lead'],
+                        ['table', 'attachFiles', 'customBlocks'],
+                        ['grid', 'gridDelete', 'horizontalRule', 'clearFormatting'],
+                        ['undo', 'redo'],
                     ]),
                 Select::make('categories')
                     ->label('Категории')

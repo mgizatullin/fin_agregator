@@ -11031,6 +11031,30 @@ form.style-line-bot.style-2 button {
     border-radius: 24px;
     padding: 25px;
   }
+
+  .heading.d-flex.justify-content-between.gap_12 {
+    display: block !important;
+  }
+
+  .values-grid {
+    gap: 10px;
+  }
+
+  .values-layout {
+    gap: 10px;
+  }
+}
+
+@media (max-width: 575.98px) {
+  .section-currency-rates .currency-change-wrap {
+    position: relative;
+  }
+
+  .section-currency-rates .currency-change {
+    position: absolute;
+    top: -12px;
+    right: -12px;
+  }
 }
 @media (min-width: 992px) {
   .section-about.style-1 .left .content {
@@ -11760,12 +11784,12 @@ form.style-line-bot.style-2 button {
     bottom: 39px;
   }
   .section-about.style-1 .left .content {
-    max-width: 550px;
+    max-width: 700px;
     padding-top: 23px;
-    margin-top: 73px;
   }
   .section-about.style-1 .left .content p {
-    margin-bottom: 40px;
+    font-size: 18px;
+    line-height: 28px;
   }
   .tf-cart-item_product {
     padding: 51px 0 62px;

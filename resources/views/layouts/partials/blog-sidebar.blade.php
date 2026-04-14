@@ -42,7 +42,7 @@
                     </li>
                     @endif
                     <li class="meta-item date text-body-3">
-                        {{ ($latest->published_at ?? $latest->created_at)->format('j F Y') }}
+                        {{ ($latest->published_at ?? $latest->created_at)->locale('ru')->translatedFormat('j F Y') }}
                     </li>
                 </ul>
             </div>

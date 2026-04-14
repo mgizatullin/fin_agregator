@@ -22,9 +22,9 @@ class ServiceResource extends Resource
 
     protected static ?string $navigationLabel = 'Страницы сервисов';
 
-    protected static string|\UnitEnum|null $navigationGroup = 'Сервисы';
+    protected static string|\UnitEnum|null $navigationGroup = null;
 
-    protected static ?int $navigationSort = 4;
+    protected static ?int $navigationSort = 12;
 
     public static function getModelLabel(): string
     {

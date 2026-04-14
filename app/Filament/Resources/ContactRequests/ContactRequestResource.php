@@ -22,9 +22,9 @@ class ContactRequestResource extends Resource
 
     protected static ?string $pluralModelLabel = 'Заявки';
 
-    protected static string|\UnitEnum|null $navigationGroup = 'Сайт';
+    protected static string|\UnitEnum|null $navigationGroup = null;
 
-    protected static ?int $navigationSort = 30;
+    protected static ?int $navigationSort = 13;
 
     public static function table(Table $table): Table
     {
