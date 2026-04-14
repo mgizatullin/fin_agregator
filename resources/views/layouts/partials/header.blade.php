@@ -46,20 +46,6 @@
                                                         <i class="icon icon-search-solid"></i>
                                                     </button>
                                                 </form>
-                                                <ul class="wrap-tag d-flex align-items-center flex-wrap gap_16">
-                                                    <li class="tag-item d-flex align-items-center gap_12">
-                                                        <span class="sub-heading text_black">Блог</span>
-                                                        <span class="remove-item">
-                                                            <i class="icon-times-solid"></i>
-                                                        </span>
-                                                    </li>
-                                                    <li class="tag-item d-flex align-items-center gap_12">
-                                                        <span class="sub-heading text_black">Статья</span>
-                                                        <span class="remove-item">
-                                                            <i class="icon-times-solid"></i>
-                                                        </span>
-                                                    </li>
-                                                </ul>
                                             </div>
                                         </div>
                                         @if(!empty($currencyRates))

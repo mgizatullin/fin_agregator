@@ -172,122 +172,110 @@
             <div class="mb-body">
                 <div class="mb-content-top">
                     <ul class="nav-ul-mb" id="wrapper-menu-navigation">
-                        <li class="nav-mb-item ">
-                            <a href="#dropdown-menu-home" class="collapsed mb-menu-link" data-bs-toggle="collapse" aria-expanded="true" aria-controls="dropdown-menu-home">
-                                <span>Главная</span>
-                                <span class="btn-open-sub"></span>
-                            </a>
-                            <div id="dropdown-menu-home" class="collapse" data-bs-parent="#menu-mobile">
-                                <ul class="sub-nav-menu">
-                                    <li><a href="/" class="sub-nav-link ">Бизнес-консалтинг</a></li>
-                                    <li><a href="finance-consulting.html" class="sub-nav-link">Финансовый консалтинг</a>
-                                    </li>
-                                    <li><a href="finance-advisor.html" class="sub-nav-link">Финансовый советник</a>
-                                    </li>
-                                    <li><a href="insurance-consulting.html" class="sub-nav-link">Страховой консалтинг</a>
-                                    </li>
-                                    <li><a href="marketing-consulting.html" class="sub-nav-link">Маркетинговый консалтинг</a>
-                                    </li>
-                                </ul>
-                            </div>
-                        </li>
-                        <li class="nav-mb-item active">
-                            <a href="#dropdown-menu-pages" class="collapsed mb-menu-link" data-bs-toggle="collapse" aria-expanded="true" aria-controls="dropdown-menu-pages">
-                                <span>Страницы</span>
-                                <span class="btn-open-sub"></span>
-                            </a>
-                            <div id="dropdown-menu-pages" class="collapse" data-bs-parent="#menu-mobile">
-                                <ul class="sub-nav-menu">
-                                    <li><a href="about.html" class="sub-nav-link ">О нас</a></li>
-                                    <li><a href="portfolio.html" class="sub-nav-link">Кейсы</a>
-                                    </li>
-                                    <li><a href="single-project.html" class="sub-nav-link">Проект</a>
-                                    </li>
-                                    <li><a href="pricing.html" class="sub-nav-link">Тарифы</a>
-                                    </li>
-                                    <li><a href="faqs.html" class="sub-nav-link">Вопросы и ответы</a>
-                                    </li>
-                                    <li><a href="{{ url_section('team') }}" class="sub-nav-link ">Команда</a>
-                                    </li>
-                                    <li><a href="career.html" class="sub-nav-link active">Карьера</a>
-                                    </li>
-                                </ul>
-                            </div>
-                        </li>
-                        <li class="nav-mb-item">
-                            <a href="#dropdown-menu-УСЛУГИ" class="collapsed mb-menu-link" data-bs-toggle="collapse" aria-expanded="true" aria-controls="dropdown-menu-УСЛУГИ">
-                                <span>Услуги</span>
-                                <span class="btn-open-sub"></span>
-                            </a>
-                            <div id="dropdown-menu-УСЛУГИ" class="collapse" data-bs-parent="#menu-mobile">
-                                <ul class="sub-nav-menu">
-                                    <li><a href="services.html" class="sub-nav-link ">Услуги</a></li>
-                                    <li><a href="service-details.html" class="sub-nav-link">Детали услуги</a>
-                                    </li>
-                                </ul>
-                            </div>
-                        </li>
-                        <li class="nav-mb-item">
-                            <a href="#dropdown-menu-blog" class="collapsed mb-menu-link" data-bs-toggle="collapse" aria-expanded="true" aria-controls="dropdown-menu-blog">
-                                <span>Блог</span>
-                                <span class="btn-open-sub"></span>
-                            </a>
-                            <div id="dropdown-menu-blog" class="collapse" data-bs-parent="#menu-mobile">
-                                <ul class="sub-nav-menu">
-                                    <li><a href="{{ url_section('blog') }}" class="sub-nav-link ">Блог</a></li>
-                                    <li><a href="single-post.html" class="sub-nav-link">Статья</a>
-                                    </li>
-                                </ul>
-                            </div>
-                        </li>
-                        <li class="nav-mb-item">
-                            <a href="#dropdown-menu-shop" class="collapsed mb-menu-link" data-bs-toggle="collapse" aria-expanded="true" aria-controls="dropdown-menu-shop">
-                                <span>Магазин</span>
-                                <span class="btn-open-sub"></span>
-                            </a>
-                            <div id="dropdown-menu-shop" class="collapse" data-bs-parent="#menu-mobile">
-                                <ul class="sub-nav-menu">
-                                    <li><a href="shop.html" class="sub-nav-link ">Магазин</a></li>
-                                    <li><a href="product-Детали.html" class="sub-nav-link">Детали товара</a>
-                                    </li>
-                                    <li><a href="cart.html" class="sub-nav-link">Корзина</a>
-                                    </li>
-                                    <li><a href="checkout.html" class="sub-nav-link">Оформление</a>
-                                    </li>
-                                </ul>
-                            </div>
-                        </li>
-                        <li class="nav-mb-item">
-                            <a href="contact-us.html" class="mb-menu-link">Контакты</a>
-                        </li>
+                        @php
+                            $mobileNav = is_array($siteSettings->navigation ?? null) ? $siteSettings->navigation : [];
+                            $currentUrl = rtrim(url()->current(), '/') ?: '/';
+
+                            $normalizeNavUrl = function ($raw) {
+                                $raw = is_string($raw) ? trim($raw) : '';
+                                if ($raw === '') return '#';
+                                if (str_starts_with($raw, 'http://') || str_starts_with($raw, 'https://') || str_starts_with($raw, '//')) return $raw;
+                                $raw = '/' . ltrim($raw, '/');
+                                return $raw === '' ? '/' : $raw;
+                            };
+
+                            $isActiveNavItem = function (array $item) use ($normalizeNavUrl, $currentUrl) {
+                                $url = $normalizeNavUrl($item['url'] ?? '');
+                                $urlToCompare = is_string($url) ? rtrim(parse_url($url, PHP_URL_PATH) ?: $url, '/') : '';
+                                $urlToCompare = $urlToCompare === '' ? '/' : $urlToCompare;
+                                if ($urlToCompare !== '#' && $urlToCompare === $currentUrl) return true;
+                                $children = $item['children'] ?? [];
+                                if (!is_array($children)) return false;
+                                foreach ($children as $child) {
+                                    if (!is_array($child)) continue;
+                                    $childUrl = $normalizeNavUrl($child['url'] ?? '');
+                                    $childCompare = is_string($childUrl) ? rtrim(parse_url($childUrl, PHP_URL_PATH) ?: $childUrl, '/') : '';
+                                    $childCompare = $childCompare === '' ? '/' : $childCompare;
+                                    if ($childCompare !== '#' && $childCompare === $currentUrl) return true;
+                                }
+                                return false;
+                            };
+                        @endphp
+
+                        @foreach($mobileNav as $i => $item)
+                            @php
+                                $item = is_array($item) ? $item : [];
+                                $title = (string) ($item['title'] ?? '');
+                                $children = $item['children'] ?? [];
+                                $hasChildren = is_array($children) && count($children) > 0;
+                                $itemActive = $isActiveNavItem($item);
+                                $collapseId = 'dropdown-menu-mb-' . $i;
+                            @endphp
+                            <li class="nav-mb-item{{ $itemActive ? ' active' : '' }}">
+                                @if($hasChildren)
+                                    <a href="#{{ $collapseId }}" class="collapsed mb-menu-link" data-bs-toggle="collapse" aria-expanded="{{ $itemActive ? 'true' : 'false' }}" aria-controls="{{ $collapseId }}">
+                                        <span>{{ $title }}</span>
+                                        <span class="btn-open-sub"></span>
+                                    </a>
+                                    <div id="{{ $collapseId }}" class="collapse{{ $itemActive ? ' show' : '' }}" data-bs-parent="#menu-mobile">
+                                        <ul class="sub-nav-menu">
+                                            @foreach($children as $child)
+                                                @php
+                                                    $child = is_array($child) ? $child : [];
+                                                    $childTitle = (string) ($child['title'] ?? '');
+                                                    $childUrl = $normalizeNavUrl($child['url'] ?? '');
+                                                    $childCompare = is_string($childUrl) ? rtrim(parse_url($childUrl, PHP_URL_PATH) ?: $childUrl, '/') : '';
+                                                    $childCompare = $childCompare === '' ? '/' : $childCompare;
+                                                    $childActive = ($childCompare !== '#' && $childCompare === $currentUrl);
+                                                @endphp
+                                                <li>
+                                                    <a href="{{ $childUrl }}" class="sub-nav-link{{ $childActive ? ' active' : '' }}">{{ $childTitle }}</a>
+                                                </li>
+                                            @endforeach
+                                        </ul>
+                                    </div>
+                                @else
+                                    @php($url = $normalizeNavUrl($item['url'] ?? ''))
+                                    <a href="{{ $url }}" class="mb-menu-link">
+                                        <span>{{ $title }}</span>
+                                    </a>
+                                @endif
+                            </li>
+                        @endforeach
                     </ul>
                 </div>
                 <div class="mb-other-content ">
                     <ul class="mb-info mb_20">
-                        <li>
-                            <p class="text_mono-gray">
-                                Адрес:
-                                <a target="_blank" href="https://www.google.com/maps?q=16/9,ScotlandUnitedKingdom">
-                                    <span class="fw-5 text_mono-gray-5">16/9, Шотландия, Великобритания</span>
-                                </a>
-                            </p>
-                        </li>
-                        <li>
-                            <p class="text_mono-gray">
-                                Эл. почта:
-                                <a href="mailto:themesflat@gmail.com">
-                                    <span class="fw-5 text_mono-gray-5">themesflat@gmail.com</span>
-                                </a>
-                            </p>
-                        </li>
-                        <li>
-                            <p class="text_mono-gray">
-                                Телефон:
-                                <a href="tel:+11635565389">
-                                    <span class="fw-5 text_mono-gray-5">+1 16355 65389</span>
-                                </a>
-                            </p>
-                        </li>
+                        @if(filled($siteSettings?->footer_under_logo))
+                            <li>
+                                {!! $siteSettings->footer_under_logo !!}
+                            </li>
+                        @else
+                            <li>
+                                <p class="text_mono-gray">
+                                    Адрес:
+                                    <a target="_blank" href="https://www.google.com/maps?q=16/9,ScotlandUnitedKingdom">
+                                        <span class="fw-5 text_mono-gray-5">16/9, Шотландия, Великобритания</span>
+                                    </a>
+                                </p>
+                            </li>
+                            <li>
+                                <p class="text_mono-gray">
+                                    Эл. почта:
+                                    <a href="mailto:themesflat@gmail.com">
+                                        <span class="fw-5 text_mono-gray-5">themesflat@gmail.com</span>
+                                    </a>
+                                </p>
+                            </li>
+                            <li>
+                                <p class="text_mono-gray">
+                                    Телефон:
+                                    <a href="tel:+11635565389">
+                                        <span class="fw-5 text_mono-gray-5">+1 16355 65389</span>
+                                    </a>
+                                </p>
+                            </li>
+                        @endif
                     </ul>
                     <div class="mb-wrap-btn d-flex gap_12 flex-wrap">
                         @if(!empty($currencyRates))
@@ -297,10 +285,10 @@
                                 @if(isset($currencyRates['CNY']))<span class="header-rates__item">CNY {{ number_format((float)$currencyRates['CNY'], 4, '.', '') }}</span>@endif
                             </div>
                         @endif
-                        <a href="javascript:void(0)" class="tf-btn city-select-btn">
-                            <span class="header-city-label">Выбрать город</span>
+                        <button type="button" class="city-select-btn" data-section-base="{{ $headerCitySelectBase ?? '' }}">
+                            <span class="header-city-label">@isset($city){{ $city->name }}@else{{ $cityName ?? 'Вся Россия' }}@endisset</span>
                             <span class="bg-effect"></span>
-                        </a>
+                        </button>
                     </div>
                 </div>
             </div>
