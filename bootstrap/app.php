@@ -4,6 +4,8 @@ use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
+use Illuminate\Foundation\Http\Middleware\ValidateCsrfToken;
+use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -20,6 +22,10 @@ return Application::configure(basePath: dirname(__DIR__))
             'livewire/*',
             'livewire-*/update',
         ]);
+
+        // Some stacks still register VerifyCsrfToken directly; ensure both variants are excluded.
+        ValidateCsrfToken::except(['livewire/*', 'livewire-*/update']);
+        VerifyCsrfToken::except(['livewire/*', 'livewire-*/update']);
     })
     ->withSchedule(function (Schedule $schedule): void {
         $schedule->command('cbr:fetch-rates')->cron('0 */3 * * *');
