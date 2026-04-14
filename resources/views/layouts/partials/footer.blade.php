@@ -121,14 +121,26 @@
                         <div class="col-12">
                             <div class="wrapper d-flex align-items-center flex-wrap gap_12 ">
                                 <ul class="right d-flex align-items-center">
-                                    <li><a href="/" class="link text_mono-gray-5 text-body-1">Главная</a></li>
-                                    <li><a href="about.html" class="link text_mono-gray-5 text-body-1">О компании</a>
-                                    </li>
-                                    <li><a href="services.html" class="link text_mono-gray-5 text-body-1">Услуги</a>
-                                    </li>
-                                    <li><a href="{{ url_section('blog') }}" class="link text_mono-gray-5 text-body-1">Блог</a></li>
-                                    <li><a href="contact-us.html" class="link text_mono-gray-5 text-body-1">Контакты</a>
-                                    </li>
+                                    @if(!empty($siteSettings?->footer_menu_bottom) && is_array($siteSettings->footer_menu_bottom))
+                                        @foreach($siteSettings->footer_menu_bottom as $item)
+                                            @php
+                                                $label = is_array($item) ? ($item['label'] ?? '') : '';
+                                                $url = is_array($item) ? ($item['url'] ?? '#') : '#';
+                                            @endphp
+                                            <li>
+                                                <a href="{{ $url ?: '#' }}" class="link text_mono-gray-5 text-body-1">{{ $label }}</a>
+                                            </li>
+                                        @endforeach
+                                    @else
+                                        <li><a href="/" class="link text_mono-gray-5 text-body-1">Главная</a></li>
+                                        <li><a href="about.html" class="link text_mono-gray-5 text-body-1">О компании</a>
+                                        </li>
+                                        <li><a href="services.html" class="link text_mono-gray-5 text-body-1">Услуги</a>
+                                        </li>
+                                        <li><a href="{{ url_section('blog') }}" class="link text_mono-gray-5 text-body-1">Блог</a></li>
+                                        <li><a href="contact-us.html" class="link text_mono-gray-5 text-body-1">Контакты</a>
+                                        </li>
+                                    @endif
                                 </ul>
                             </div>
                         </div>

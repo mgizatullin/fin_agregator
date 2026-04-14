@@ -64,6 +64,7 @@ class SiteSettingsPage extends Page
             'navigation' => $setting->navigation ?? [],
             'footer_menu_1' => $setting->footer_menu_1 ?? [],
             'footer_menu_2' => $setting->footer_menu_2 ?? [],
+            'footer_menu_bottom' => $setting->footer_menu_bottom ?? [],
             'footer_heading_1' => $setting->footer_heading_1 ?? '',
             'footer_heading_2' => $setting->footer_heading_2 ?? '',
             'copyright' => $setting->copyright ?? '',
@@ -108,6 +109,8 @@ class SiteSettingsPage extends Page
             $footer1 = is_array($footer1) ? $footer1 : [];
             $footer2 = $data['footer_menu_2'] ?? [];
             $footer2 = is_array($footer2) ? $footer2 : [];
+            $footerBottom = $data['footer_menu_bottom'] ?? [];
+            $footerBottom = is_array($footerBottom) ? $footerBottom : [];
             $footerHeading1 = isset($data['footer_heading_1']) ? (string) $data['footer_heading_1'] : null;
             $footerHeading2 = isset($data['footer_heading_2']) ? (string) $data['footer_heading_2'] : null;
             $logo = $data['logo'] ?? [];
@@ -132,6 +135,7 @@ class SiteSettingsPage extends Page
                 'navigation' => $navigation,
                 'footer_menu_1' => $footer1,
                 'footer_menu_2' => $footer2,
+                'footer_menu_bottom' => $footerBottom,
                 'footer_heading_1' => $footerHeading1 !== '' ? $footerHeading1 : null,
                 'footer_heading_2' => $footerHeading2 !== '' ? $footerHeading2 : null,
                 'site_display_name' => $siteDisplayName !== '' ? $siteDisplayName : null,
@@ -423,6 +427,31 @@ class SiteSettingsPage extends Page
                                             ->maxLength(255),
                                         Repeater::make('footer_menu_2')
                                             ->label('Навигация футера — колонка 2')
+                                            ->schema([
+                                                TextInput::make('label')
+                                                    ->label('Название ссылки')
+                                                    ->maxLength(255)
+                                                    ->required(),
+                                                TextInput::make('url')
+                                                    ->label('Ссылка')
+                                                    ->maxLength(500)
+                                                    ->required(),
+                                            ])
+                                            ->defaultItems(0)
+                                            ->addActionLabel('Добавить ссылку')
+                                            ->reorderable()
+                                            ->reorderableWithDragAndDrop(false)
+                                            ->reorderableWithButtons()
+                                            ->collapsible()
+                                            ->itemLabel(fn (array $state): ?string => $state['label'] ?? null)
+                                            ->columnSpanFull(),
+                                    ])
+                                    ->columnSpanFull(),
+                                Section::make('Навигация футера — низ')
+                                    ->description('Ссылки в нижней полосе футера.')
+                                    ->schema([
+                                        Repeater::make('footer_menu_bottom')
+                                            ->label('Навигация футера — низ')
                                             ->schema([
                                                 TextInput::make('label')
                                                     ->label('Название ссылки')
