@@ -15,6 +15,11 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->prependToGroup('web', [
             \App\Http\Middleware\RedirectTrailingSlash::class,
         ]);
+
+        $middleware->validateCsrfTokens(except: [
+            'livewire/*',
+            'livewire-*/update',
+        ]);
     })
     ->withSchedule(function (Schedule $schedule): void {
         $schedule->command('cbr:fetch-rates')->cron('0 */3 * * *');
