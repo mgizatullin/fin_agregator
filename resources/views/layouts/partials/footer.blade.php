@@ -123,12 +123,11 @@
                                 <ul class="right d-flex align-items-center">
                                     @if(!empty($siteSettings?->footer_menu_bottom) && is_array($siteSettings->footer_menu_bottom))
                                         @foreach($siteSettings->footer_menu_bottom as $item)
-                                            @php
-                                                $label = is_array($item) ? ($item['label'] ?? '') : '';
-                                                $url = is_array($item) ? ($item['url'] ?? '#') : '#';
-                                            @endphp
                                             <li>
-                                                <a href="{{ $url ?: '#' }}" class="link text_mono-gray-5 text-body-1">{{ $label }}</a>
+                                                <a
+                                                    href="{{ is_array($item) ? (($item['url'] ?? '#') ?: '#') : '#' }}"
+                                                    class="link text_mono-gray-5 text-body-1"
+                                                >{{ is_array($item) ? ($item['label'] ?? '') : '' }}</a>
                                             </li>
                                         @endforeach
                                     @else
