@@ -37,15 +37,36 @@ class RedirectTrailingSlash
         $requestUri = $request->server('REQUEST_URI');
         $pathFromUri = is_string($requestUri) ? parse_url($requestUri, PHP_URL_PATH) : '';
         $pathFromUri = is_string($pathFromUri) ? $pathFromUri : '';
-        // Уже канонично: один завершающий слеш и нет двойных слешей (проверяем по REQUEST_URI, т.к. path() может обрезать слеш)
-        if ($pathFromUri !== '' && str_ends_with($pathFromUri, '/') && ! str_contains($pathFromUri, '//')) {
+
+        // path() может терять завершающий слеш, поэтому нормализуем по REQUEST_URI.
+        // Правило: слеш обязателен только у "директорий" (без расширения файла в последнем сегменте).
+        // Для файлов (sitemap.xml, *.html и любые другие расширения) завершающий слеш запрещён.
+        $rawPath = $pathFromUri !== '' ? $pathFromUri : '/' . $path;
+        $rawPath = is_string($rawPath) && $rawPath !== '' ? $rawPath : '/';
+
+        $collapsedPath = preg_replace('#/+#', '/', $rawPath);
+        $collapsedPath = is_string($collapsedPath) && $collapsedPath !== '' ? $collapsedPath : '/';
+
+        if ($collapsedPath === '/') {
+            // Корень всегда каноничен (и без двойных слешей он уже не может быть).
             return $next($request);
         }
-        $normalized = preg_replace('#/+#', '/', trim($path, '/'));
-        if ($normalized !== '') {
-            $normalized .= '/';
+
+        $endsWithSlash = str_ends_with($collapsedPath, '/');
+        $trimmed = trim($collapsedPath, '/');
+        $lastSegment = $trimmed === '' ? '' : basename($trimmed);
+        $looksLikeFile = $lastSegment !== '' && str_contains($lastSegment, '.') && ! str_starts_with($lastSegment, '.');
+
+        $canonicalPath = $looksLikeFile ? ('/' . $trimmed) : ('/' . $trimmed . '/');
+
+        // Уже канонично?
+        if ($collapsedPath === $canonicalPath) {
+            return $next($request);
         }
-        $url = $request->root() . '/' . $normalized;
+
+        // Если запрос был к файлу со слешем на конце (например /sitemap.xml/),
+        // или к директории без слеша на конце — делаем 301 на канон.
+        $url = $request->root() . $canonicalPath;
         $query = $request->getQueryString();
         if ($query !== null && $query !== '') {
             $url .= '?' . $query;
