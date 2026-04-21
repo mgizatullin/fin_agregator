@@ -25,6 +25,20 @@ class CreditController extends Controller
         $query = Credit::with(['bank', 'receiveMethods'])
             ->where('is_active', true);
 
+        if ($city) {
+            $query->whereHas('bank', function (Builder $bankQuery) use ($city): void {
+                $bankQuery->where('is_active', true)
+                    ->where(function (Builder $q) use ($city): void {
+                        $q->where('is_online_bank', true)
+                            ->orWhereHas('branches', function (Builder $branchesQuery) use ($city): void {
+                                $branchesQuery
+                                    ->where('is_active', true)
+                                    ->where('city_id', $city->id);
+                            });
+                    });
+            });
+        }
+
         $this->applyFilters($query, $request);
 
         $items = $query

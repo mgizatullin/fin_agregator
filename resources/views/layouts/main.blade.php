@@ -95,6 +95,7 @@
 
     @livewireStyles
     @stack('styles')
+    @stack('redirect-city')
     <!-- Font -->
     <link rel="stylesheet" href="{{ asset('assets/fonts/fonts.css') }}">
 
@@ -307,7 +308,6 @@
     <script src="{{ asset('assets/js/ScrollSmooth.js') }}"></script>
     <script src="{{ asset('assets/js/infinityslide.js') }}"></script>
     <script src="{{ asset('assets/js/main.js') }}"></script>
-    @stack('redirect-city')
     <script>
     (function(){ if (typeof window.__REDIRECT_TO_CITY === 'undefined') window.__REDIRECT_TO_CITY = { enabled: false }; })();
     </script>

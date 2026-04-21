@@ -64,6 +64,7 @@
     <link rel="stylesheet" type="text/css" href="{{ asset('assets/css/styles.css') }}?v={{ @filemtime(public_path('assets/css/styles.css')) ?: time() }}">
     <link rel="stylesheet" type="text/css" href="{{ asset('assets/css/city-dialog.css') }}">
     @stack('styles')
+    @stack('redirect-city')
 
     <link rel="stylesheet" href="{{ asset('assets/fonts/fonts.css') }}">
     <link rel="stylesheet" type="text/css" href="{{ asset('assets/fonts/icons/icomoon/style.css') }}">
@@ -116,7 +117,6 @@
     <script src="{{ asset('assets/js/ScrollSmooth.js') }}"></script>
     <script src="{{ asset('assets/js/main.js') }}"></script>
     @stack('scripts')
-    @stack('redirect-city')
     <script>
     (function(){ if (typeof window.__REDIRECT_TO_CITY === 'undefined') window.__REDIRECT_TO_CITY = { enabled: false }; })();
     </script>

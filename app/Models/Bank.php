@@ -25,6 +25,7 @@ class Bank extends Model
         'seo_description',
         'rating',
         'is_active',
+        'is_online_bank',
     ];
 
     protected function casts(): array
@@ -33,6 +34,7 @@ class Bank extends Model
             'rating' => 'decimal:2',
             'license_date' => 'date',
             'is_active' => 'boolean',
+            'is_online_bank' => 'boolean',
         ];
     }
 

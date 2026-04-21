@@ -35,6 +35,12 @@ class BanksTable
                     ->boolean()
                     ->sortable(),
 
+                IconColumn::make('is_online_bank')
+                    ->label('Онлайн-банк')
+                    ->boolean()
+                    ->sortable()
+                    ->toggleable(),
+
                 TextColumn::make('created_at')
                     ->label('Создан')
                     ->dateTime()
@@ -44,6 +50,8 @@ class BanksTable
             ->filters([
                 TernaryFilter::make('is_active')
                     ->label('Активен'),
+                TernaryFilter::make('is_online_bank')
+                    ->label('Онлайн-банк'),
             ])
             ->recordActions([
                 EditAction::make(),

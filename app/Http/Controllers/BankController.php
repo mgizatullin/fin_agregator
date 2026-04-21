@@ -21,8 +21,28 @@ class BankController extends Controller
     {
         $city = SectionRouteResolver::resolveCity($citySlug);
 
-        $items = Bank::withCount('branches')
+        $items = Bank::query()
             ->where('is_active', true)
+            ->when(
+                filled($city),
+                fn ($query) => $query->where(function ($q) use ($city): void {
+                    $q->where('is_online_bank', true)
+                        ->orWhereHas('branches', function ($branches) use ($city): void {
+                            $branches
+                                ->where('is_active', true)
+                                ->where('city_id', $city->id);
+                        });
+                }),
+            )
+            ->withCount([
+                'branches' => function ($branches) use ($city): void {
+                    $branches->where('is_active', true);
+
+                    if ($city) {
+                        $branches->where('city_id', $city->id);
+                    }
+                },
+            ])
             ->orderByDesc('branches_count')
             ->orderBy('name')
             ->paginate(20)

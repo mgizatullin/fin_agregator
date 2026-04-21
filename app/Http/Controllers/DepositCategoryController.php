@@ -27,6 +27,20 @@ class DepositCategoryController extends Controller
             ->where('deposits.is_active', true)
             ->select('deposits.*');
 
+        if ($city) {
+            $baseQuery->whereHas('bank', function (Builder $bankQuery) use ($city): void {
+                $bankQuery->where('is_active', true)
+                    ->where(function (Builder $q) use ($city): void {
+                        $q->where('is_online_bank', true)
+                            ->orWhereHas('branches', function (Builder $branchesQuery) use ($city): void {
+                                $branchesQuery
+                                    ->where('is_active', true)
+                                    ->where('city_id', $city->id);
+                            });
+                    });
+            });
+        }
+
         $filterMeta = $this->buildFilterMeta(clone $baseQuery);
 
         $query = clone $baseQuery;

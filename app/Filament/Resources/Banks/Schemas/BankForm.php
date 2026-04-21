@@ -63,6 +63,17 @@ class BankForm
                                 DatePicker::make('license_date')
                                     ->label('Дата лицензии'),
 
+                                Select::make('categories')
+                                    ->label('Категории')
+                                    ->relationship('categories', 'title')
+                                    ->multiple()
+                                    ->preload()
+                                    ->searchable(),
+
+                                Toggle::make('is_online_bank')
+                                    ->label('Онлайн-банк')
+                                    ->default(false),
+
                                 RichEditor::make('description')
                                     ->label('Описание')
                                     ->columnSpanFull()
@@ -90,18 +101,6 @@ class BankForm
                                     ->directory('banks')
                                     ->imagePreviewHeight(120)
                                     ->maxSize(2048),
-
-                                Select::make('categories')
-                                    ->label('Категории')
-                                    ->relationship('categories', 'title')
-                                    ->multiple()
-                                    ->preload()
-                                    ->searchable(),
-
-                                TextInput::make('rating')
-                                    ->label('Рейтинг')
-                                    ->numeric()
-                                    ->step('0.01'),
 
                                 Toggle::make('is_active')
                                     ->label('Активен')

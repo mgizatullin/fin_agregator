@@ -7,6 +7,7 @@ use App\Http\Helpers\SectionRouteResolver;
 use App\Models\Card;
 use App\Models\CardCategory;
 use App\Models\SectionSetting;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 use Symfony\Component\HttpFoundation\Response;
@@ -23,6 +24,20 @@ class CardCategoryController extends Controller
         $items = $category->cards()
             ->with('bank')
             ->where('cards.is_active', true)
+            ->when(
+                filled($city),
+                fn ($query) => $query->whereHas('bank', function (Builder $bankQuery) use ($city): void {
+                    $bankQuery->where('is_active', true)
+                        ->where(function (Builder $q) use ($city): void {
+                            $q->where('is_online_bank', true)
+                                ->orWhereHas('branches', function (Builder $branchesQuery) use ($city): void {
+                                    $branchesQuery
+                                        ->where('is_active', true)
+                                        ->where('city_id', $city->id);
+                                });
+                        });
+                }),
+            )
             ->orderBy('cards.name')
             ->paginate(20)
             ->withQueryString();

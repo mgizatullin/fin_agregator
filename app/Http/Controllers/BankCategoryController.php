@@ -21,8 +21,27 @@ class BankCategoryController extends Controller
 
         $category = BankCategory::where('slug', $slug)->firstOrFail();
         $items = $category->banks()
-            ->withCount('branches')
             ->where('banks.is_active', true)
+            ->when(
+                filled($city),
+                fn ($query) => $query->where(function ($q) use ($city): void {
+                    $q->where('banks.is_online_bank', true)
+                        ->orWhereHas('branches', function ($branches) use ($city): void {
+                            $branches
+                                ->where('is_active', true)
+                                ->where('city_id', $city->id);
+                        });
+                }),
+            )
+            ->withCount([
+                'branches' => function ($branches) use ($city): void {
+                    $branches->where('is_active', true);
+
+                    if ($city) {
+                        $branches->where('city_id', $city->id);
+                    }
+                },
+            ])
             ->orderBy('banks.name')
             ->paginate(20)
             ->withQueryString();
