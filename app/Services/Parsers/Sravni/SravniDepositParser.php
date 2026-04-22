@@ -4,6 +4,7 @@ namespace App\Services\Parsers\Sravni;
 
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
+use GuzzleHttp\Cookie\CookieJar;
 
 class SravniDepositParser
 {
@@ -24,6 +25,8 @@ class SravniDepositParser
         'success' => 0,
         'errors' => 0,
     ];
+
+    private CookieJar $cookieJar;
 
     /**
      * @return array<int, array<string, mixed>>
@@ -122,6 +125,7 @@ class SravniDepositParser
     private function resetRuntime(): void
     {
         $this->log = [];
+        $this->cookieJar = new CookieJar();
         $this->stats = [
             'found' => 0,
             'processed' => 0,
@@ -141,9 +145,14 @@ class SravniDepositParser
             return [];
         }
 
+        if ($this->looksLikeRobotPage($html)) {
+            $this->logAndWarn('Похоже на антибот-страницу («Вы не робот?»). Попробуйте увеличить паузу между запросами или повторить позже.');
+            return [];
+        }
+
         $nextDataJson = $this->extractNextDataJson($html);
         if ($nextDataJson === null) {
-            $this->logAndWarn('JSON __NEXT_DATA__ не найден на странице.');
+            $this->logAndWarn('JSON __NEXT_DATA__ не найден на странице. Title: ' . $this->extractHtmlTitle($html) . '.');
             return [];
         }
 
@@ -187,6 +196,7 @@ class SravniDepositParser
             'User-Agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)',
             'Accept' => $expectsJson ? 'application/json, text/html' : 'application/json, text/html',
             'Accept-Language' => 'ru-RU,ru;q=0.9',
+            'Referer' => 'https://www.sravni.ru/',
         ];
 
         $candidateUrls = $this->buildUrlCandidates($url);
@@ -199,6 +209,7 @@ class SravniDepositParser
                         'connect_timeout' => 20,
                         'force_ip_resolve' => 'v4',
                         'version' => 1.1,
+                        'cookies' => $this->cookieJar,
                         'curl' => [
                             CURLOPT_IPRESOLVE => CURL_IPRESOLVE_V4,
                             CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
@@ -212,7 +223,11 @@ class SravniDepositParser
             }
 
             if ($response instanceof \Illuminate\Http\Client\Response && $response->successful()) {
+                if (! $expectsJson && $this->looksLikeRobotPage((string) $response->body())) {
+                    $this->logAndWarn('Антибот HTML (200) для: ' . $candidateUrl);
+                } else {
                 return $response;
+                }
             }
 
             // Дополнительная ручная попытка после встроенного retry.
@@ -223,6 +238,7 @@ class SravniDepositParser
                         'connect_timeout' => 20,
                         'force_ip_resolve' => 'v4',
                         'version' => 1.1,
+                        'cookies' => $this->cookieJar,
                         'curl' => [
                             CURLOPT_IPRESOLVE => CURL_IPRESOLVE_V4,
                             CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
@@ -237,12 +253,20 @@ class SravniDepositParser
             }
 
             if ($response->successful()) {
+                if (! $expectsJson && $this->looksLikeRobotPage((string) $response->body())) {
+                    $this->logAndWarn('Антибот HTML (200) для: ' . $candidateUrl);
+                } else {
                 return $response;
+                }
             }
 
             // Фолбэк на raw cURL с теми же network-настройками.
             $curlBody = $this->rawCurlGet($candidateUrl, $query, $headers);
             if (is_string($curlBody) && $curlBody !== '') {
+                if (! $expectsJson && $this->looksLikeRobotPage($curlBody)) {
+                    $this->logAndWarn('Антибот HTML (raw cURL) для: ' . $candidateUrl);
+                    continue;
+                }
                 return new \Illuminate\Http\Client\Response(
                     new \GuzzleHttp\Psr7\Response(200, ['Content-Type' => 'text/html; charset=utf-8'], $curlBody)
                 );
@@ -252,6 +276,20 @@ class SravniDepositParser
         }
 
         return null;
+    }
+
+    private function looksLikeRobotPage(string $html): bool
+    {
+        $h = mb_strtolower($html);
+        return str_contains($h, 'вы не робот') || str_contains($h, 'captcha') || str_contains($h, 'cf-challenge');
+    }
+
+    private function extractHtmlTitle(string $html): string
+    {
+        if (preg_match('~<title[^>]*>(.*?)</title>~isu', $html, $m) === 1) {
+            return trim(strip_tags((string) ($m[1] ?? '')));
+        }
+        return '';
     }
 
     /**

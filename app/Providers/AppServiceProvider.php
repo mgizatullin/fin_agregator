@@ -34,6 +34,7 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         Config::set('livewire.payload.max_size', 5 * 1024 * 1024);
+        app('livewire')->propertySynthesizer(\App\Livewire\Synthesizers\UnsupportedTypeToNullSynth::class);
 
         Carbon::setLocale('ru');
         Article::observe(ArticleObserver::class);
