@@ -5,6 +5,7 @@ namespace App\Filament\Resources\Deposits\Schemas;
 use App\Models\Deposit;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\RichEditor;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Components\Grid;
