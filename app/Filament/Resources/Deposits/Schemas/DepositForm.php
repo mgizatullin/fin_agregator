@@ -2,9 +2,9 @@
 
 namespace App\Filament\Resources\Deposits\Schemas;
 
+use App\Models\Deposit;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\RichEditor;
-use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Components\Grid;
@@ -56,10 +56,24 @@ class DepositForm
                     ->unique(ignoreRecord: true),
 
                 Grid::make(2)->schema([
-                    Select::make('deposit_type')
+                    TextInput::make('deposit_type')
                         ->label('Тип вклада')
-                        ->options(self::DEPOSIT_TYPES)
-                        ->searchable(),
+                        ->maxLength(255)
+                        ->datalist(function (): array {
+                            $base = array_keys(self::DEPOSIT_TYPES);
+                            $fromDb = Deposit::query()
+                                ->whereNotNull('deposit_type')
+                                ->where('deposit_type', '!=', '')
+                                ->select('deposit_type')
+                                ->distinct()
+                                ->orderBy('deposit_type')
+                                ->pluck('deposit_type')
+                                ->filter()
+                                ->values()
+                                ->all();
+
+                            return array_values(array_unique(array_merge($base, $fromDb)));
+                        }),
 
                     Select::make('categories')
                         ->label('Категории')

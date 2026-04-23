@@ -67,6 +67,69 @@
                                             {!! $article->content !!}
                                         @endif
                                     </div>
+
+                                    @php
+                                        $comments = $comments ?? [];
+                                        $commentFormErrors = $errors->hasAny(['body', 'name']);
+                                    @endphp
+                                    <section id="comments" class="section-reviews tf-spacing-27 mb_102">
+                                        <div class="section-heading">
+                                            <h3 class="section-reviews__title">Комментарии</h3>
+                                            <div class="section-heading__meta">
+                                                <span class="section-heading__count">{{ count($comments) }} {{ \Illuminate\Support\Str::of('комментарий')->plural(count($comments)) }}</span>
+                                            </div>
+                                        </div>
+
+                                        @if(session('status'))
+                                            <p class="reviews-empty">{{ session('status') }}</p>
+                                        @endif
+
+                                        @if($comments !== [])
+                                            <div class="reviews-list">
+                                                @foreach($comments as $comment)
+                                                    <article class="review-card">
+                                                        <header class="review-card__header">
+                                                            <h4 class="review-card__title">{{ $comment->name }}</h4>
+                                                            <span class="review-card__header-meta">
+                                                                <span>{{ ($comment->created_at)->locale('ru')->translatedFormat('d F Y, H:i') }}</span>
+                                                            </span>
+                                                        </header>
+                                                        <div class="review-card__body">
+                                                            <p style="white-space: pre-wrap;">{{ $comment->body }}</p>
+                                                        </div>
+                                                    </article>
+                                                @endforeach
+                                            </div>
+                                        @else
+                                            <p class="reviews-empty">Пока нет комментариев. Станьте первым, кто поделится мнением.</p>
+                                        @endif
+
+                                        <div class="review-form-wrapper">
+                                            <h3 class="review-form__title">Оставить комментарий</h3>
+                                            <form action="{{ route('blog.comments.store', $article) }}" method="post" class="review-form">
+                                                @csrf
+                                                <div class="review-form__grid">
+                                                    <div class="review-form__field {{ $commentFormErrors ? 'review-form__field--error' : '' }}">
+                                                        <label class="review-form__label" for="comment-name">Имя <span class="review-form__required">*</span></label>
+                                                        <input id="comment-name" type="text" name="name" class="review-form__input" value="{{ old('name') }}" required maxlength="255">
+                                                        @error('name')<span class="review-form__error-text">{{ $message }}</span>@enderror
+                                                    </div>
+
+                                                    <div class="review-form__field review-form__field--full {{ $commentFormErrors ? 'review-form__field--error' : '' }}">
+                                                        <label class="review-form__label" for="comment-body">Комментарий <span class="review-form__required">*</span></label>
+                                                        <textarea id="comment-body" name="body" rows="5" class="review-form__textarea" required maxlength="5000">{{ old('body') }}</textarea>
+                                                        @error('body')<span class="review-form__error-text">{{ $message }}</span>@enderror
+                                                    </div>
+                                                </div>
+
+                                                <button type="submit" class="tf-btn btn-primary2 btn-px-28 height-2 rounded-12 review-form__submit">
+                                                    <span>Отправить комментарий</span>
+                                                    <span class="bg-effect"></span>
+                                                </button>
+                                            </form>
+                                            <p class="text-body-3 text_mono-gray-6 mt_12">Комментарий появится после модерации.</p>
+                                        </div>
+                                    </section>
                                 </div>
                             </div>
                         </div>

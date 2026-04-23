@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Article;
+use App\Models\ArticleComment;
 use App\Models\Category;
 use App\Models\SectionSetting;
 use Illuminate\View\View;
@@ -85,6 +86,12 @@ class BlogController extends Controller
             ->where('is_published', true)
             ->firstOrFail();
 
+        $comments = ArticleComment::query()
+            ->where('article_id', $article->id)
+            ->published()
+            ->latest('id')
+            ->get();
+
         $categories = Category::query()
             ->where('is_active', true)
             ->withCount('articles')
@@ -101,6 +108,7 @@ class BlogController extends Controller
             'article' => $article,
             'categories' => $categories,
             'latestArticles' => $latestArticles,
+            'comments' => $comments,
             'seo_title' => $article->seo_title ?? $article->title,
             'seo_description' => $article->seo_description,
             'title' => $article->title,

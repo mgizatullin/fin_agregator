@@ -3,6 +3,7 @@
 use App\Http\Controllers\BankCategoryController;
 use App\Http\Controllers\BankController;
 use App\Http\Controllers\BlogController;
+use App\Http\Controllers\ArticleCommentController;
 use App\Http\Controllers\CardCategoryController;
 use App\Http\Controllers\CardController;
 use App\Http\Controllers\CityDialogController;
@@ -271,6 +272,7 @@ Route::get('/search', [\App\Http\Controllers\SearchController::class, 'index'])-
 Route::get('/blog', [BlogController::class, 'index'])->name('blog.index');
 Route::get('/blog/category/{slug}', [BlogController::class, 'category'])->name('blog.category');
 Route::get('/blog/{slug}', [BlogController::class, 'show'])->name('blog.show');
+Route::post('/blog/{article:slug}/comments', [ArticleCommentController::class, 'store'])->name('blog.comments.store');
 
 Route::get('/api/deposits/{deposit}/conditions', [DepositController::class, 'conditions'])->name('api.deposits.conditions');
 
