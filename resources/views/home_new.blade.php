@@ -345,8 +345,12 @@
                                 <div class="blog-article-item style-4 ">
                                     <a href="{{ url_section('blog/'.$post->slug) }}" class="article-thumb mb_11 ">
                                         @if($post->image)
-                                        <img class="lazyload " data-src="{{ asset('storage/'.$post->image) }}" src="{{ asset('storage/'.$post->image) }}" alt="{{ $post->title }}">
-                                        <img class="lazyload " data-src="{{ asset('storage/'.$post->image) }}" src="{{ asset('storage/'.$post->image) }}" alt="{{ $post->title }}">
+                                        @php
+                                            $previewPath = 'blog/previews/' . basename($post->image);
+                                            $previewExists = str_starts_with($post->image, 'blog/') && \Illuminate\Support\Facades\Storage::disk('public')->exists($previewPath);
+                                            $imgSrc = $previewExists ? 'storage/' . $previewPath : 'storage/' . $post->image;
+                                        @endphp
+                                        <img class="lazyload " data-src="{{ asset($imgSrc) }}" src="{{ asset($imgSrc) }}" alt="{{ $post->title }}">
                                         @else
                                         <img class="lazyload " data-src="{{ asset('assets/images/blog/blog-1.jpg') }}" src="{{ asset('assets/images/blog/blog-1.jpg') }}" alt="{{ $post->title }}">
                                         @endif

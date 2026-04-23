@@ -16,6 +16,10 @@ class BanksTable
     {
         return $table
             ->columns([
+                TextColumn::make('id')
+                    ->label('ID')
+                    ->sortable(),
+
                 TextColumn::make('name')
                     ->label('Название')
                     ->searchable()

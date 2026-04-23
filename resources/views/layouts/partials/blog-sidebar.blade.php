@@ -61,34 +61,6 @@
         </div>
     </div>
     <div>
-        <h6 class="sidebar-title  mb_18 -mt_7">
-            Популярные теги
-        </h6>
-        <div class="wrap-popular-tag">
-            <a href="{{ url_section('blog') }}" class="popular-tag-item link">
-                Аналитика
-            </a>
-            <a href="{{ url_section('blog') }}" class="popular-tag-item link">
-                Консалтинг
-            </a>
-            <a href="{{ url_section('blog') }}" class="popular-tag-item link">
-                Бизнес
-            </a>
-            <a href="{{ url_section('blog') }}" class="popular-tag-item link">
-                Данные
-            </a>
-            <a href="{{ url_section('blog') }}" class="popular-tag-item link">
-                Бизнес-консалтинг
-            </a>
-            <a href="{{ url_section('blog') }}" class="popular-tag-item link">
-                Маркетинг
-            </a>
-            <a href="{{ url_section('blog') }}" class="popular-tag-item link">
-                Решения
-            </a>
-        </div>
-    </div>
-    <div>
         <h6 class="sidebar-title  mb_16">
             Подписаться на рассылку
         </h6>

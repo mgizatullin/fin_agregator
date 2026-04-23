@@ -24,7 +24,12 @@
                                 <div class="blog-article-item  hover-image  ">
                                     <a href="{{ url_section('blog/' . $article->slug) }}" class="article-thumb mb_25 ">
                                         @if($article->image)
-                                        <img class="lazyload " data-src="{{ asset('storage/' . $article->image) }}" src="{{ asset('storage/' . $article->image) }}" alt="{{ $article->title }}">
+                                        @php
+                                            $previewPath = 'blog/previews/' . basename($article->image);
+                                            $previewExists = str_starts_with($article->image, 'blog/') && \Illuminate\Support\Facades\Storage::disk('public')->exists($previewPath);
+                                            $imgSrc = $previewExists ? 'storage/' . $previewPath : 'storage/' . $article->image;
+                                        @endphp
+                                        <img class="lazyload " data-src="{{ asset($imgSrc) }}" src="{{ asset($imgSrc) }}" alt="{{ $article->title }}">
                                         @else
                                         <img class="lazyload " data-src="{{ asset('assets/images/blog/blog-1.jpg') }}" src="{{ asset('assets/images/blog/blog-1.jpg') }}" alt="{{ $article->title }}">
                                         @endif

@@ -5391,6 +5391,15 @@ form.style-line-bot.style-2 button {
   object-fit: cover;
 }
 
+/* Картинка статьи: 100% ширины, но не шире 1000px и по центру */
+.section-sigle-post .thumbs-post-single img {
+  display: block;
+  width: 100%;
+  max-width: 1000px;
+  height: auto;
+  margin-inline: auto;
+}
+
 .wishlist-post-sigle {
   height: 36px;
   padding: 0 12px;
