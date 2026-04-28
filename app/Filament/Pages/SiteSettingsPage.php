@@ -6,7 +6,6 @@ use App\Models\SiteSettings;
 use Filament\Actions\Action;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Repeater;
-use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
@@ -290,14 +289,10 @@ class SiteSettingsPage extends Page
                                             ->visibility('public')
                                             ->maxFiles(1)
                                             ->columnSpanFull(),
-                                        RichEditor::make('footer_under_logo')
+                                        Textarea::make('footer_under_logo')
                                             ->label('Подпись под логотипом')
-                                            ->helperText('Текст под логотипом в подвале (контакты, адрес).')
-                                            ->json(false)
-                                            ->toolbarButtons([
-                                                ['bold', 'italic', 'link'],
-                                                ['bulletList', 'orderedList'],
-                                            ])
+                                            ->helperText('Текст под логотипом в подвале. Можно использовать HTML, например ссылки и переносы строк.')
+                                            ->rows(5)
                                             ->columnSpanFull(),
                                     ])
                                     ->columnSpanFull(),
