@@ -22,6 +22,7 @@ use Filament\Schemas\Components\Tabs\Tab;
 use Filament\Schemas\Schema;
 use Filament\Support\Enums\Alignment;
 use Filament\Support\Exceptions\Halt;
+use Illuminate\Support\Arr;
 use Throwable;
 
 class SiteSettingsPage extends Page
@@ -111,55 +112,53 @@ class SiteSettingsPage extends Page
             $footer2 = is_array($footer2) ? $footer2 : [];
             $footerBottom = $data['footer_menu_bottom'] ?? [];
             $footerBottom = is_array($footerBottom) ? $footerBottom : [];
-            $footerHeading1 = isset($data['footer_heading_1']) ? (string) $data['footer_heading_1'] : null;
-            $footerHeading2 = isset($data['footer_heading_2']) ? (string) $data['footer_heading_2'] : null;
+            $footerHeading1 = $this->stringOrNull($data['footer_heading_1'] ?? null);
+            $footerHeading2 = $this->stringOrNull($data['footer_heading_2'] ?? null);
             $logo = $data['logo'] ?? [];
-            $logoPath = is_array($logo) ? (isset($logo[0]) ? $logo[0] : null) : $logo;
-            if ($logoPath === '' || $logoPath === []) {
-                $logoPath = null;
-            }
+            $logoPath = $this->stringOrNull(is_array($logo) ? Arr::first($logo) : $logo);
 
-            $siteDisplayName = isset($data['site_display_name']) ? trim((string) $data['site_display_name']) : '';
-            $email = isset($data['email']) ? trim((string) $data['email']) : '';
-            $applicationsEmail = isset($data['applications_email']) ? trim((string) $data['applications_email']) : '';
-            $mailTransportMode = isset($data['mail_transport_mode']) ? trim((string) $data['mail_transport_mode']) : 'default';
-            $smtpHost = isset($data['smtp_host']) ? trim((string) $data['smtp_host']) : '';
+            $siteDisplayName = $this->stringOrNull($data['site_display_name'] ?? null);
+            $email = $this->stringOrNull($data['email'] ?? null);
+            $applicationsEmail = $this->stringOrNull($data['applications_email'] ?? null);
+            $mailTransportMode = $this->stringOrNull($data['mail_transport_mode'] ?? null) ?? 'default';
+            $smtpHost = $this->stringOrNull($data['smtp_host'] ?? null);
             $smtpPort = isset($data['smtp_port']) ? (int) $data['smtp_port'] : null;
-            $smtpEncryption = isset($data['smtp_encryption']) ? trim((string) $data['smtp_encryption']) : '';
-            $smtpUsername = isset($data['smtp_username']) ? trim((string) $data['smtp_username']) : '';
-            $smtpPassword = isset($data['smtp_password']) ? (string) $data['smtp_password'] : '';
-            $smtpFromAddress = isset($data['smtp_from_address']) ? trim((string) $data['smtp_from_address']) : '';
-            $smtpFromName = isset($data['smtp_from_name']) ? trim((string) $data['smtp_from_name']) : '';
+            $smtpEncryption = $this->stringOrNull($data['smtp_encryption'] ?? null);
+            $smtpUsername = $this->stringOrNull($data['smtp_username'] ?? null);
+            $smtpPassword = $this->stringOrNull($data['smtp_password'] ?? null, trim: false);
+            $smtpFromAddress = $this->stringOrNull($data['smtp_from_address'] ?? null);
+            $smtpFromName = $this->stringOrNull($data['smtp_from_name'] ?? null);
+            $footerUnderLogo = $this->richTextOrNull($data['footer_under_logo'] ?? null);
 
             $this->getSetting()->update([
                 'navigation' => $navigation,
                 'footer_menu_1' => $footer1,
                 'footer_menu_2' => $footer2,
                 'footer_menu_bottom' => $footerBottom,
-                'footer_heading_1' => $footerHeading1 !== '' ? $footerHeading1 : null,
-                'footer_heading_2' => $footerHeading2 !== '' ? $footerHeading2 : null,
-                'site_display_name' => $siteDisplayName !== '' ? $siteDisplayName : null,
-                'email' => $email !== '' ? $email : null,
-                'applications_email' => $applicationsEmail !== '' ? $applicationsEmail : null,
+                'footer_heading_1' => $footerHeading1,
+                'footer_heading_2' => $footerHeading2,
+                'site_display_name' => $siteDisplayName,
+                'email' => $email,
+                'applications_email' => $applicationsEmail,
                 'mail_transport_mode' => in_array($mailTransportMode, ['default', 'smtp'], true) ? $mailTransportMode : 'default',
-                'smtp_host' => $smtpHost !== '' ? $smtpHost : null,
+                'smtp_host' => $smtpHost,
                 'smtp_port' => $smtpPort ?: null,
-                'smtp_encryption' => in_array($smtpEncryption, ['tls', 'ssl', ''], true) ? ($smtpEncryption !== '' ? $smtpEncryption : null) : null,
-                'smtp_username' => $smtpUsername !== '' ? $smtpUsername : null,
-                'smtp_password' => $smtpPassword !== '' ? $smtpPassword : null,
-                'smtp_from_address' => $smtpFromAddress !== '' ? $smtpFromAddress : null,
-                'smtp_from_name' => $smtpFromName !== '' ? $smtpFromName : null,
-                'copyright' => isset($data['copyright']) && (string) $data['copyright'] !== '' ? (string) $data['copyright'] : null,
-                'custom_scripts' => isset($data['custom_scripts']) && (string) $data['custom_scripts'] !== '' ? (string) $data['custom_scripts'] : null,
+                'smtp_encryption' => in_array($smtpEncryption, ['tls', 'ssl'], true) ? $smtpEncryption : null,
+                'smtp_username' => $smtpUsername,
+                'smtp_password' => $smtpPassword,
+                'smtp_from_address' => $smtpFromAddress,
+                'smtp_from_name' => $smtpFromName,
+                'copyright' => $this->stringOrNull($data['copyright'] ?? null, trim: false),
+                'custom_scripts' => $this->stringOrNull($data['custom_scripts'] ?? null, trim: false),
                 'logo' => $logoPath,
-                'footer_under_logo' => isset($data['footer_under_logo']) && (string) $data['footer_under_logo'] !== '' ? (string) $data['footer_under_logo'] : null,
-                'social_twitter' => isset($data['social_twitter']) && (string) $data['social_twitter'] !== '' ? (string) $data['social_twitter'] : null,
-                'social_facebook' => isset($data['social_facebook']) && (string) $data['social_facebook'] !== '' ? (string) $data['social_facebook'] : null,
-                'social_github' => isset($data['social_github']) && (string) $data['social_github'] !== '' ? (string) $data['social_github'] : null,
-                'social_instagram' => isset($data['social_instagram']) && (string) $data['social_instagram'] !== '' ? (string) $data['social_instagram'] : null,
-                'social_youtube' => isset($data['social_youtube']) && (string) $data['social_youtube'] !== '' ? (string) $data['social_youtube'] : null,
-                'social_zen' => isset($data['social_zen']) && (string) $data['social_zen'] !== '' ? (string) $data['social_zen'] : null,
-                'social_telegram' => isset($data['social_telegram']) && (string) $data['social_telegram'] !== '' ? (string) $data['social_telegram'] : null,
+                'footer_under_logo' => $footerUnderLogo,
+                'social_twitter' => $this->stringOrNull($data['social_twitter'] ?? null),
+                'social_facebook' => $this->stringOrNull($data['social_facebook'] ?? null),
+                'social_github' => $this->stringOrNull($data['social_github'] ?? null),
+                'social_instagram' => $this->stringOrNull($data['social_instagram'] ?? null),
+                'social_youtube' => $this->stringOrNull($data['social_youtube'] ?? null),
+                'social_zen' => $this->stringOrNull($data['social_zen'] ?? null),
+                'social_telegram' => $this->stringOrNull($data['social_telegram'] ?? null),
 
                 // поля "О проекте" вынесены в отдельную страницу
             ]);
@@ -509,5 +508,32 @@ class SiteSettingsPage extends Page
                             ->key('form-actions'),
                     ]),
             ]);
+    }
+
+    private function stringOrNull(mixed $value, bool $trim = true): ?string
+    {
+        if (is_array($value)) {
+            return null;
+        }
+
+        if (is_object($value) && ! method_exists($value, '__toString')) {
+            return null;
+        }
+
+        if ($value === null) {
+            return null;
+        }
+
+        $value = (string) $value;
+        $normalized = $trim ? trim($value) : $value;
+
+        return $normalized !== '' ? $normalized : null;
+    }
+
+    private function richTextOrNull(mixed $value): ?string
+    {
+        $html = description_ensure_html($value);
+
+        return trim($html) !== '' ? $html : null;
     }
 }
