@@ -27,6 +27,18 @@ use App\Models\SiteSettings;
 use App\Models\Specialist;
 use Illuminate\Support\Facades\Route;
 
+Route::get('/livewire-{version}/update', function (\Illuminate\Http\Request $request) {
+    $referer = $request->headers->get('referer');
+
+    return redirect()->to($referer && str_contains($referer, '/admin') ? $referer : '/admin', 303);
+})->where('version', '[^/]+');
+
+Route::get('/livewire/update', function (\Illuminate\Http\Request $request) {
+    $referer = $request->headers->get('referer');
+
+    return redirect()->to($referer && str_contains($referer, '/admin') ? $referer : '/admin', 303);
+});
+
 Route::get('/', function () {
     $settings = HomePageSetting::instance();
     $posts = Article::query()
