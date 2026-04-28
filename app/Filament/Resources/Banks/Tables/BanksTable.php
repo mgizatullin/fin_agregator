@@ -30,9 +30,16 @@ class BanksTable
                     ->searchable()
                     ->toggleable(),
 
-                TextColumn::make('rating')
-                    ->label('Рейтинг')
+                TextColumn::make('branches_count')
+                    ->label('Кол-во отделений')
+                    ->counts('branches')
                     ->sortable(),
+
+                TextColumn::make('license_number')
+                    ->label('Номер лицензии')
+                    ->searchable()
+                    ->sortable()
+                    ->toggleable(),
 
                 IconColumn::make('is_active')
                     ->label('Активен')

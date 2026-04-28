@@ -6,7 +6,6 @@ use App\Filament\Resources\Banks\RelationManagers\BranchesRelationManager;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\RichEditor;
-use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\Toggle;
@@ -62,13 +61,6 @@ class BankForm
 
                                 DatePicker::make('license_date')
                                     ->label('Дата лицензии'),
-
-                                Select::make('categories')
-                                    ->label('Категории')
-                                    ->relationship('categories', 'title')
-                                    ->multiple()
-                                    ->preload()
-                                    ->searchable(),
 
                                 Toggle::make('is_online_bank')
                                     ->label('Онлайн-банк')
