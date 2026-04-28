@@ -6,18 +6,18 @@ use App\Models\Article;
 use App\Models\ArticleComment;
 use App\Models\Category;
 use App\Models\SectionSetting;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Http\Request;
+use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Collection;
 use Illuminate\View\View;
 
 class BlogController extends Controller
 {
-    public function index(): View
+    public function index(Request $request): View
     {
         $section = SectionSetting::getOrCreateForType('blog');
-        $articles = Article::query()
-            ->with('category')
-            ->where('is_published', true)
-            ->latest('published_at')
-            ->paginate(10);
+        $articles = $this->articlesPage($request);
         $categories = Category::query()
             ->where('is_active', true)
             ->withCount('articles')
@@ -41,16 +41,11 @@ class BlogController extends Controller
         ]);
     }
 
-    public function category(string $slug): View
+    public function category(Request $request, string $slug): View
     {
         $category = Category::where('slug', $slug)->where('is_active', true)->firstOrFail();
         $section = SectionSetting::getOrCreateForType('blog');
-        $articles = Article::query()
-            ->with('category')
-            ->where('is_published', true)
-            ->where('category_id', $category->id)
-            ->latest('published_at')
-            ->paginate(10);
+        $articles = $this->articlesPage($request, $category);
         $categories = Category::query()
             ->where('is_active', true)
             ->withCount('articles')
@@ -113,5 +108,62 @@ class BlogController extends Controller
             'seo_description' => $article->seo_description,
             'title' => $article->title,
         ]);
+    }
+
+    private function articlesPage(Request $request, ?Category $category = null): LengthAwarePaginator
+    {
+        $search = $request->input('search', '');
+        $search = is_string($search) ? trim($search) : '';
+
+        $query = Article::query()
+            ->with('category')
+            ->where('is_published', true)
+            ->when($category, fn (Builder $query) => $query->where('category_id', $category->id))
+            ->latest('published_at');
+
+        if ($search === '') {
+            return $query->paginate(10)->withQueryString();
+        }
+
+        $articles = $query
+            ->get()
+            ->filter(fn (Article $article) => $this->matchesAny(
+                $search,
+                $article->title,
+                $article->excerpt,
+                $article->content,
+                $article->content_html,
+                $article->category?->name,
+            ))
+            ->values();
+
+        return $this->paginateCollection($articles, 10, $request);
+    }
+
+    private function paginateCollection(Collection $items, int $perPage, Request $request): LengthAwarePaginator
+    {
+        $page = LengthAwarePaginator::resolveCurrentPage();
+
+        return new LengthAwarePaginator(
+            $items->forPage($page, $perPage)->values(),
+            $items->count(),
+            $perPage,
+            $page,
+            [
+                'path' => $request->url(),
+                'query' => $request->query(),
+            ],
+        );
+    }
+
+    private function matchesAny(string $search, mixed ...$values): bool
+    {
+        foreach ($values as $value) {
+            if ($value !== null && mb_stripos(strip_tags((string) $value), $search, 0, 'UTF-8') !== false) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }

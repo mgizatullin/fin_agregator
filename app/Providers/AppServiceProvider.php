@@ -13,6 +13,9 @@ use App\Observers\ArticleObserver;
 use App\Services\CbrRatesService;
 use Carbon\Carbon;
 use Filament\Auth\Http\Responses\Contracts\LoginResponse as LoginResponseContract;
+use Filament\Forms\Components\Select;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\SelectFilter;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\View;
@@ -35,6 +38,10 @@ class AppServiceProvider extends ServiceProvider
     {
         Config::set('livewire.payload.max_size', 5 * 1024 * 1024);
         app('livewire')->propertySynthesizer(\App\Livewire\Synthesizers\UnsupportedTypeToNullSynth::class);
+
+        TextColumn::configureUsing(fn (TextColumn $column) => $column->forceSearchCaseInsensitive());
+        Select::configureUsing(fn (Select $select) => $select->forceSearchCaseInsensitive());
+        SelectFilter::configureUsing(fn (SelectFilter $filter) => $filter->forceSearchCaseInsensitive());
 
         Carbon::setLocale('ru');
         Article::observe(ArticleObserver::class);

@@ -2,7 +2,7 @@
 
 @section('page-header')
 @include('layouts.partials.page-header', [
-    'title' => $q !== '' ? 'Результаты поиска: ' . e($q) : 'Поиск',
+    'title' => 'Поиск по сайту finvito.ru',
     'subtitle' => $q !== '' && $total > 0 ? 'Найдено: ' . $total : ($q !== '' ? 'Ничего не найдено' : 'Введите запрос в поле поиска'),
 ])
 @endsection

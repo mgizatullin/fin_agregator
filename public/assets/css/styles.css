@@ -5176,6 +5176,11 @@ form.style-line-bot.style-2 button {
   opacity: 1;
   filter: blur(0);
 }
+.blog-article-item.style-1 .article-thumb img:only-child, .blog-article-item.style-3 .article-thumb img:only-child, .blog-article-item.style-4 .article-thumb img:only-child {
+  transform: translatex(0) scalex(1);
+  opacity: 1;
+  filter: blur(0);
+}
 .blog-article-item.style-2 {
   position: relative;
 }
