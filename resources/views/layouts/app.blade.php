@@ -102,8 +102,7 @@
     <link rel="stylesheet" type="text/css" href="{{ asset('assets/fonts/icons/icomoon/style.css') }}">
 
     <!-- Favicon and Touch Icons  -->
-    <link rel="shortcut icon" href="{{ asset('assets/images/logo/favicon.svg') }}">
-    <link rel="apple-touch-icon-precomposed" href="{{ asset('assets/images/logo/favicon.svg') }}">
+    @include('layouts.partials.favicons')
 </head>
 
 <body class="{{ request()->routeIs('home') ? 'page-home' : '' }}">

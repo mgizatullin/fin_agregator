@@ -69,8 +69,7 @@
     <link rel="stylesheet" href="{{ asset('assets/fonts/fonts.css') }}">
     <link rel="stylesheet" type="text/css" href="{{ asset('assets/fonts/icons/icomoon/style.css') }}">
 
-    <link rel="shortcut icon" href="{{ asset('assets/images/logo/favicon.svg') }}">
-    <link rel="apple-touch-icon-precomposed" href="{{ asset('assets/images/logo/favicon.svg') }}">
+    @include('layouts.partials.favicons')
 </head>
 
 <body>
