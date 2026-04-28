@@ -18,14 +18,20 @@ return Application::configure(basePath: dirname(__DIR__))
             \App\Http\Middleware\RedirectTrailingSlash::class,
         ]);
 
+        $middleware->web(replace: [
+            ValidateCsrfToken::class => \App\Http\Middleware\VerifyCsrfToken::class,
+        ]);
+
         $middleware->validateCsrfTokens(except: [
             'livewire/*',
             'livewire-*/update',
+            'livewire/update',
         ]);
 
         // Some stacks still register VerifyCsrfToken directly; ensure both variants are excluded.
-        ValidateCsrfToken::except(['livewire/*', 'livewire-*/update']);
-        VerifyCsrfToken::except(['livewire/*', 'livewire-*/update']);
+        ValidateCsrfToken::except(['livewire/*', 'livewire-*/update', 'livewire/update']);
+        VerifyCsrfToken::except(['livewire/*', 'livewire-*/update', 'livewire/update']);
+        \App\Http\Middleware\VerifyCsrfToken::except(['livewire/*', 'livewire-*/update', 'livewire/update']);
     })
     ->withSchedule(function (Schedule $schedule): void {
         $schedule->command('cbr:fetch-rates')->cron('0 */3 * * *');
