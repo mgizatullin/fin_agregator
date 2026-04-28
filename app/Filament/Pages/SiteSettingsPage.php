@@ -61,7 +61,7 @@ class SiteSettingsPage extends Page
     protected function fillForm(): void
     {
         $setting = $this->getSetting();
-        $this->data = [
+        $data = [
             'navigation' => $setting->navigation ?? [],
             'footer_menu_1' => $setting->footer_menu_1 ?? [],
             'footer_menu_2' => $setting->footer_menu_2 ?? [],
@@ -93,6 +93,8 @@ class SiteSettingsPage extends Page
 
             // поля "О проекте" вынесены в отдельную страницу
         ];
+
+        $this->form->fill($data);
     }
 
     public function save(): void
