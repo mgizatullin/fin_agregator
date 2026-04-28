@@ -16,10 +16,14 @@ use Filament\Auth\Http\Responses\Contracts\LoginResponse as LoginResponseContrac
 use Filament\Forms\Components\Select;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
+use Illuminate\Foundation\Http\Middleware\ValidateCsrfToken;
+use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
+use Livewire\Livewire;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -38,6 +42,14 @@ class AppServiceProvider extends ServiceProvider
     {
         Config::set('livewire.payload.max_size', 5 * 1024 * 1024);
         app('livewire')->propertySynthesizer(\App\Livewire\Synthesizers\UnsupportedTypeToNullSynth::class);
+
+        Livewire::setUpdateRoute(fn ($handle) => Route::post('/livewire/update', $handle)
+            ->middleware('web')
+            ->withoutMiddleware([
+                ValidateCsrfToken::class,
+                VerifyCsrfToken::class,
+                \App\Http\Middleware\VerifyCsrfToken::class,
+            ]));
 
         TextColumn::configureUsing(fn (TextColumn $column) => $column->forceSearchCaseInsensitive());
         Select::configureUsing(fn (Select $select) => $select->forceSearchCaseInsensitive());
