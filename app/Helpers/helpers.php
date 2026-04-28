@@ -51,7 +51,7 @@ if (! function_exists('description_ensure_html')) {
     /**
      * Приводит описание к HTML перед сохранением (переносы в <p>, экранирование или разрешённые теги).
      */
-    function description_ensure_html(?string $text): string
+    function description_ensure_html(mixed $text): string
     {
         return description_to_html($text);
     }
@@ -62,13 +62,21 @@ if (! function_exists('description_to_html')) {
      * Преобразует текст описания в HTML: переносы строк в <p>, экранирование.
      * Если строка уже содержит теги — возвращает с разрешёнными тегами.
      */
-    function description_to_html(?string $text): string
+    function description_to_html(mixed $text): string
     {
+        if (is_array($text)) {
+            return \Filament\Forms\Components\RichEditor\RichContentRenderer::make($text)->toUnsafeHtml();
+        }
+
+        if (is_object($text)) {
+            $text = method_exists($text, '__toString') ? (string) $text : '';
+        }
+
         if ($text === null || $text === '') {
             return '';
         }
 
-        $text = trim($text);
+        $text = trim((string) $text);
 
         // Если уже есть HTML-теги — возвращаем с разрешёнными тегами (без зависимости от Laravel)
         if (str_contains($text, '<') || str_contains($text, '>')) {
