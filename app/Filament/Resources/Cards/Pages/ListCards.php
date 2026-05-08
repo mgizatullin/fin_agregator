@@ -225,9 +225,13 @@ class ListCards extends ListRecords
                     ->json(false)
                     ->extraInputAttributes(['style' => 'min-height: 200px'])
                     ->toolbarButtons([
-                        ['bold', 'italic', 'link'],
-                        ['h2', 'h3'],
-                        ['bulletList', 'orderedList'],
+                        ['source-code'],
+                        ['bold', 'italic', 'underline', 'strike', 'subscript', 'superscript', 'link', 'textColor', 'highlight', 'code'],
+                        ['h1', 'h2', 'h3', 'alignStart', 'alignCenter', 'alignEnd', 'alignJustify'],
+                        ['blockquote', 'codeBlock', 'bulletList', 'orderedList', 'details', 'small', 'lead'],
+                        ['table', 'attachFiles', 'customBlocks'],
+                        ['grid', 'gridDelete', 'horizontalRule', 'clearFormatting'],
+                        ['undo', 'redo'],
                     ])
                     ->afterStateHydrated(function (RichEditor $component, mixed $state): void {
                         if (! is_string($state) || trim($state) === '') {
